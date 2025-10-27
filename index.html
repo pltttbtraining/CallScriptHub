@@ -1,542 +1,1255 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RH5 Call Script Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-  /* --- General Styles --- */
-  * {margin:0;padding:0;box-sizing:border-box;font-family:'Prompt',sans-serif;}
-  body {background-color:#f5f7fa;color:#333;}
-  h2,h3{font-weight:600;margin-bottom:0.5em;}
-  button{cursor:pointer;font-family:'Prompt',sans-serif;}
-  
-  /* --- Login Styles --- */
-  #loginPage{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg, #0D1F3C 0%, #1a3a6b 100%);color:#fff;padding:1em;}
-  .login-container{background:rgba(255,255,255,0.1);padding:2em;border-radius:20px;backdrop-filter:blur(10px);text-align:center;max-width:400px;width:100%;}
-  .role-btn{background:#1E90FF;color:#fff;padding:1em 2em;margin:1em;border:none;border-radius:20px;box-shadow:0 3px 6px rgba(0,0,0,0.2);font-size:1.2em;transition:transform 0.2s;width:100%;}
-  .role-btn:hover{background:#0077e6;}
-  .role-btn:active{transform:scale(0.95);}
-  
-  /* --- Dashboard Styles --- */
-  #mainApp{display:none;}
-  
-  /* Header */
-  .dashboard-header{background:#0D1F3C;color:#fff;padding:1em 2em;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,0.1);}
-  .header-left h1{font-size:1.5em;margin-bottom:0.2em;}
-  .header-left p{font-size:0.9em;opacity:0.8;}
-  .search-bar{display:flex;background:#fff;border-radius:30px;padding:0.5em 1em;width:300px;}
-  .search-bar input{border:none;outline:none;width:100%;padding:0.5em;}
-  .search-bar i{color:#0D1F3C;margin:auto;cursor:pointer;}
-  
-  /* Dashboard Content */
-  .dashboard-content{padding:2em;display:grid;grid-template-columns:2fr 1fr;gap:2em;}
-  
-  /* Welcome Section */
-  .welcome-card{background:#fff;border-radius:15px;padding:2em;box-shadow:0 4px 15px rgba(0,0,0,0.05);margin-bottom:2em;}
-  .welcome-card h2{color:#0D1F3C;margin-bottom:0.5em;}
-  .welcome-card p{color:#666;margin-bottom:1.5em;}
-  
-  /* Job Status */
-  .job-status{background:#fff;border-radius:15px;padding:1.5em;box-shadow:0 4px 15px rgba(0,0,0,0.05);margin-bottom:2em;}
-  .job-status h3{margin-bottom:1em;color:#0D1F3C;}
-  .status-cards{display:flex;gap:1em;}
-  .status-card{flex:1;padding:1.5em;border-radius:10px;text-align:center;color:#fff;}
-  .status-card.pending{background:#FF9F43;}
-  .status-card.prepare{background:#54A0FF;}
-  .status-card.cancel{background:#FF6B6B;}
-  .status-card .count{font-size:2em;font-weight:bold;margin-bottom:0.2em;}
-  
-  /* Services */
-  .services{background:#fff;border-radius:15px;padding:1.5em;box-shadow:0 4px 15px rgba(0,0,0,0.05);}
-  .services h3{margin-bottom:1em;color:#0D1F3C;}
-  .service-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:1em;}
-  .service-card{background:#f8f9fa;border-radius:10px;padding:1.5em;text-align:center;cursor:pointer;transition:transform 0.2s, box-shadow 0.2s;}
-  .service-card:hover{transform:translateY(-5px);box-shadow:0 5px 15px rgba(0,0,0,0.1);}
-  .service-card i{font-size:2em;color:#1E90FF;margin-bottom:0.5em;}
-  
-  /* Document Section */
-  .document-section{background:#fff;border-radius:15px;padding:1.5em;box-shadow:0 4px 15px rgba(0,0,0,0.05);}
-  .document-section h3{margin-bottom:1em;color:#0D1F3C;}
-  .document-card{background:#e6f2ff;border-radius:10px;padding:1.5em;text-align:center;}
-  .qr-code-container{background:#fff;border-radius:10px;padding:1em;margin:1em auto;display:inline-block;}
-  .qr-code{width:200px;height:200px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;margin:0 auto;border:1px dashed #ccc;}
-  .qr-code i{font-size:3em;color:#ccc;}
-  .upload-btn{background:#1E90FF;color:#fff;border:none;padding:0.7em 1.5em;border-radius:8px;margin-top:1em;cursor:pointer;}
-  .document-card p{margin-top:1em;color:#666;}
-  
-  /* --- Tab & Card Styles (Hidden by default) --- */
-  .tab-section{display:none;padding:2em;}
-  .tabs{display:flex;justify-content:space-around;background:#0D1F3C;color:#fff;border-radius:10px 10px 0 0;overflow:hidden;}
-  .tab-btn{flex:1;padding:0.8em;text-align:center;cursor:pointer;font-weight:600;}
-  .tab-btn.active{background:#1E90FF;}
-  .tab-content{background:#fff;padding:1.5em;border-radius:0 0 10px 10px;box-shadow:0 4px 15px rgba(0,0,0,0.05);}
-  .card{background:#f0f8ff;border-radius:12px;padding:1em;margin-bottom:1em;box-shadow:0 2px 4px rgba(0,0,0,0.1);}
-  .card h3{margin-bottom:0.5em;}
-  .card p{font-size:0.9em;line-height:1.4em;}
-  .toggle-detail{color:#1E90FF;text-decoration:underline;cursor:pointer;font-size:0.9em;margin-top:0.5em;}
-  .hidden{display:none;}
-  .filter-btn{padding:0.5em 1em;margin:0.5em;border:none;border-radius:12px;background:#1E90FF;color:#fff;font-size:0.9em;}
-  
-  /* --- Objection Table --- */
-  table{width:100%;border-collapse:collapse;margin-top:1em;}
-  th,td{padding:0.5em;border:1px solid #ccc;text-align:left;}
-  th{background:#1E90FF;color:#fff;}
-  
-  /* --- Q&A Board --- */
-  .qa-card{background:#e6f2ff;border-radius:12px;padding:1em;margin-bottom:1em;}
-  .qa-card .answer{margin-top:0.5em;padding:0.5em;background:#fff;border-radius:8px;}
-  input,textarea{width:100%;padding:0.5em;margin-top:0.5em;border-radius:8px;border:1px solid #ccc;}
-  .submit-btn{background:#1E90FF;color:#fff;padding:0.7em 1.5em;border:none;border-radius:12px;margin-top:0.5em;}
-  
-  /* --- Trainer Management --- */
-  .admin-panel{background:#f0f8ff;padding:1em;border-radius:12px;margin-bottom:1em;}
-  .admin-panel input, .admin-panel textarea, .admin-panel select{margin-bottom:0.5em;}
-  
-  /* --- Back Button --- */
-  .back-btn{background:#6c757d;color:#fff;border:none;padding:0.5em 1em;border-radius:8px;margin-bottom:1em;cursor:pointer;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RH5 Call Script Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0D1F3C;
+            --secondary: #1E90FF;
+            --accent: #FF9F43;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --gray: #6c757d;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem 1rem;
+            transition: var(--transition);
+            overflow-y: auto;
+            box-shadow: var(--box-shadow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .menu-link:hover, .menu-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .menu-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-section {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            padding: 0 1rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .page-title h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .page-title p {
+            color: var(--gray);
+            margin-top: 0.25rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .search-bar {
+            display: flex;
+            background: white;
+            border-radius: 30px;
+            padding: 0.5rem 1rem;
+            width: 300px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 0.5rem;
+            background: transparent;
+        }
+
+        .search-bar i {
+            color: var(--gray);
+            margin: auto;
+            cursor: pointer;
+        }
+
+        /* Dashboard Styles */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(30, 144, 255, 0.1);
+            color: var(--secondary);
+            font-size: 1.5rem;
+        }
+
+        .status-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .status-card {
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            color: white;
+            text-align: center;
+        }
+
+        .status-card.pending {
+            background: var(--warning);
+        }
+
+        .status-card.prepare {
+            background: var(--secondary);
+        }
+
+        .status-card.cancel {
+            background: var(--danger);
+        }
+
+        .status-card .count {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-card .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .service-card {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .service-card i {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .document-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .qr-code-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin: 1rem auto;
+            display: inline-block;
+            box-shadow: var(--box-shadow);
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+        }
+
+        .qr-code i {
+            font-size: 3rem;
+            color: #ccc;
+        }
+
+        .upload-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            margin-top: 1rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .upload-btn:hover {
+            background: #0d7bd4;
+        }
+
+        /* Script Detail Styles */
+        .script-detail {
+            display: none;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .script-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .script-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .script-type {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: var(--light);
+            color: var(--secondary);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: 1rem;
+        }
+
+        .back-btn {
+            background: var(--gray);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+
+        .back-btn i {
+            margin-right: 5px;
+        }
+
+        .script-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section-content {
+            background: var(--light);
+            padding: 1.2rem;
+            border-radius: var(--border-radius);
+            white-space: pre-line;
+            line-height: 1.7;
+        }
+
+        .script-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .script-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .script-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .script-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .script-card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .script-card-type {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            background: var(--light);
+            color: var(--secondary);
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .script-card-content {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .view-btn {
+            background: transparent;
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .view-btn:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Tab Styles */
+        .tab-container {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--light);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .tab-content {
+            padding: 1.5rem;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: var(--light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.1);
+        }
+
+        .submit-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover {
+            background: #0d7bd4;
+        }
+
+        /* Login Styles */
+        #loginPage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, #1a3a6b 100%);
+            color: white;
+            padding: 1em;
+        }
+
+        .login-container {
+            background: rgba(255,255,255,0.1);
+            padding: 2.5rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .login-logo {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        .role-btn {
+            background: var(--secondary);
+            color: white;
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            border: none;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-size: 1.1rem;
+            transition: var(--transition);
+            width: 100%;
+            font-weight: 500;
+        }
+
+        .role-btn:hover {
+            background: #0d7bd4;
+            transform: translateY(-2px);
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .status-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-bar {
+                width: 100%;
+                margin-top: 1rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .script-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-
-<!-- ================== LOGIN ================== -->
-<div id="loginPage">
-  <div class="login-container">
-    <h2>RH5 Call Script Hub</h2>
-    <p>เลือก Role เพื่อเข้าถึงฟีเจอร์ของคุณ</p>
-    <button class="role-btn" onclick="roleLogin('user')">ผู้ใช้งานทั่วไป</button>
-    <button class="role-btn" onclick="roleLogin('trainer')">วิทยากร / ผู้ดูแล</button>
-  </div>
-</div>
-
-<!-- ================== DASHBOARD ================== -->
-<div id="mainApp">
-  <!-- Header -->
-  <div class="dashboard-header">
-    <div class="header-left">
-      <h1>Welcome Back!</h1>
-      <p>RH5 Call Script Hub</p>
-      <p>https://us/users/idmsfins-itaninson/idnfo/uploading/admin/8080-RH5</p>
-    </div>
-    <div class="search-bar">
-      <input type="text" placeholder="Search...">
-      <i class="fas fa-search"></i>
-    </div>
-  </div>
-  
-  <!-- Dashboard Content -->
-  <div class="dashboard-content">
-    <div class="left-column">
-      <!-- Welcome Card -->
-      <div class="welcome-card">
-        <h2>Welcome Back!</h2>
-        <p>จัดการและเข้าถึงสคริปต์การโทรทั้งหมดของคุณจากแดชบอร์ดนี้</p>
-      </div>
-      
-      <!-- Job Status -->
-      <div class="job-status">
-        <h3>Your job status</h3>
-        <div class="status-cards">
-          <div class="status-card pending">
-            <div class="count">12</div>
-            <div class="label">Pending</div>
-          </div>
-          <div class="status-card prepare">
-            <div class="count">8</div>
-            <div class="label">Prepare</div>
-          </div>
-          <div class="status-card cancel">
-            <div class="count">3</div>
-            <div class="label">Cancel</div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Services -->
-      <div class="services">
-        <h3>Our services</h3>
-        <div class="service-grid">
-          <div class="service-card" onclick="showSection('scriptsSection')">
-            <i class="fas fa-file-alt"></i>
-            <div>Script</div>
-          </div>
-          <div class="service-card" onclick="showSection('objectionSection')">
-            <i class="fas fa-bolt"></i>
-            <div>Objection</div>
-          </div>
-          <div class="service-card" onclick="showSection('qaSection')">
-            <i class="fas fa-comments"></i>
-            <div>Q&A board</div>
-          </div>
-          <div class="service-card" onclick="showSection('documentSection')">
-            <i class="fas fa-file-pdf"></i>
-            <div>Full document</div>
-          </div>
-          <div class="service-card" onclick="showSection('trainerSection')">
-            <i class="fas fa-tools"></i>
-            <div>Trainer</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="right-column">
-      <!-- Document Section -->
-      <div class="document-section">
-        <h3>Full document</h3>
-        <div class="document-card">
-          <p>Can scan to see the document here.</p>
-          <div class="qr-code-container">
-            <div class="qr-code" id="qrCodeDisplay">
-              <i class="fas fa-qrcode"></i>
+    <!-- Login Page -->
+    <div id="loginPage">
+        <div class="login-container">
+            <div class="login-logo">
+                <i class="fas fa-headset"></i>
             </div>
-          </div>
-          <input type="file" id="qrCodeUpload" accept="image/*" style="display:none;">
-          <button class="upload-btn" onclick="document.getElementById('qrCodeUpload').click()">Upload QR Code</button>
-          <p id="uploadStatus"></p>
+            <h1 class="login-title">RH5 Call Script Hub</h1>
+            <p class="login-subtitle">ระบบจัดการสคริปต์การโทรและเทคนิคการขาย</p>
+            <button class="role-btn" onclick="roleLogin('user')">
+                <i class="fas fa-user"></i> ผู้ใช้งานทั่วไป
+            </button>
+            <button class="role-btn" onclick="roleLogin('trainer')">
+                <i class="fas fa-chalkboard-teacher"></i> วิทยากร / ผู้ดูแล
+            </button>
         </div>
-      </div>
     </div>
-  </div>
-  
-  <!-- ================== SECTIONS ================== -->
-  
-  <!-- Scripts Section -->
-  <div class="tab-section" id="scriptsSection">
-    <button class="back-btn" onclick="showDashboard()"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
-    <div class="tabs">
-      <div class="tab-btn active" onclick="showScriptTab('scriptsTab')">📘 Scripts</div>
-      <div class="tab-btn" onclick="showScriptTab('objectionTab')">⚡ Objections</div>
-      <div class="tab-btn" onclick="showScriptTab('qaTab')">💬 Q&A</div>
-      <div class="tab-btn" onclick="showScriptTab('trainerTab')">🛠 Trainer</div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="container hidden">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-headset"></i>
+                <h1>RH5 Script Hub</h1>
+            </div>
+            
+            <ul class="menu">
+                <li class="menu-item">
+                    <a href="#" class="menu-link active" data-page="dashboard">
+                        <i class="fas fa-th-large"></i> แดชบอร์ด
+                    </a>
+                </li>
+                
+                <div class="menu-section">สคริปต์การโทร</div>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="scripts">
+                        <i class="fas fa-file-alt"></i> คลังสคริปต์
+                    </a>
+                </li>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="objection-handling">
+                        <i class="fas fa-bolt"></i> ตารางรวม Objection Handling
+                    </a>
+                </li>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="cta-slots">
+                        <i class="fas fa-clock"></i> ตารางรวม CTA Slots
+                    </a>
+                </li>
+                
+                <div class="menu-section">เครื่องมือ</div>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="line-templates">
+                        <i class="fas fa-comment-alt"></i> LINE/SMS Template
+                    </a>
+                </li>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="checklist">
+                        <i class="fas fa-clipboard-check"></i> Checklist Master
+                    </a>
+                </li>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="advanced-techniques">
+                        <i class="fas fa-magic"></i> เทคนิคพิเศษ
+                    </a>
+                </li>
+                
+                <div class="menu-section">จัดการ</div>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="trainer">
+                        <i class="fas fa-tools"></i> Trainer Management
+                    </a>
+                </li>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="qa">
+                        <i class="fas fa-question-circle"></i> Q&A Board
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="page-title">
+                    <h2>Welcome Back!</h2>
+                    <p>RH5 Call Script Hub - จัดการสคริปต์การโทรทั้งหมดของคุณ</p>
+                </div>
+                
+                <div class="user-info">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page">
+                <div class="dashboard-grid">
+                    <!-- Welcome Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Welcome Back!</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-hand-wave"></i>
+                            </div>
+                        </div>
+                        <p>จัดการและเข้าถึงสคริปต์การโทรทั้งหมดของคุณจากแดชบอร์ดนี้</p>
+                    </div>
+                    
+                    <!-- Job Status -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Your Job Status</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                        </div>
+                        <div class="status-cards">
+                            <div class="status-card pending">
+                                <div class="count">12</div>
+                                <div class="label">Pending</div>
+                            </div>
+                            <div class="status-card prepare">
+                                <div class="count">8</div>
+                                <div class="label">Prepare</div>
+                            </div>
+                            <div class="status-card cancel">
+                                <div class="count">3</div>
+                                <div class="label">Cancel</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Services -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Our Services</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-concierge-bell"></i>
+                            </div>
+                        </div>
+                        <div class="services-grid">
+                            <div class="service-card" data-page="scripts">
+                                <i class="fas fa-file-alt"></i>
+                                <div>Script</div>
+                            </div>
+                            <div class="service-card" data-page="objection-handling">
+                                <i class="fas fa-bolt"></i>
+                                <div>Objection</div>
+                            </div>
+                            <div class="service-card" data-page="qa">
+                                <i class="fas fa-comments"></i>
+                                <div>Q&A Board</div>
+                            </div>
+                            <div class="service-card" data-page="line-templates">
+                                <i class="fas fa-comment-alt"></i>
+                                <div>LINE/SMS</div>
+                            </div>
+                            <div class="service-card" data-page="checklist">
+                                <i class="fas fa-clipboard-check"></i>
+                                <div>Checklist</div>
+                            </div>
+                            <div class="service-card" data-page="advanced-techniques">
+                                <i class="fas fa-magic"></i>
+                                <div>Techniques</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Document Section -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Full Document</h3>
+                            <div class="card-icon">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                        </div>
+                        <div class="document-card">
+                            <p>Can scan to see the document here.</p>
+                            <div class="qr-code-container">
+                                <div class="qr-code" id="qrCodeDisplay">
+                                    <i class="fas fa-qrcode"></i>
+                                </div>
+                            </div>
+                            <input type="file" id="qrCodeUpload" accept="image/*" style="display:none;">
+                            <button class="upload-btn" onclick="document.getElementById('qrCodeUpload').click()">
+                                <i class="fas fa-upload"></i> Upload QR Code
+                            </button>
+                            <p id="uploadStatus" class="text-center mt-1"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scripts Page -->
+            <div id="scripts" class="page hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">คลังสคริปต์การโทรนัดหมายลูกค้า</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="script-grid" id="scriptList">
+                        <!-- Script cards will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Script Detail View -->
+                <div id="scriptDetail" class="script-detail">
+                    <!-- Script details will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Other pages will be implemented similarly -->
+            <!-- For brevity, I'll include just one more example -->
+            
+            <!-- Objection Handling Page -->
+            <div id="objection-handling" class="page hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">ตารางรวม Objection Handling</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ข้อโต้แย้ง</th>
+                                    <th>คำตอบ (แนวทาง)</th>
+                                    <th>Tone</th>
+                                </tr>
+                            </thead>
+                            <tbody id="objectionTable">
+                                <!-- Objection data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional pages would be implemented here -->
+            <!-- CTA Slots, LINE/SMS Templates, Checklist, Advanced Techniques, Trainer, Q&A -->
+            
+        </div>
     </div>
-    
-    <div class="tab-content" id="scriptsTab">
-      <div>
-        <button class="filter-btn" onclick="filterScripts('new')">New Customer</button>
-        <button class="filter-btn" onclick="filterScripts('familiar')">Familiar Customer</button>
-        <button class="filter-btn" onclick="filterScripts('vip')">VIP Customer</button>
-      </div>
-      <div id="scriptList"></div>
-    </div>
-    
-    <div class="tab-content hidden" id="objectionTab">
-      <h3>Objection Library</h3>
-      <table>
-        <thead>
-          <tr><th>Category</th><th>Question</th><th>Answer</th></tr>
-        </thead>
-        <tbody id="objectionTable"></tbody>
-      </table>
-    </div>
-    
-    <div class="tab-content hidden" id="qaTab">
-      <h3>Q&A Board</h3>
-      <div>
-        <input type="text" id="qaUser" placeholder="ชื่อของคุณ">
-        <textarea id="qaQuestion" placeholder="พิมพ์คำถามที่นี่"></textarea>
-        <button class="submit-btn" onclick="postQA()">Post Question</button>
-      </div>
-      <div id="qaList"></div>
-    </div>
-    
-    <div class="tab-content hidden" id="trainerTab">
-      <h3>Trainer Script Management</h3>
-      <div class="admin-panel">
-        <input type="text" id="adminTitle" placeholder="Script Title">
-        <select id="adminType">
-          <option value="new">New Customer</option>
-          <option value="familiar">Familiar Customer</option>
-          <option value="vip">VIP Customer</option>
-        </select>
-        <textarea id="adminContent" placeholder="Script Content"></textarea>
-        <button class="submit-btn" onclick="addScript()">Add / Update Script</button>
-      </div>
-      <div id="trainerScriptList"></div>
-    </div>
-  </div>
-</div>
 
-<script>
-// ================== INITIAL DATA ==================
-const initialScripts = [
-  // New Customer Scripts
-  {type: 'new', title: 'ตรวจสิทธิ์ลดหย่อนภาษีปีล่าสุด', content: 'Step 1: แนะนำตัวและบอกเหตุผลการโทรแบบ Service Tone\nStep 2: อธิบายสิทธิ์ลดหย่อนภาษีที่ลูกค้าอาจยังไม่ได้ใช้\nStep 3: เชิญนัดหมายสั้น ๆ 15 นาทีเพื่อช่วยตรวจสิทธิ์และให้ข้อมูลเพิ่มเติม'},
-  {type: 'new', title: 'แนะนำบริการวางแผนเงินออมสำหรับดอกเบี้ยขาลง', content: 'Step 1: เริ่มการสนทนาแบบ Friendly Tone\nStep 2: อธิบายว่าดอกเบี้ยเริ่มลด การฝากเงินแบบเดิมอาจโตช้ากว่าเดิม\nStep 3: เสนอเวลาพบสั้น ๆ เพื่อแนะนำแนวทางการวางแผน'},
-  
-  // Familiar Customer Scripts  
-  {type: 'familiar', title: 'อัปเดตสิทธิ์ลดหย่อนภาษีสำหรับลูกค้าประจำ', content: 'Step 1: ทักทายลูกค้าคุ้นเคย\nStep 2: แจ้งสิทธิ์เพิ่มเติมจากปีที่แล้ว\nStep 3: เชิญนัดหมาย 15 นาทีเพื่ออัปเดตข้อมูล'},
-  {type: 'familiar', title: 'บริการปรับพอร์ตเงินออมสำหรับลูกค้าคุ้นเคย', content: 'Step 1: เริ่มด้วย Service Tone\nStep 2: อธิบายว่าดอกเบี้ยลด การวางเงินแบบเดิมอาจโตช้า\nStep 3: นัดหมายสั้น ๆ เพื่อปรับพอร์ต'},
-  
-  // VIP Customer Scripts
-  {type: 'vip', title: 'บริการเช็กสิทธิ์ภาษีและผลตอบแทนสำหรับ VIP', content: 'Step 1: ทักทายลูกค้า VIP\nStep 2: อธิบายสิทธิ์พิเศษและผลตอบแทนเฉพาะกลุ่ม\nStep 3: นัดหมาย 15 นาทีเพื่อสรุปข้อมูล'},
-  {type: 'vip', title: 'ปรับพอร์ตการลงทุนเฉพาะ VIP', content: 'Step 1: เริ่มด้วยทักทายแบบ Professional Tone\nStep 2: อธิบายว่าดอกเบี้ยลด การลงทุนต้องปรับสัดส่วน\nStep 3: นัดหมายสั้น ๆ 15 นาทีเพื่อปรับพอร์ต'}
-];
+    <script>
+        // Sample script data - in a real app, this would come from a database
+        const scriptsData = [
+            {
+                id: 1,
+                type: 'new',
+                title: 'ลูกค้าใหม่ – ตรวจสิทธิ์ดอกเบี้ย & ภาษี',
+                A: 'Opening: "สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ใช่ไหมคะ/ครับ ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] โทรมาสั้น ๆ ไม่รบกวนเวลานะคะ/ครับ"',
+                B: 'Reason / Service Tone: "ช่วงนี้ดอกเบี้ยเริ่มปรับลด ทางธนาคารเรามีบริการตรวจสิทธิ์ลดหย่อนภาษีและอัปเดตพอร์ตเงินออมให้เหมาะสมค่ะ/ครับ"',
+                C: 'Value Hook: "ลูกค้าหลายท่านประหยัดภาษีเพิ่มได้ 2–4 หมื่นบาทจากสิทธิ์ที่ไม่รู้ว่ามีค่ะ/ครับ"',
+                D: 'CTA: "คุณสะดวกมาที่สาขาช่วงบ่ายวันนี้ หรือพรุ่งนี้เช้าคะ/ครับ?"',
+                E: 'Service Questions:\n• ปีนี้ได้ใช้สิทธิ์ลดหย่อนครบหรือยังคะ/ครับ?\n• สนใจผลตอบแทนเงินออมช่วงดอกเบี้ยขาลงไหมคะ/ครับ?',
+                F: 'Objection Handling:\nข้อโต้แย้ง: "ไม่สนใจ"\nตอบ: "ไม่เป็นไรค่ะ/ครับ แค่แจ้งสิทธิ์ฟรี ถ้าอนุญาต ดิฉัน/ผมส่งสรุปทางไลน์ให้ก่อนเผื่อสนใจดูภายหลังได้ค่ะ/ครับ"\n\nข้อโต้แย้ง: "ไม่มีเวลา"\nตอบ: "เข้าใจค่ะ/ครับ ขอแค่ 15 นาที เลือกช่วงเวลาที่สะดวก เช่น พรุ่งนี้เช้าหรือบ่ายดีไหมคะ/ครับ?"\n\nข้อโต้แย้ง: "กลัวขาย"\nตอบ: "เข้าใจค่ะ/ครับ ครั้งนี้ไม่ใช่การขาย เป็นบริการตรวจสิทธิ์ฟรีค่ะ/ครับ"',
+                G: 'Closing Lines:\n• "งั้นดิฉัน/ผมขอจองเวลาช่วง [วัน/เวลา] ไว้ก่อนนะคะ/ครับ ใช้เวลา 15 นาทีเท่านั้นค่ะ/ครับ"\n• "ขอบคุณที่รับสายค่ะ/ครับ หวังว่าจะได้ช่วยเช็กสิทธิ์ก่อนสิ้นปีนะคะ/ครับ 😊"',
+                H: 'Tone of Voice:\n• สุภาพ, น้ำเสียงนุ่ม, จังหวะพูด–เว้น–ฟัง\n• เน้นคำว่า "บริการ / ตรวจสิทธิ์ / อัปเดต / ให้ข้อมูล"',
+                I: 'Checklist ก่อนโทร:\n✅ ชื่อลูกค้า, ประวัติธุรกรรม\n✅ 2 ช่วงเวลานัด\n✅ ประโยคเปิดเหมาะสมกับลูกค้าใหม่\n✅ ประโยคตอบข้อโต้แย้งอย่างน้อย 3 แบบ\n✅ ช่องทางสำรอง (LINE/SMS)'
+            },
+            {
+                id: 2,
+                type: 'familiar',
+                title: 'ลูกค้าคุ้นเคย – อัปเดตสิทธิ์ & พอร์ต',
+                A: 'Opening: "สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] ค่ะ/ครับ\nไม่ได้โทรมาขายอะไรนะคะ/ครับ แต่แจ้งสิทธิ์ดี ๆ ช่วงนี้ค่ะ/ครับ"',
+                B: 'Reason: "ช่วงปลายปี เราช่วยลูกค้าประจำตรวจสิทธิ์ลดหย่อนภาษีและปรับพอร์ตเงินออมให้เหมาะกับดอกเบี้ยใหม่"',
+                C: 'Value Hook: "หลายท่านพบว่ามีสิทธิ์เพิ่มเติมช่วยประหยัดภาษีได้ 10–20% ของรายได้ที่ยังไม่ได้ใช้สิทธิ์ค่ะ/ครับ"',
+                D: 'CTA: "สะดวกให้ดิฉัน/ผมจองคิวช่วงบ่ายวันนี้ หรือพรุ่งนี้เช้าคะ/ครับ?"',
+                E: 'Service Questions:\n• ปกติวางเงินออมแบบไหนคะ/ครับ?\n• สนใจอัปเดตพอร์ตตามอัตราดอกเบี้ยใหม่ไหมคะ/ครับ?',
+                F: 'Objection Handling:\nข้อโต้แย้ง: "มีคนดูแลแล้ว"\nตอบ: "ถือเป็นการตรวจสิทธิ์ซ้ำเพื่อความมั่นใจ บางสิทธิ์ปีนี้อาจเปลี่ยนค่ะ/ครับ"\n\nข้อโต้แย้ง: "จัดภาษีเรียบร้อยแล้ว"\nตอบ: "ขอเช็กฟรีอีกครั้ง เผื่อมีสิทธิ์ที่ยังไม่ได้ใช้ค่ะ/ครับ"',
+                G: 'Closing Lines:\n• "ดิฉัน/ผมขอจองเวลาสั้น ๆ 15 นาทีไว้ก่อนนะคะ/ครับ"',
+                H: 'Tone of Voice:\n• นุ่ม, สุภาพ, มั่นใจแต่ไม่เร่ง',
+                I: 'Checklist ก่อนโทร:\n✅ ประวัติธุรกรรมลูกค้า\n✅ 2 ช่วงเวลานัด\n✅ ข้อโต้แย้งที่อาจเจอ'
+            },
+            {
+                id: 3,
+                type: 'vip',
+                title: 'ลูกค้า VIP / Premium',
+                A: 'Opening: "สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] ค่ะ/ครับ โทรมาในฐานะผู้ดูแลบัญชีของคุณค่ะ/ครับ"',
+                B: 'Reason: "เรามีข้อมูลสิทธิ์ภาษีและผลตอบแทนเงินออมที่เหมาะกับลูกค้าแบบคุณ อยากเรียนเชิญมาดูรายละเอียดด้วยตัวเองค่ะ/ครับ"',
+                C: 'Value Hook: "ช่วยให้คุณตัดสินใจจัดสัดส่วนเงินได้ดีที่สุดในช่วงดอกเบี้ยขาลง ใช้เวลา 15 นาที ไม่ต้องเตรียมเอกสารค่ะ/ครับ"',
+                D: 'CTA: "คุณสะดวกพรุ่งนี้สาย ๆ หรือบ่ายคะ/ครับ? จะให้จัดห้องรับรองไว้ด้วยค่ะ/ครับ"',
+                E: 'Service Questions:\n• สนใจผลตอบแทนเงินออมเฉพาะกลุ่มพรีเมียมไหมคะ/ครับ?\n• ปรับพอร์ตภาษีประจำปีหรือยังคะ/ครับ?',
+                F: 'Objection Handling:\nข้อโต้แย้ง: "ไม่สนใจ"\nตอบ: "แค่แจ้งข้อมูลเพื่อให้พิจารณา เผื่อสนใจดูเพิ่มเติมค่ะ/ครับ"\n\nข้อโต้แย้ง: "มีที่ปรึกษาแล้ว"\nตอบ: "ถือเป็นการตรวจสอบเพิ่มเติมเพื่อความมั่นใจ ข้อมูลปีนี้อาจต่างจากเดิมค่ะ/ครับ"',
+                G: 'Closing Lines:\n• "ดิฉัน/ผมจะจองคิวช่วง [เวลา] ไว้ก่อนนะคะ/ครับ"',
+                H: 'Tone of Voice:\n• สุภาพ, เน้น Service-first, น้ำเสียงมั่นใจแต่ไม่เร่ง',
+                I: 'Checklist ก่อนโทร:\n✅ ประวัติบัญชี & พอร์ต\n✅ 2 ช่วงเวลานัด\n✅ Objection Handling เตรียมพร้อม'
+            }
+        ];
 
-const initialObjections = [
-  {category:'Time', question:'ไม่มีเวลาเลย', answer:'เข้าใจค่ะ/ครับ แค่ 15 นาทีเท่านั้นเอง'},
-  {category:'Interest', question:'ไม่สนใจ', answer:'ไม่เป็นไรค่ะ แค่แจ้งข้อมูลฟรี เผื่อสนใจตรวจภายหลัง'},
-  {category:'Authority', question:'มีคนดูแลอยู่แล้ว', answer:'ถือว่าเป็นการตรวจสอบซ้ำเพื่อความมั่นใจ'},
-  {category:'Price', question:'กลัวค่าใช้จ่าย', answer:'บริการนี้ฟรีค่ะ/ครับ'},
-  {category:'Other', question:'กลัวขายของ', answer:'เป็นบริการเช็กสิทธิ์ฟรี ไม่มีขายใด ๆ'}
-];
+        // Sample objection handling data
+        const objectionData = [
+            { objection: 'ไม่สนใจ', response: 'ไม่เป็นไรค่ะ/ครับ แค่แจ้งสิทธิ์ฟรี ขอส่งสรุปทาง LINE ไว้ให้ก่อนได้ไหมคะ/ครับ?', tone: 'นุ่มนวล, ไม่ยื้อ' },
+            { objection: 'ไม่มีเวลา', response: 'เข้าใจค่ะ/ครับ ใช้แค่ 15 นาที เลือกช่วงที่สะดวกที่สุดเลยค่ะ/ครับ เช่น พรุ่งนี้เช้า/บ่าย?', tone: 'เคารพ, เสนอทางเลือก' },
+            { objection: 'กลัวถูกขาย', response: 'เข้าใจค่ะ/ครับ ครั้งนี้ไม่ใช่การขาย เป็นบริการตรวจสิทธิ์ฟรีค่ะ/ครับ ไม่มีค่าใช้จ่าย', tone: 'มั่นใจ, ชัดเจน' },
+            { objection: 'มีคนดูแลแล้ว', response: 'ดีมากค่ะ/ครับ ถือเป็นการตรวจสิทธิ์ซ้ำเพื่อความมั่นใจ บางสิทธิ์ปีนี้อาจเปลี่ยนค่ะ/ครับ', tone: 'Respectful, เสนอ Second Opinion' },
+            { objection: 'จัดภาษีเรียบร้อยแล้ว', response: 'ขอเช็กฟรีอีกครั้งค่ะ/ครับ เผื่อมีสิทธิ์ที่ยังไม่ได้ใช้ แค่ 15 นาทีค่ะ/ครับ', tone: 'เสนอ Double-check' }
+        ];
 
-// ================== NAVIGATION ==================
-function showSection(sectionId) {
-  document.querySelector('.dashboard-content').style.display = 'none';
-  document.querySelectorAll('.tab-section').forEach(section => {
-    section.style.display = 'none';
-  });
-  document.getElementById(sectionId).style.display = 'block';
-}
+        // Current user role
+        let currentRole = null;
 
-function showDashboard() {
-  document.querySelector('.dashboard-content').style.display = 'grid';
-  document.querySelectorAll('.tab-section').forEach(section => {
-    section.style.display = 'none';
-  });
-}
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            setupEventListeners();
+        });
 
-function showScriptTab(tabId) {
-  document.querySelectorAll('.tab-content').forEach(tc => tc.classList.add('hidden'));
-  document.getElementById(tabId).classList.remove('hidden');
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
-}
+        // Initialize data
+        function initializeData() {
+            // Load scripts data
+            if (!localStorage.getItem('scriptsData')) {
+                localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
+            }
+            
+            // Load objection data
+            if (!localStorage.getItem('objectionData')) {
+                localStorage.setItem('objectionData', JSON.stringify(objectionData));
+            }
+            
+            // Load QR code if exists
+            const qrCodeData = localStorage.getItem('qrCode');
+            if (qrCodeData) {
+                document.getElementById('qrCodeDisplay').innerHTML = `<img src="${qrCodeData}" alt="QR Code" style="width:100%;height:100%;object-fit:contain;">`;
+            }
+            
+            // Set up QR code upload
+            document.getElementById('qrCodeUpload').addEventListener('change', handleQRCodeUpload);
+        }
 
-// ================== INITIALIZE DATA ==================
-function initializeData() {
-  if (!localStorage.getItem('scriptsData')) {
-    localStorage.setItem('scriptsData', JSON.stringify(initialScripts));
-  }
-  if (!localStorage.getItem('objectionsData')) {
-    localStorage.setItem('objectionsData', JSON.stringify(initialObjections));
-  }
-  if (!localStorage.getItem('qaData')) {
-    localStorage.setItem('qaData', JSON.stringify([]));
-  }
-  if (!localStorage.getItem('qrCode')) {
-    localStorage.setItem('qrCode', '');
-  } else {
-    // Load saved QR code if exists
-    const qrCodeData = localStorage.getItem('qrCode');
-    if (qrCodeData) {
-      document.getElementById('qrCodeDisplay').innerHTML = `<img src="${qrCodeData}" alt="QR Code" style="width:100%;height:100%;object-fit:contain;">`;
-    }
-  }
-}
+        // Set up event listeners
+        function setupEventListeners() {
+            // Menu navigation
+            document.querySelectorAll('.menu-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('data-page');
+                    showPage(page);
+                    
+                    // Update active menu item
+                    document.querySelectorAll('.menu-link').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
+            
+            // Service cards navigation
+            document.querySelectorAll('.service-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const page = this.getAttribute('data-page');
+                    showPage(page);
+                    
+                    // Update active menu item
+                    document.querySelectorAll('.menu-link').forEach(item => {
+                        item.classList.remove('active');
+                        if (item.getAttribute('data-page') === page) {
+                            item.classList.add('active');
+                        }
+                    });
+                });
+            });
+        }
 
-// ================== ROLE LOGIN ==================
-let currentRole = null;
-function roleLogin(role){
-  let question = '';
-  let answer = '';
-  if(role==='user'){
-    question='กระจกวิเศษบอกข้าเทิด Region ไหนพนักงานเริ่ดที่สุดในปฐพี'; 
-    answer='rh5';
-  } else {
-    question='ห๊ะ อะไรนะ ว่าไงนะ ห๊ะ ไม่ได้ยินนนนน'; 
-    answer='pru';
-  }
-  
-  let userAnswer = prompt(question,'');
-  if(userAnswer && userAnswer.toLowerCase()===answer.toLowerCase()){
-    currentRole = role;
-    document.getElementById('loginPage').style.display='none';
-    document.getElementById('mainApp').style.display='block';
-    initializeData();
-    loadScripts();
-    loadObjections();
-    loadQA();
-    if (role === 'trainer') {
-      loadTrainerScripts();
-    }
-  } else {
-    alert('คำตอบไม่ถูกต้อง');
-  }
-}
+        // Role login function
+        function roleLogin(role) {
+            let question = '';
+            let answer = '';
+            
+            if (role === 'user') {
+                question = 'กระจกวิเศษบอกข้าเทิด Region ไหนพนักงานเริ่ดที่สุดในปฐพี';
+                answer = 'rh5';
+            } else {
+                question = 'ห๊ะ อะไรนะ ว่าไงนะ ห๊ะ ไม่ได้ยินนนนน';
+                answer = 'pru';
+            }
+            
+            let userAnswer = prompt(question, '');
+            if (userAnswer && userAnswer.toLowerCase() === answer.toLowerCase()) {
+                currentRole = role;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainApp').classList.remove('hidden');
+                loadScripts();
+                loadObjectionTable();
+            } else {
+                alert('คำตอบไม่ถูกต้อง');
+            }
+        }
 
-// ================== QR CODE UPLOAD ==================
-document.getElementById('qrCodeUpload').addEventListener('change', function(e) {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      const imageData = event.target.result;
-      localStorage.setItem('qrCode', imageData);
-      document.getElementById('qrCodeDisplay').innerHTML = `<img src="${imageData}" alt="QR Code" style="width:100%;height:100%;object-fit:contain;">`;
-      document.getElementById('uploadStatus').textContent = 'QR Code อัพโหลดสำเร็จ!';
-      document.getElementById('uploadStatus').style.color = 'green';
-    };
-    reader.readAsDataURL(file);
-  }
-});
+        // Show specific page
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.remove('hidden');
+            
+            // Load page-specific content
+            if (pageId === 'scripts') {
+                loadScripts();
+            } else if (pageId === 'objection-handling') {
+                loadObjectionTable();
+            }
+            // Add more conditions for other pages
+        }
 
-// ================== SCRIPTS ==================
-function loadScripts() {
-  filterScripts('new'); // โหลด New Customer โดยค่าเริ่มต้น
-}
+        // Load scripts into the scripts page
+        function loadScripts() {
+            const scriptList = document.getElementById('scriptList');
+            const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
+            
+            scriptList.innerHTML = '';
+            
+            scriptsData.forEach(script => {
+                const scriptCard = document.createElement('div');
+                scriptCard.className = 'script-card';
+                scriptCard.innerHTML = `
+                    <div class="script-card-header">
+                        <div class="script-card-title">${script.title}</div>
+                        <div class="script-card-type">${getScriptTypeLabel(script.type)}</div>
+                    </div>
+                    <div class="script-card-content">${script.A}</div>
+                    <button class="view-btn" onclick="viewScriptDetail(${script.id})">View Details</button>
+                `;
+                scriptList.appendChild(scriptCard);
+            });
+        }
 
-function filterScripts(type){
-  const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
-  let listDiv = document.getElementById('scriptList');
-  listDiv.innerHTML='';
-  
-  let filtered = scriptsData.filter(s=>s.type===type);
-  if (filtered.length === 0) {
-    listDiv.innerHTML = '<p>ไม่มีสคริปต์ในหมวดนี้</p>';
-    return;
-  }
-  
-  filtered.forEach((s,i)=>{
-    let card = document.createElement('div');
-    card.className='card';
-    card.innerHTML=`
-      <h3>${s.title}</h3>
-      <p class="toggle-detail" onclick="toggleDetail(${i})">View Details</p>
-      <div id="detail${i}" class="hidden">
-        <pre>${s.content}</pre>
-      </div>
-    `;
-    listDiv.appendChild(card);
-  });
-}
+        // Get script type label
+        function getScriptTypeLabel(type) {
+            const typeLabels = {
+                'new': 'ลูกค้าใหม่',
+                'familiar': 'ลูกค้าคุ้นเคย',
+                'vip': 'VIP'
+            };
+            return typeLabels[type] || type;
+        }
 
-function toggleDetail(idx){
-  let el = document.getElementById('detail'+idx);
-  el.classList.toggle('hidden');
-}
+        // View script detail
+        function viewScriptDetail(scriptId) {
+            const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
+            const script = scriptsData.find(s => s.id === scriptId);
+            
+            if (!script) return;
+            
+            const scriptDetail = document.getElementById('scriptDetail');
+            scriptDetail.innerHTML = `
+                <div class="script-header">
+                    <div>
+                        <h2 class="script-title">${script.title} <span class="script-type">${getScriptTypeLabel(script.type)}</span></h2>
+                    </div>
+                    <button class="back-btn" onclick="hideScriptDetail()"><i class="fas fa-arrow-left"></i> Back</button>
+                </div>
+                
+                <div class="script-section">
+                    <h3 class="section-title">A: Opening</h3>
+                    <div class="section-content">${script.A}</div>
+                </div>
+                
+                <div class="script-section">
+                    <h3 class="section-title">B: Reason / Service Tone</h3>
+                    <div class="section-content">${script.B}</div>
+                </div>
+                
+                <div class="script-section">
+                    <h3 class="section-title">C: Value Hook</h3>
+                    <div class="section-content">${script.C}</div>
+                </div>
+                
+                <div class="script-section">
+                    <h3 class="section-title">D: CTA (Call to Action)</h3>
+                    <div class="section-content">${script.D}</div>
+                </div>
+                
+                <div class="script-section">
+                    <h3 class="section-title">E: Service Questions</h3>
+                    <div class="section-content">${script.E}</div>
+                </div>
+                
+                <div class="script-section">
+                    <h3 class="section-title">F: Objection Handling</h3>
+                    <div class="section-content">${script.F}</div>
+                </div>
+                
+                <div class="script-section">
+                    <h3 class="section-title">G: Closing Lines</h3>
+                    <div class="section-content">${script.G}</div>
+                </div>
+                
+                <div class="script-section">
+                    <h3 class="section-title">H: Tone of Voice</h3>
+                    <div class="section-content">${script.H}</div>
+                </div>
+                
+                <div class="script-section">
+                    <h3 class="section-title">I: Checklist ก่อนโทร</h3>
+                    <div class="section-content">${script.I}</div>
+                </div>
+            `;
+            
+            // Hide script list and show detail
+            document.getElementById('scriptList').classList.add('hidden');
+            scriptDetail.classList.remove('hidden');
+        }
 
-// ================== OBJECTIONS ==================
-function loadObjections(){
-  const objectionsData = JSON.parse(localStorage.getItem('objectionsData')) || [];
-  let tbody = document.getElementById('objectionTable');
-  tbody.innerHTML='';
-  
-  objectionsData.forEach(o=>{
-    let tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td>${o.category}</td>
-      <td>${o.question}</td>
-      <td>${o.answer}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
+        // Hide script detail and show list
+        function hideScriptDetail() {
+            document.getElementById('scriptDetail').classList.add('hidden');
+            document.getElementById('scriptList').classList.remove('hidden');
+        }
 
-// ================== Q&A ==================
-function loadQA(){
-  const qaData = JSON.parse(localStorage.getItem('qaData')) || [];
-  let list = document.getElementById('qaList'); 
-  list.innerHTML='';
-  
-  qaData.forEach((q,i)=>{
-    let card = document.createElement('div'); 
-    card.className='qa-card';
-    card.innerHTML=`
-      <b>${q.user}</b>: ${q.question}
-      <div class="answer">${q.answer || 'ยังไม่มีคำตอบ'}</div>
-    `;
-    list.appendChild(card);
-  });
-}
+        // Load objection handling table
+        function loadObjectionTable() {
+            const objectionTable = document.getElementById('objectionTable');
+            const objectionData = JSON.parse(localStorage.getItem('objectionData')) || [];
+            
+            objectionTable.innerHTML = '';
+            
+            objectionData.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.objection}</td>
+                    <td>${item.response}</td>
+                    <td>${item.tone}</td>
+                `;
+                objectionTable.appendChild(row);
+            });
+        }
 
-function postQA(){
-  let user = document.getElementById('qaUser').value;
-  let question = document.getElementById('qaQuestion').value;
-  if(user && question){
-    const qaData = JSON.parse(localStorage.getItem('qaData')) || [];
-    qaData.push({user, question, answer: ''});
-    localStorage.setItem('qaData', JSON.stringify(qaData));
-    
-    document.getElementById('qaUser').value='';
-    document.getElementById('qaQuestion').value='';
-    loadQA();
-  } else {
-    alert('กรุณากรอกชื่อและคำถาม');
-  }
-}
-
-// ================== TRAINER MANAGEMENT ==================
-function loadTrainerScripts(){
-  const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
-  let listDiv = document.getElementById('trainerScriptList'); 
-  listDiv.innerHTML='';
-  
-  scriptsData.forEach((s,i)=>{
-    let div = document.createElement('div'); 
-    div.className='card';
-    div.innerHTML=`
-      <b>${s.title}</b> [${s.type}]
-      <button onclick="editScript(${i})">Edit</button>
-      <button onclick="deleteScript(${i})">Delete</button>
-      <div style="margin-top: 10px;">
-        <pre>${s.content}</pre>
-      </div>
-    `;
-    listDiv.appendChild(div);
-  });
-}
-
-function addScript(){
-  let title = document.getElementById('adminTitle').value;
-  let type = document.getElementById('adminType').value;
-  let content = document.getElementById('adminContent').value;
-  
-  if(!title || !content){
-    alert('กรุณากรอกข้อมูลให้ครบ');
-    return;
-  }
-  
-  const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
-  
-  // Check if updating existing script with same title
-  let existingIndex = scriptsData.findIndex(s => s.title === title && s.type === type);
-  
-  if(existingIndex > -1){
-    // Update existing
-    scriptsData[existingIndex] = {title, type, content};
-  } else {
-    // Add new
-    scriptsData.push({title, type, content});
-  }
-  
-  localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
-  loadScripts();
-  loadTrainerScripts();
-  
-  // Clear form
-  document.getElementById('adminTitle').value = '';
-  document.getElementById('adminContent').value = '';
-  
-  alert('บันทึกสำเร็จ!');
-}
-
-function editScript(index){
-  const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
-  let s = scriptsData[index];
-  
-  document.getElementById('adminTitle').value = s.title;
-  document.getElementById('adminType').value = s.type;
-  document.getElementById('adminContent').value = s.content;
-}
-
-function deleteScript(index){
-  if(confirm('ต้องการลบสคริปต์นี้ใช่หรือไม่?')){
-    const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
-    scriptsData.splice(index, 1);
-    localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
-    loadScripts();
-    loadTrainerScripts();
-  }
-}
-
-// ================== INITIALIZE APP ==================
-document.addEventListener('DOMContentLoaded', function() {
-  initializeData();
-});
-</script>
+        // Handle QR code upload
+        function handleQRCodeUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const imageData = event.target.result;
+                    localStorage.setItem('qrCode', imageData);
+                    document.getElementById('qrCodeDisplay').innerHTML = `<img src="${imageData}" alt="QR Code" style="width:100%;height:100%;object-fit:contain;">`;
+                    document.getElementById('uploadStatus').textContent = 'QR Code อัพโหลดสำเร็จ!';
+                    document.getElementById('uploadStatus').style.color = 'green';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 </body>
 </html>
