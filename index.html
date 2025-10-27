@@ -4,237 +4,580 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Call Script Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Prompt&family=Sarabun&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --primary-color: #002d62;
-  --secondary-color: #0074d9;
-  --bg-color: #ffffff;
-  --card-bg: #f0f8ff;
-  --text-color: #002d62;
-}
-* {margin:0;padding:0;box-sizing:border-box;font-family:'Prompt','Sarabun',sans-serif;}
-body {background: var(--primary-color); color: var(--text-color);}
-button {cursor:pointer;}
-.hidden {display:none;}
-.container {padding:15px; max-width:480px; margin:auto;}
-button.role-btn {width:100%; padding:20px; margin:10px 0; font-size:18px; border:none; border-radius:12px; background: var(--secondary-color); color:#fff; box-shadow:0 3px 6px rgba(0,0,0,0.2); transition:0.2s;}
-button.role-btn:active {transform:scale(0.97);}
-nav {position:fixed; bottom:0; left:0; width:100%; display:flex; background: var(--primary-color);}
-nav button {flex:1; padding:10px 0; color:#fff; border:none; background:none; font-size:18px;}
-nav button.active {background: var(--secondary-color);}
-.tab-content {padding-bottom:60px;}
-.card {background: var(--card-bg); margin:10px 0; padding:10px 15px; border-radius:10px; box-shadow:0 2px 4px rgba(0,0,0,0.1);}
-.card h4 {margin-bottom:5px;}
-.card pre {white-space:pre-wrap; word-wrap:break-word;}
-input, select, textarea {width:100%; padding:10px; margin:5px 0 15px 0; border-radius:6px; border:1px solid #ccc;}
-input[type="time"] {padding:5px;}
-button.submit-btn {background: var(--secondary-color); color:#fff; border:none; padding:12px; width:100%; border-radius:8px; margin-top:10px;}
-button.small-btn {padding:5px 10px; margin:3px;}
-.toggle-btn {background:#0074d9;color:#fff;padding:5px 8px;border:none;border-radius:6px;margin:5px 0; font-size:14px;}
-textarea {resize:none;}
+  /* --- General Styles --- */
+  * {margin:0;padding:0;box-sizing:border-box;font-family:'Prompt',sans-serif;}
+  body {background-color:#0D1F3C;color:#0D1F3C;}
+  h2,h3{font-weight:600;margin-bottom:0.5em;}
+  button{cursor:pointer;font-family:'Prompt',sans-serif;}
+  
+  /* --- Login Styles --- */
+  #loginPage{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#0D1F3C;color:#fff;padding:1em;}
+  .role-btn{background:#1E90FF;color:#fff;padding:1em 2em;margin:1em;border:none;border-radius:20px;box-shadow:0 3px 6px rgba(0,0,0,0.2);font-size:1.2em;transition:transform 0.2s;}
+  .role-btn:active{transform:scale(0.95);}
+  
+  /* --- Tab & Card Styles --- */
+  #mainApp{display:none;flex-direction:column;height:100vh;}
+  .tabs{display:flex;justify-content:space-around;background:#0D1F3C;color:#fff;}
+  .tab-btn{flex:1;padding:0.8em;text-align:center;cursor:pointer;font-weight:600;}
+  .tab-btn.active{background:#1E90FF;}
+  .tab-content{flex:1;overflow-y:auto;padding:1em;background:#fff;color:#0D1F3C;}
+  .card{background:#f0f8ff;border-radius:12px;padding:1em;margin-bottom:1em;box-shadow:0 2px 4px rgba(0,0,0,0.1);}
+  .card h3{margin-bottom:0.5em;}
+  .card p{font-size:0.9em;line-height:1.4em;}
+  .toggle-detail{color:#1E90FF;text-decoration:underline;cursor:pointer;font-size:0.9em;margin-top:0.5em;}
+  .hidden{display:none;}
+  .filter-btn{padding:0.5em 1em;margin:0.5em;border:none;border-radius:12px;background:#1E90FF;color:#fff;font-size:0.9em;}
+  
+  /* --- Objection Table --- */
+  table{width:100%;border-collapse:collapse;margin-top:1em;}
+  th,td{padding:0.5em;border:1px solid #ccc;text-align:left;}
+  th{background:#1E90FF;color:#fff;}
+  
+  /* --- Q&A Board --- */
+  .qa-card{background:#e6f2ff;border-radius:12px;padding:1em;margin-bottom:1em;}
+  .qa-card .answer{margin-top:0.5em;padding:0.5em;background:#fff;border-radius:8px;}
+  input,textarea{width:100%;padding:0.5em;margin-top:0.5em;border-radius:8px;border:1px solid #ccc;}
+  .submit-btn{background:#1E90FF;color:#fff;padding:0.7em 1.5em;border:none;border-radius:12px;margin-top:0.5em;}
+  
+  /* --- Trainer Management --- */
+  .admin-panel{background:#f0f8ff;padding:1em;border-radius:12px;margin-bottom:1em;}
+  .admin-panel input, .admin-panel textarea, .admin-panel select{margin-bottom:0.5em;}
 </style>
 </head>
 <body>
 
-<div class="container" id="login-screen">
-  <h2 style="color:#fff; text-align:center; margin-bottom:20px;">Call Script Hub</h2>
+<!-- ================== LOGIN ================== -->
+<div id="loginPage">
+  <h2>Call Script Hub</h2>
+  <p>เลือก Role เพื่อเข้าถึงฟีเจอร์ของคุณ</p>
   <button class="role-btn" onclick="roleLogin('user')">ผู้ใช้งานทั่วไป</button>
   <button class="role-btn" onclick="roleLogin('trainer')">วิทยากร / ผู้ดูแล</button>
-  <p style="color:#fff; font-size:12px; text-align:center;">เลือก Role เพื่อเข้าถึงฟีเจอร์ของคุณ</p>
 </div>
 
-<div class="container hidden" id="main-app">
-  <div class="tab-content" id="script-tab">
-    <input type="text" id="search-script" placeholder="ค้นหา script..." onkeyup="filterScript()">
-    <div id="script-list"></div>
+<!-- ================== MAIN APP ================== -->
+<div id="mainApp">
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab-btn active" onclick="showTab('scriptsTab')">📘 Scripts</div>
+    <div class="tab-btn" onclick="showTab('objectionTab')">⚡ Objections</div>
+    <div class="tab-btn" onclick="showTab('qaTab')">💬 Q&A</div>
+    <div class="tab-btn" onclick="showTab('trainerTab')">🛠 Trainer</div>
   </div>
-
-  <div class="tab-content hidden" id="objection-tab">
-    <input type="text" id="search-objection" placeholder="ค้นหาข้อโต้แย้ง..." onkeyup="filterObjection()">
-    <div id="objection-list"></div>
+  
+  <!-- Tab Contents -->
+  <div class="tab-content" id="scriptsTab">
+    <div>
+      <button class="filter-btn" onclick="filterScripts('new')">New Customer</button>
+      <button class="filter-btn" onclick="filterScripts('familiar')">Familiar Customer</button>
+      <button class="filter-btn" onclick="filterScripts('vip')">VIP Customer</button>
+    </div>
+    <div id="scriptList"></div>
   </div>
-
-  <div class="tab-content hidden" id="qa-tab">
-    <div id="qa-list"></div>
-    <textarea id="qa-question" placeholder="พิมพ์คำถามของคุณที่นี่..."></textarea>
-    <button class="submit-btn" onclick="postQuestion()">Post Question</button>
+  
+  <div class="tab-content hidden" id="objectionTab">
+    <h3>Objection Library</h3>
+    <table>
+      <thead>
+        <tr><th>Category</th><th>Question</th><th>Answer</th></tr>
+      </thead>
+      <tbody id="objectionTable"></tbody>
+    </table>
   </div>
-
-  <nav>
-    <button class="active" onclick="showTab('script')">📘 Script</button>
-    <button onclick="showTab('objection')">⚡ Objection</button>
-    <button onclick="showTab('qa')">💬 Q&A</button>
-  </nav>
+  
+  <div class="tab-content hidden" id="qaTab">
+    <h3>Q&A Board</h3>
+    <div>
+      <input type="text" id="qaUser" placeholder="ชื่อของคุณ">
+      <textarea id="qaQuestion" placeholder="พิมพ์คำถามที่นี่"></textarea>
+      <button class="submit-btn" onclick="postQA()">Post Question</button>
+    </div>
+    <div id="qaList"></div>
+  </div>
+  
+  <div class="tab-content hidden" id="trainerTab">
+    <h3>Trainer Script Management</h3>
+    <div class="admin-panel">
+      <input type="text" id="adminTitle" placeholder="Script Title">
+      <select id="adminType">
+        <option value="new">New Customer</option>
+        <option value="familiar">Familiar Customer</option>
+        <option value="vip">VIP Customer</option>
+      </select>
+      <textarea id="adminContent" placeholder="Script Content"></textarea>
+      <button class="submit-btn" onclick="addScript()">Add / Update Script</button>
+    </div>
+    <div id="trainerScriptList"></div>
+  </div>
 </div>
 
 <script>
-// ===== Role Login =====
-let role = '';
-function roleLogin(selectedRole){
-  let question = selectedRole==='user' ? 
-    "กระจกวิเศษบอกข้าเทิด Region ไหนพนักงานเริ่ดที่สุดในปฐพี" :
-    "ห๊ะ อะไรนะ ว่าไงนะ ห๊ะ ไม่ได้ยินนนนน";
-  let answer = selectedRole==='user' ? "rh5" : "pru";
-  let input = prompt(question);
-  if(input && input.toLowerCase() === answer){
-    role = selectedRole;
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('main-app').classList.remove('hidden');
-    loadScript();
-    loadObjection();
+// ================== ROLE LOGIN ==================
+let currentRole = null;
+function roleLogin(role){
+  let question = '';
+  let answer = '';
+  if(role==='user'){question='กระจกวิเศษบอกข้าเทิด Region ไหนพนักงานเริ่ดที่สุดในปฐพี'; answer='rh5';}
+  else{question='ห๊ะ อะไรนะ ว่าไงนะ ห๊ะ ไม่ได้ยินนนนน'; answer='pru';}
+  let userAnswer = prompt(question,'');
+  if(userAnswer && userAnswer.toLowerCase()===answer.toLowerCase()){
+    currentRole = role;
+    document.getElementById('loginPage').style.display='none';
+    document.getElementById('mainApp').style.display='flex';
+    loadScripts();
+    loadObjections();
     loadQA();
-  } else {
-    alert("รหัสไม่ถูกต้อง");
+    loadTrainerScripts();
+  } else {alert('คำตอบไม่ถูกต้อง');}
+}
+
+// ================== TAB FUNCTION ==================
+function showTab(tabId){
+  document.querySelectorAll('.tab-content').forEach(tc=>tc.classList.add('hidden'));
+  document.getElementById(tabId).classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ================== SCRIPTS ==================
+let scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
+
+// Filter Scripts by Type
+function filterScripts(type){
+  let listDiv = document.getElementById('scriptList');
+  listDiv.innerHTML='';
+  let filtered = scriptsData.filter(s=>s.type===type);
+  filtered.forEach((s,i)=>{
+    let card = document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<h3>${s.title}</h3><p class="toggle-detail" onclick="toggleDetail(${i})">View Details</p><div id="detail${i}" class="hidden"><pre>${s.content}</pre></div>`;
+    listDiv.appendChild(card);
+  });
+}
+
+function toggleDetail(idx){
+  let el = document.getElementById('detail'+idx);
+  el.classList.toggle('hidden');
+}
+
+// ================== OBJECTIONS ==================
+let objectionsData = JSON.parse(localStorage.getItem('objectionsData')) || [];
+function loadObjections(){
+  let tbody = document.getElementById('objectionTable');
+  tbody.innerHTML='';
+  objectionsData.forEach(o=>{
+    let tr=document.createElement('tr');
+    tr.innerHTML=`<td>${o.category}</td><td>${o.question}</td><td>${o.answer}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ================== Q&A ==================
+let qaData = JSON.parse(localStorage.getItem('qaData')) || [];
+function loadQA(){
+  let list = document.getElementById('qaList'); list.innerHTML='';
+  qaData.forEach((q,i)=>{
+    let card = document.createElement('div'); card.className='qa-card';
+    card.innerHTML=`<b>${q.user}</b>: ${q.question}<div class="answer">${q.answer || ''}</div>`;
+    list.appendChild(card);
+  });
+}
+function postQA(){
+  let user = document.getElementById('qaUser').value;
+  let question = document.getElementById('qaQuestion').value;
+  if(user && question){
+    qaData.push({user,question,answer:''});
+    localStorage.setItem('qaData',JSON.stringify(qaData));
+    document.getElementById('qaUser').value='';
+    document.getElementById('qaQuestion').value='';
+    loadQA();
   }
 }
 
-// ===== Tabs =====
-function showTab(tab){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'));
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  document.getElementById(tab+'-tab').classList.remove('hidden');
-  event.currentTarget.classList.add('active');
-}
-
-// ===== Scripts 30 ชุด =====
-let scripts = [
-  // ลูกค้าใหม่ 10 ชุด
-  {type:'new', title:'Script 1', content:'เปิดสาย -> บริการตรวจสิทธิ์ภาษี 15 นาที...'},
-  {type:'new', title:'Script 2', content:'บริการตรวจสิทธิ์ + วางแผนเงินออม...'},
-  {type:'new', title:'Script 3', content:'เช็กสิทธิ์ดอกเบี้ยขาลง + นัดหมาย...'},
-  {type:'new', title:'Script 4', content:'โทรสั้นๆ แนะนำสิทธิ์ลดหย่อน...'},
-  {type:'new', title:'Script 5', content:'แจ้งสิทธิ์ตรวจสอบฟรี 15 นาที...'},
-  {type:'new', title:'Script 6', content:'บริการวางแผนเงินออมตามสิทธิ์...'},
-  {type:'new', title:'Script 7', content:'โทรมาเช็กสิทธิ์ภาษีส่วนบุคคล...'},
-  {type:'new', title:'Script 8', content:'เสนอข้อมูลสิทธิ์ + นัดหมาย...'},
-  {type:'new', title:'Script 9', content:'โทรสั้นๆ พร้อม Value Hook...'},
-  {type:'new', title:'Script 10', content:'Service-first call + CTA นัดหมาย...'},
-  // ลูกค้าคุ้นเคย 10 ชุด
-  {type:'familiar', title:'Script 11', content:'เปิดสายทักทายลูกค้าคุ้นเคย + แจ้งสิทธิ์...'},
-  {type:'familiar', title:'Script 12', content:'โทรแจ้งสิทธิ์ภาษีลูกค้าประจำ 15 นาที...'},
-  {type:'familiar', title:'Script 13', content:'Value Hook + นัดหมายลูกค้าประจำ...'},
-  {type:'familiar', title:'Script 14', content:'โทรแจ้งสิทธิ์ฟรี + แนะนำ CTA...'},
-  {type:'familiar', title:'Script 15', content:'เช็กสิทธิ์ + นัดหมายลูกค้าประจำ...'},
-  {type:'familiar', title:'Script 16', content:'Service tone call + Value Hook...'},
-  {type:'familiar', title:'Script 17', content:'แจ้งสิทธิ์เฉพาะบุคคล + CTA...'},
-  {type:'familiar', title:'Script 18', content:'โทรเบาๆ พร้อมข้อเสนอเลือกช่วงเวลา...'},
-  {type:'familiar', title:'Script 19', content:'เช็กสิทธิ์ภาษี + ส่ง info ก่อนตัดสินใจ...'},
-  {type:'familiar', title:'Script 20', content:'Service-first + นัดหมายลูกค้าประจำ...'},
-  // ลูกค้า VIP 10 ชุด
-  {type:'vip', title:'Script 21', content:'โทรแจ้งสิทธิ์ VIP + Personal Value...'},
-  {type:'vip', title:'Script 22', content:'Service-first + VIP call 15 นาที...'},
-  {type:'vip', title:'Script 23', content:'แจ้งสิทธิ์เฉพาะบุคคล + CTA...'},
-  {type:'vip', title:'Script 24', content:'โทรสั้นๆ VIP พร้อม Value Hook...'},
-  {type:'vip', title:'Script 25', content:'Service tone VIP + นัดหมาย...'},
-  {type:'vip', title:'Script 26', content:'โทรแจ้งสิทธิ์ VIP + Personal Info...'},
-  {type:'vip', title:'Script 27', content:'Value Hook VIP + CTA 15 นาที...'},
-  {type:'vip', title:'Script 28', content:'เช็กสิทธิ์ VIP + ส่งข้อมูลเบื้องต้น...'},
-  {type:'vip', title:'Script 29', content:'Service-first call VIP + นัดหมาย...'},
-  {type:'vip', title:'Script 30', content:'VIP call + Personal Info + CTA...'}
-];
-
-// ===== Load Script =====
-function loadScript(){
-  const container = document.getElementById('script-list');
-  container.innerHTML='';
-  scripts.forEach((s,i)=>{
-    let card = document.createElement('div');
-    card.className='card';
-    card.innerHTML=`<h4>${s.title} [${s.type}]</h4><pre>${s.content}</pre>`+
-      (role==='trainer'? `<button class="small-btn" onclick="editScript(${i})">Edit</button> <button class="small-btn" onclick="deleteScript(${i})">Delete</button>` : '');
-    container.appendChild(card);
+// ================== TRAINER MANAGEMENT ==================
+function loadTrainerScripts(){
+  let listDiv=document.getElementById('trainerScriptList'); listDiv.innerHTML='';
+  scriptsData.forEach((s,i)=>{
+    let div=document.createElement('div'); div.className='card';
+    div.innerHTML=`<b>${s.title}</b> [${s.type}]
+      <button onclick="editScript(${i})">Edit</button>
+      <button onclick="deleteScript(${i})">Delete</button>`;
+    listDiv.appendChild(div);
   });
 }
 
-// ===== Objection Table =====
-let objections = [
-  {objection:'ไม่สนใจค่ะ/ครับ', reply:'แค่โทรมาแจ้งสิทธิ์ที่บางท่านยังไม่ทราบ ส่ง info ทางไลน์ได้ไหม?'},
-  {objection:'ไม่มีเวลาเลยช่วงนี้', reply:'เข้าใจค่ะ แค่ 15 นาทีเท่านั้น เลือกช่วงสะดวกได้เลย'},
-  {objection:'มีคนดูแลอยู่แล้ว', reply:'ตรวจสอบสิทธิ์ซ้ำอีกชั้นเพื่อความมั่นใจได้ค่ะ'},
-  {objection:'จัดภาษีเรียบร้อยแล้ว', reply:'เช็กฟรีๆ อีกครั้ง เผื่อมีสิทธิ์ที่ยังไม่ใช้'},
-  {objection:'กลัวว่าชวนขายของ', reply:'เป็นบริการเช็กสิทธิ์ฟรี ไม่ขายตรงค่ะ'},
-  {objection:'ขอดูข้อมูลก่อน', reply:'ส่งสรุปเบื้องต้นให้ก่อน แล้วค่อยนัดคุย'},
-  {objection:'ไม่อยากเสียเวลา', reply:'ใช้เวลาแค่ 15 นาที แต่ได้ info ดีๆ'}
-];
-
-function loadObjection(){
-  const container = document.getElementById('objection-list');
-  container.innerHTML='';
-  objections.forEach(o=>{
-    let card = document.createElement('div');
-    card.className='card';
-    card.innerHTML=`<h4>${o.objection}</h4><pre>${o.reply}</pre>`;
-    container.appendChild(card);
-  });
+function addScript(){
+  let title=document.getElementById('adminTitle').value;
+  let type=document.getElementById('adminType').value;
+  let content=document.getElementById('adminContent').value;
+  if(!title||!content){alert('กรอกข้อมูลให้ครบ');return;}
+  // Check if updating existing
+  let idx = scriptsData.findIndex(s=>s.title===title);
+  if(idx>-1){scriptsData[idx]={title,type,content};}
+  else{scriptsData.push({title,type,content});}
+  localStorage.setItem('scriptsData',JSON.stringify(scriptsData));
+  loadScripts();
+  loadTrainerScripts();
+  alert('Saved Successfully');
 }
 
-function filterScript(){
-  let keyword = document.getElementById('search-script').value.toLowerCase();
-  const container = document.getElementById('script-list');
-  container.innerHTML='';
-  scripts.filter(s=>s.title.toLowerCase().includes(keyword) || s.content.toLowerCase().includes(keyword) || s.type.toLowerCase().includes(keyword))
-    .forEach((s,i)=>{
-      let card = document.createElement('div');
-      card.className='card';
-      card.innerHTML=`<h4>${s.title} [${s.type}]</h4><pre>${s.content}</pre>`+
-        (role==='trainer'? `<button class="small-btn" onclick="editScript(${i})">Edit</button> <button class="small-btn" onclick="deleteScript(${i})">Delete</button>` : '');
-      container.appendChild(card);
-    });
-}
-
-function filterObjection(){
-  let keyword = document.getElementById('search-objection').value.toLowerCase();
-  const container = document.getElementById('objection-list');
-  container.innerHTML='';
-  objections.filter(o=>o.objection.toLowerCase().includes(keyword) || o.reply.toLowerCase().includes(keyword))
-    .forEach(o=>{
-      let card = document.createElement('div');
-      card.className='card';
-      card.innerHTML=`<h4>${o.objection}</h4><pre>${o.reply}</pre>`;
-      container.appendChild(card);
-    });
-}
-
-// ===== Q&A Board with localStorage =====
-function loadQA(){
-  const container = document.getElementById('qa-list');
-  container.innerHTML='';
-  let qaData = JSON.parse(localStorage.getItem('qaData') || '[]');
-  qaData.forEach((q,i)=>{
-    let card = document.createElement('div');
-    card.className='card';
-    card.innerHTML=`<h4>Q: ${q.question}</h4>`+
-      `<pre>${q.answer || '-'}</pre>`+
-      (role==='trainer'? `<button class="small-btn" onclick="answerQA(${i})">Reply</button>`:'');
-    container.appendChild(card);
-  });
-}
-
-function postQuestion(){
-  let q = document.getElementById('qa-question').value.trim();
-  if(!q) return alert("กรุณาพิมพ์คำถาม");
-  let qaData = JSON.parse(localStorage.getItem('qaData') || '[]');
-  qaData.push({question:q, answer:''});
-  localStorage.setItem('qaData', JSON.stringify(qaData));
-  document.getElementById('qa-question').value='';
-  loadQA();
-}
-
-// ===== Trainer Functions =====
 function editScript(i){
-  let s = scripts[i];
-  let newContent = prompt("แก้ไขสคริป:", s.content);
-  if(newContent!==null){ scripts[i].content = newContent; loadScript(); }
+  let s = scriptsData[i];
+  document.getElementById('adminTitle').value=s.title;
+  document.getElementById('adminType').value=s.type;
+  document.getElementById('adminContent').value=s.content;
 }
+
 function deleteScript(i){
-  if(confirm("ลบสคริปนี้?")) { scripts.splice(i,1); loadScript(); }
+  if(confirm('ต้องการลบสคริปนี้?')){
+    scriptsData.splice(i,1);
+    localStorage.setItem('scriptsData',JSON.stringify(scriptsData));
+    loadScripts();
+    loadTrainerScripts();
+  }
 }
-function answerQA(i){
-  let qaData = JSON.parse(localStorage.getItem('qaData') || '[]');
-  let ans = prompt("ตอบคำถาม:", qaData[i].answer);
-  if(ans!==null){ qaData[i].answer = ans; localStorage.setItem('qaData', JSON.stringify(qaData)); loadQA(); }
-}
+
+// ================== INIT ==================
+document.addEventListener('DOMContentLoaded',()=>{
+  if(currentRole){loadScripts();loadObjections();loadQA();loadTrainerScripts();}
+});
 </script>
 </body>
+  <!-- Trainer Management Section -->
+<div id="trainerSection" class="hidden">
+  <h3>Trainer Management</h3>
+  <select id="manageGroup" onchange="loadTrainerScripts()">
+    <option value="new">New Customer</option>
+    <option value="familiar">Familiar Customer</option>
+    <option value="vip">VIP Customer</option>
+  </select>
+  <button onclick="addScript()">+ Add Script</button>
+  <div id="trainerScriptsList"></div>
+
+  <h3>Manage Objections</h3>
+  <button onclick="addObjection()">+ Add Objection</button>
+  <div id="trainerObjectionList"></div>
+</div>
+
+<script>
+// ---------- Scripts for Trainer ----------
+function loadTrainerScripts(){
+  const group = document.getElementById('manageGroup').value;
+  let scriptsData = JSON.parse(localStorage.getItem('scriptsData')||JSON.stringify(scripts));
+  const list = document.getElementById('trainerScriptsList');
+  list.innerHTML='';
+  scriptsData.filter(s=>s.type===group).forEach((s,i)=>{
+    const card = document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<h4>${s.title}</h4>
+      <button onclick="editScript('${group}',${i})">Edit</button>
+      <button onclick="deleteScript('${group}',${i})">Delete</button>
+      <pre>${s.content}</pre>`;
+    list.appendChild(card);
+  });
+}
+
+function addScript(){
+  const group = document.getElementById('manageGroup').value;
+  const title = prompt("ใส่หัวข้อ Script:");
+  if(!title) return;
+  const content = prompt("ใส่รายละเอียด Script (Step / Content):");
+  if(!content) return;
+  let scriptsData = JSON.parse(localStorage.getItem('scriptsData')||JSON.stringify(scripts));
+  scriptsData.push({type:group, title, content});
+  localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
+  loadTrainerScripts();
+  alert('เพิ่ม Script สำเร็จ!');
+}
+
+function editScript(group,index){
+  let scriptsData = JSON.parse(localStorage.getItem('scriptsData')||JSON.stringify(scripts));
+  const title = prompt("แก้ไขหัวข้อ Script:", scriptsData[index].title);
+  if(!title) return;
+  const content = prompt("แก้ไขรายละเอียด Script:", scriptsData[index].content);
+  if(!content) return;
+  scriptsData[index].title = title;
+  scriptsData[index].content = content;
+  localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
+  loadTrainerScripts();
+  alert('แก้ไข Script สำเร็จ!');
+}
+
+function deleteScript(group,index){
+  if(!confirm('ยืนยันการลบ Script?')) return;
+  let scriptsData = JSON.parse(localStorage.getItem('scriptsData')||JSON.stringify(scripts));
+  scriptsData.splice(index,1);
+  localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
+  loadTrainerScripts();
+}
+
+// ---------- Objection Advanced ----------
+function loadTrainerObjections(){
+  let obsData = JSON.parse(localStorage.getItem('objectionsData')||JSON.stringify(objections));
+  const list = document.getElementById('trainerObjectionList');
+  list.innerHTML='';
+  obsData.forEach((o,i)=>{
+    const card = document.createElement('div');
+    card.className='card';
+    card.innerHTML=`<h4>[${o.category}] ${o.question}</h4>
+      <button onclick="editObjection(${i})">Edit</button>
+      <button onclick="deleteObjection(${i})">Delete</button>
+      <pre>${o.answer}</pre>`;
+    list.appendChild(card);
+  });
+}
+
+function addObjection(){
+  const category = prompt("หมวดหมู่ Objection (Price/Time/Interest/Authority/Other):");
+  if(!category) return;
+  const question = prompt("ใส่คำถาม Objection:");
+  if(!question) return;
+  const answer = prompt("ใส่คำตอบ Objection:");
+  if(!answer) return;
+  let obsData = JSON.parse(localStorage.getItem('objectionsData')||JSON.stringify(objections));
+  obsData.push({category, question, answer});
+  localStorage.setItem('objectionsData', JSON.stringify(obsData));
+  loadTrainerObjections();
+}
+
+function editObjection(index){
+  let obsData = JSON.parse(localStorage.getItem('objectionsData')||JSON.stringify(objections));
+  const category = prompt("แก้ไขหมวดหมู่:", obsData[index].category);
+  if(!category) return;
+  const question = prompt("แก้ไขคำถาม:", obsData[index].question);
+  if(!question) return;
+  const answer = prompt("แก้ไขคำตอบ:", obsData[index].answer);
+  if(!answer) return;
+  obsData[index]={category, question, answer};
+  localStorage.setItem('objectionsData', JSON.stringify(obsData));
+  loadTrainerObjections();
+}
+
+function deleteObjection(index){
+  if(!confirm('ยืนยันการลบ Objection?')) return;
+  let obsData = JSON.parse(localStorage.getItem('objectionsData')||JSON.stringify(objections));
+  obsData.splice(index,1);
+  localStorage.setItem('objectionsData', JSON.stringify(obsData));
+  loadTrainerObjections();
+}
+
+// ---------- Show Trainer Section for Trainer Role ----------
+if(currentRole==='trainer'){
+  document.getElementById('trainerSection').classList.remove('hidden');
+  loadTrainerScripts();
+  loadTrainerObjections();
+}
+<script>
+// ---------- Initialize Full Scripts ----------
+let scriptsData = [
+  // ----------- New Customer (5 ชุด) -----------
+  {
+    type: 'new',
+    title: 'ตรวจสิทธิ์ลดหย่อนภาษีปีล่าสุด',
+    content: `Step 1: แนะนำตัวและบอกเหตุผลการโทรแบบ Service Tone
+Step 2: อธิบายสิทธิ์ลดหย่อนภาษีที่ลูกค้าอาจยังไม่ได้ใช้
+Step 3: เชิญนัดหมายสั้น ๆ 15 นาทีเพื่อช่วยตรวจสิทธิ์และให้ข้อมูลเพิ่มเติม
+Q&A Hook:
+  - "ปีนี้ใช้สิทธิ์ลดหย่อนครบหรือยังคะ/ครับ?"
+  - "สนใจให้ช่วยเช็กสิทธิ์เบื้องต้นไหมคะ/ครับ?"
+Objection Example:
+  - "ไม่สนใจ": "ไม่เป็นไรค่ะ แค่โทรมาแจ้งสิทธิ์ที่บางท่านยังไม่ทราบเท่านั้นเอง"
+  - "ไม่มีเวลา": "เข้าใจเลยค่ะ/ครับ ช่วงปลายปีงานยุ่งมากจริง ๆ แค่ 15 นาทีเท่านั้นเอง"
+  `
+  },
+  {
+    type: 'new',
+    title: 'แนะนำบริการวางแผนเงินออมสำหรับดอกเบี้ยขาลง',
+    content: `Step 1: เริ่มการสนทนาแบบ Friendly Tone
+Step 2: อธิบายว่าดอกเบี้ยเริ่มลด การฝากเงินแบบเดิมอาจโตช้ากว่าเดิม
+Step 3: เสนอเวลาพบสั้น ๆ เพื่อแนะนำแนวทางการวางแผน
+Q&A Hook:
+  - "ปกติคุณวางเงินออมแบบไหนคะ/ครับ?"
+  - "สนใจแนวทางให้เงินออมโตขึ้นในช่วงดอกเบี้ยต่ำไหม?"
+Objection Example:
+  - "กลัวขายของ": "เข้าใจค่ะ/ครับ ครั้งนี้ไม่ใช่การขาย เป็นบริการเช็กข้อมูลฟรี"
+  `
+  },
+  {
+    type: 'new',
+    title: 'ตรวจสอบสิทธิ์ประกันชีวิตเพื่อภาษี',
+    content: `Step 1: แนะนำตัวพร้อมเหตุผลการโทร
+Step 2: อธิบายว่าบางสิทธิ์ประกันชีวิตยังไม่ได้ใช้เต็มที่
+Step 3: เชิญนัดหมายสั้น ๆ 15 นาที
+Q&A Hook:
+  - "มีใครดูแลเรื่องประกันชีวิตและภาษีอยู่หรือยัง?"
+  - "สนใจให้เราช่วยตรวจสิทธิ์ไหม?"
+Objection Example:
+  - "จัดภาษีเรียบร้อยแล้ว": "เยี่ยมเลยค่ะ/ครับ ขออนุญาตเช็กให้ฟรีอีกครั้ง เผื่อมีสิทธิ์เพิ่มเติม"
+  `
+  },
+  {
+    type: 'new',
+    title: 'บริการตรวจเช็คผลตอบแทนเงินฝาก',
+    content: `Step 1: สวัสดีและแนะนำตัวแบบ Service Tone
+Step 2: แจ้งว่าดอกเบี้ยฝากเริ่มลด ต้องปรับพอร์ตเงินออม
+Step 3: เสนอเวลาพบ 15 นาทีเพื่อปรับแผนเงินออม
+Q&A Hook:
+  - "สนใจผลตอบแทนเงินออมปัจจุบันไหมคะ/ครับ?"
+  - "อยากได้คำแนะนำปรับเงินฝากให้เหมาะกับดอกเบี้ยต่ำไหม?"
+Objection Example:
+  - "ไม่อยากเสียเวลา": "ใช้เวลาแค่ 15 นาที แถมได้ข้อมูลดี ๆ ไปใช้ตัดสินใจเรื่องภาษี"
+  `
+  },
+  {
+    type: 'new',
+    title: 'ให้ข้อมูลสิทธิ์เงินออมและลดหย่อนภาษีรวม',
+    content: `Step 1: แนะนำตัวและวัตถุประสงค์การโทร
+Step 2: รวมสิทธิ์ที่ลูกค้ามีทั้งประกันและเงินออม
+Step 3: เชิญนัดหมายเพื่อให้ข้อมูลครบถ้วน
+Q&A Hook:
+  - "ปีนี้มีการวางแผนภาษีครบหรือยังคะ/ครับ?"
+  - "สนใจให้เราช่วยเช็กสิทธิ์แบบรวมทั้งหมดไหม?"
+Objection Example:
+  - "ไม่สนใจ": "ไม่เป็นไรค่ะ แค่แจ้งข้อมูลฟรี เผื่อสนใจตรวจภายหลัง"
+  `
+  },
+  
+  // ----------- Familiar Customer (5 ชุด) -----------
+  {
+    type: 'familiar',
+    title: 'อัปเดตสิทธิ์ลดหย่อนภาษีสำหรับลูกค้าประจำ',
+    content: `Step 1: ทักทายลูกค้าคุ้นเคย
+Step 2: แจ้งสิทธิ์เพิ่มเติมจากปีที่แล้ว
+Step 3: เชิญนัดหมาย 15 นาทีเพื่ออัปเดตข้อมูล
+Q&A Hook:
+  - "สนใจตรวจสิทธิ์เพิ่มเติมไหมคะ/ครับ?"
+Objection Example:
+  - "มีคนดูแลอยู่แล้ว": "ดีเลยค่ะ ถือว่าเป็นการตรวจสอบซ้ำเพื่อความมั่นใจ"
+  `
+  },
+  {
+    type: 'familiar',
+    title: 'บริการปรับพอร์ตเงินออมสำหรับลูกค้าคุ้นเคย',
+    content: `Step 1: เริ่มด้วย Service Tone
+Step 2: อธิบายว่าดอกเบี้ยลด การวางเงินแบบเดิมอาจโตช้า
+Step 3: นัดหมายสั้น ๆ เพื่อปรับพอร์ต
+Q&A Hook:
+  - "สนใจให้เราปรับพอร์ตเงินออมให้เหมาะกับดอกเบี้ยปัจจุบันไหม?"
+Objection Example:
+  - "ไม่มีเวลา": "แค่ 15 นาทีค่ะ จะจัดช่วงที่สะดวกที่สุดให้"
+  `
+  },
+  {
+    type: 'familiar',
+    title: 'ตรวจสอบสิทธิ์ประกันชีวิตเพิ่มเติม',
+    content: `Step 1: ทักทายและแจ้งวัตถุประสงค์
+Step 2: ตรวจสอบสิทธิ์ประกันชีวิตที่อาจยังไม่ได้ใช้
+Step 3: นัดหมายเพื่อสรุปข้อมูล
+Q&A Hook:
+  - "สนใจให้เราเช็กสิทธิ์ประกันชีวิตแบบรายบุคคลไหม?"
+Objection Example:
+  - "กลัวขายของ": "ครั้งนี้เป็นบริการเช็กสิทธิ์ฟรีค่ะ/ครับ"
+  `
+  },
+  {
+    type: 'familiar',
+    title: 'อัปเดตผลตอบแทนเงินฝากและการลงทุน',
+    content: `Step 1: ทักทายลูกค้า
+Step 2: อัปเดตผลตอบแทนเงินฝากล่าสุด
+Step 3: เสนอเวลาพบเพื่อปรับการลงทุน
+Q&A Hook:
+  - "สนใจคำแนะนำปรับเงินฝาก/ลงทุนให้เหมาะกับดอกเบี้ยไหม?"
+Objection Example:
+  - "ไม่อยากเสียเวลา": "ใช้เวลาแค่ 15 นาทีค่ะ ข้อมูลครบถ้วนและคุ้มค่า"
+  `
+  },
+  {
+    type: 'familiar',
+    title: 'รวมสิทธิ์และแผนการเงินสำหรับลูกค้าประจำ',
+    content: `Step 1: แนะนำตัว
+Step 2: แจ้งรวมสิทธิ์ประกันและเงินออม
+Step 3: นัดหมายเพื่ออัปเดตแผนการเงิน
+Q&A Hook:
+  - "อยากให้เราช่วยตรวจสิทธิ์รวมทั้งหมดไหม?"
+Objection Example:
+  - "จัดภาษีเรียบร้อยแล้ว": "ขออนุญาตเช็กฟรีอีกครั้ง เผื่อมีสิทธิ์เพิ่มเติม"
+  `
+  },
+
+  // ----------- VIP Customer (5 ชุด) -----------
+  {
+    type: 'vip',
+    title: 'บริการเช็กสิทธิ์ภาษีและผลตอบแทนสำหรับ VIP',
+    content: `Step 1: ทักทายลูกค้า VIP
+Step 2: อธิบายสิทธิ์พิเศษและผลตอบแทนเฉพาะกลุ่ม
+Step 3: นัดหมาย 15 นาทีเพื่อสรุปข้อมูล
+Q&A Hook:
+  - "สนใจตรวจสิทธิ์และผลตอบแทนเฉพาะบุคคลไหม?"
+Objection Example:
+  - "มีผู้ดูแลอยู่แล้ว": "ถือว่าเป็นการตรวจสอบซ้ำเพื่อความมั่นใจค่ะ/ครับ"
+  `
+  },
+  {
+    type: 'vip',
+    title: 'ปรับพอร์ตการลงทุนเฉพาะ VIP',
+    content: `Step 1: เริ่มด้วยทักทายแบบ Professional Tone
+Step 2: อธิบายว่าดอกเบี้ยลด การลงทุนต้องปรับสัดส่วน
+Step 3: นัดหมายสั้น ๆ 15 นาทีเพื่อปรับพอร์ต
+Q&A Hook:
+  - "สนใจให้เราปรับพอร์ตเฉพาะ VIP ให้เหมาะสมไหม?"
+Objection Example:
+  - "ไม่มีเวลา": "แค่ 15 นาทีค่ะ จะจัดช่วงที่สะดวกที่สุดให้"
+  `
+  },
+  {
+    type: 'vip',
+    title: 'ตรวจสอบสิทธิ์ประกันชีวิต VIP',
+    content: `Step 1: แนะนำตัวเป็นผู้ดูแลบัญชี VIP
+Step 2: ตรวจสอบสิทธิ์ประกันชีวิตเฉพาะบุคคล
+Step 3: นัดหมายเพื่อสรุปสิทธิ์
+Q&A Hook:
+  - "สนใจให้เราช่วยตรวจสิทธิ์เฉพาะบุคคลไหม?"
+Objection Example:
+  - "กลัวขายของ": "เป็นบริการเช็กสิทธิ์เฉพาะ VIP ฟรีค่ะ/ครับ"
+  `
+  },
+  {
+    type: 'vip',
+    title: 'อัปเดตผลตอบแทนเงินฝากและการลงทุน VIP',
+    content: `Step 1: ทักทาย VIP
+Step 2: อัปเดตผลตอบแทนล่าสุด
+Step 3: นัดหมายสั้น ๆ เพื่อปรับแผนการเงิน
+Q&A Hook:
+  - "อยากได้คำแนะนำปรับเงินฝาก/ลงทุน VIP ไหมคะ/ครับ?"
+Objection Example:
+  - "ไม่อยากเสียเวลา": "15 นาทีค่ะ ข้อมูลครบถ้วนและคุ้มค่า"
+  `
+  },
+  {
+    type: 'vip',
+    title: 'รวมสิทธิ์และแผนการเงินสำหรับ VIP',
+    content: `Step 1: แนะนำตัว
+Step 2: รวมสิทธิ์ประกันและเงินออมสำหรับ VIP
+Step 3: นัดหมายเพื่อสรุปข้อมูล
+Q&A Hook:
+  - "สนใจตรวจสิทธิ์และแผนเงินเฉพาะ VIP ไหมคะ/ครับ?"
+Objection Example:
+  - "จัดภาษีเรียบร้อยแล้ว": "ขอเช็กฟรีอีกครั้ง เผื่อมีสิทธิ์เพิ่มเติม"
+  `
+  }
+];
+
+// Save to localStorage
+localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
+console.log("Scripts 15 ชุด ถูกบันทึกเรียบร้อยใน localStorage");
+
+// ---------- Initialize Objections ----------
+let objectionsData = [
+  {category:'Time', question:'ไม่มีเวลาเลย', answer:'เข้าใจค่ะ/ครับ แค่ 15 นาทีเท่านั้นเอง'},
+  {category:'Interest', question:'ไม่สนใจ', answer:'ไม่เป็นไรค่ะ แค่แจ้งข้อมูลฟรี เผื่อสนใจตรวจภายหลัง'},
+  {category:'Authority', question:'มีคนดูแลอยู่แล้ว', answer:'ถือว่าเป็นการตรวจสอบซ้ำเพื่อความมั่นใจ'},
+  {category:'Price', question:'กลัวค่าใช้จ่าย', answer:'บริการนี้ฟรีค่ะ/ครับ'},
+  {category:'Other', question:'กลัวขายของ', answer:'เป็นบริการเช็กสิทธิ์ฟรี ไม่มีขายใด ๆ'}
+];
+
+localStorage.setItem('objectionsData', JSON.stringify(objectionsData));
+console.log("Objections ถูกบันทึกเรียบร้อยใน localStorage");
+</script>
 </html>
