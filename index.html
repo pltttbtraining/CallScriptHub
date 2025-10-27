@@ -113,23 +113,70 @@
 </div>
 
 <script>
+// ================== INITIAL DATA ==================
+const initialScripts = [
+  // New Customer Scripts
+  {type: 'new', title: 'ตรวจสิทธิ์ลดหย่อนภาษีปีล่าสุด', content: 'Step 1: แนะนำตัวและบอกเหตุผลการโทรแบบ Service Tone\nStep 2: อธิบายสิทธิ์ลดหย่อนภาษีที่ลูกค้าอาจยังไม่ได้ใช้\nStep 3: เชิญนัดหมายสั้น ๆ 15 นาทีเพื่อช่วยตรวจสิทธิ์และให้ข้อมูลเพิ่มเติม'},
+  {type: 'new', title: 'แนะนำบริการวางแผนเงินออมสำหรับดอกเบี้ยขาลง', content: 'Step 1: เริ่มการสนทนาแบบ Friendly Tone\nStep 2: อธิบายว่าดอกเบี้ยเริ่มลด การฝากเงินแบบเดิมอาจโตช้ากว่าเดิม\nStep 3: เสนอเวลาพบสั้น ๆ เพื่อแนะนำแนวทางการวางแผน'},
+  
+  // Familiar Customer Scripts  
+  {type: 'familiar', title: 'อัปเดตสิทธิ์ลดหย่อนภาษีสำหรับลูกค้าประจำ', content: 'Step 1: ทักทายลูกค้าคุ้นเคย\nStep 2: แจ้งสิทธิ์เพิ่มเติมจากปีที่แล้ว\nStep 3: เชิญนัดหมาย 15 นาทีเพื่ออัปเดตข้อมูล'},
+  {type: 'familiar', title: 'บริการปรับพอร์ตเงินออมสำหรับลูกค้าคุ้นเคย', content: 'Step 1: เริ่มด้วย Service Tone\nStep 2: อธิบายว่าดอกเบี้ยลด การวางเงินแบบเดิมอาจโตช้า\nStep 3: นัดหมายสั้น ๆ เพื่อปรับพอร์ต'},
+  
+  // VIP Customer Scripts
+  {type: 'vip', title: 'บริการเช็กสิทธิ์ภาษีและผลตอบแทนสำหรับ VIP', content: 'Step 1: ทักทายลูกค้า VIP\nStep 2: อธิบายสิทธิ์พิเศษและผลตอบแทนเฉพาะกลุ่ม\nStep 3: นัดหมาย 15 นาทีเพื่อสรุปข้อมูล'},
+  {type: 'vip', title: 'ปรับพอร์ตการลงทุนเฉพาะ VIP', content: 'Step 1: เริ่มด้วยทักทายแบบ Professional Tone\nStep 2: อธิบายว่าดอกเบี้ยลด การลงทุนต้องปรับสัดส่วน\nStep 3: นัดหมายสั้น ๆ 15 นาทีเพื่อปรับพอร์ต'}
+];
+
+const initialObjections = [
+  {category:'Time', question:'ไม่มีเวลาเลย', answer:'เข้าใจค่ะ/ครับ แค่ 15 นาทีเท่านั้นเอง'},
+  {category:'Interest', question:'ไม่สนใจ', answer:'ไม่เป็นไรค่ะ แค่แจ้งข้อมูลฟรี เผื่อสนใจตรวจภายหลัง'},
+  {category:'Authority', question:'มีคนดูแลอยู่แล้ว', answer:'ถือว่าเป็นการตรวจสอบซ้ำเพื่อความมั่นใจ'},
+  {category:'Price', question:'กลัวค่าใช้จ่าย', answer:'บริการนี้ฟรีค่ะ/ครับ'},
+  {category:'Other', question:'กลัวขายของ', answer:'เป็นบริการเช็กสิทธิ์ฟรี ไม่มีขายใด ๆ'}
+];
+
+// ================== INITIALIZE DATA ==================
+function initializeData() {
+  if (!localStorage.getItem('scriptsData')) {
+    localStorage.setItem('scriptsData', JSON.stringify(initialScripts));
+  }
+  if (!localStorage.getItem('objectionsData')) {
+    localStorage.setItem('objectionsData', JSON.stringify(initialObjections));
+  }
+  if (!localStorage.getItem('qaData')) {
+    localStorage.setItem('qaData', JSON.stringify([]));
+  }
+}
+
 // ================== ROLE LOGIN ==================
 let currentRole = null;
 function roleLogin(role){
   let question = '';
   let answer = '';
-  if(role==='user'){question='กระจกวิเศษบอกข้าเทิด Region ไหนพนักงานเริ่ดที่สุดในปฐพี'; answer='rh5';}
-  else{question='ห๊ะ อะไรนะ ว่าไงนะ ห๊ะ ไม่ได้ยินนนนน'; answer='pru';}
+  if(role==='user'){
+    question='กระจกวิเศษบอกข้าเทิด Region ไหนพนักงานเริ่ดที่สุดในปฐพี'; 
+    answer='rh5';
+  } else {
+    question='ห๊ะ อะไรนะ ว่าไงนะ ห๊ะ ไม่ได้ยินนนนน'; 
+    answer='pru';
+  }
+  
   let userAnswer = prompt(question,'');
   if(userAnswer && userAnswer.toLowerCase()===answer.toLowerCase()){
     currentRole = role;
     document.getElementById('loginPage').style.display='none';
     document.getElementById('mainApp').style.display='flex';
+    initializeData();
     loadScripts();
     loadObjections();
     loadQA();
-    loadTrainerScripts();
-  } else {alert('คำตอบไม่ถูกต้อง');}
+    if (role === 'trainer') {
+      loadTrainerScripts();
+    }
+  } else {
+    alert('คำตอบไม่ถูกต้อง');
+  }
 }
 
 // ================== TAB FUNCTION ==================
@@ -138,20 +185,40 @@ function showTab(tabId){
   document.getElementById(tabId).classList.remove('hidden');
   document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
   event.target.classList.add('active');
+  
+  // โหลดข้อมูลเฉพาะเมื่อเปลี่ยนแท็บ
+  if (tabId === 'trainerTab' && currentRole === 'trainer') {
+    loadTrainerScripts();
+  }
 }
 
 // ================== SCRIPTS ==================
-let scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
+function loadScripts() {
+  // ฟังก์ชันนี้โหลดสคริปต์สำหรับแสดงในหน้า Scripts
+  filterScripts('new'); // โหลด New Customer โดยค่าเริ่มต้น
+}
 
-// Filter Scripts by Type
 function filterScripts(type){
+  const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
   let listDiv = document.getElementById('scriptList');
   listDiv.innerHTML='';
+  
   let filtered = scriptsData.filter(s=>s.type===type);
+  if (filtered.length === 0) {
+    listDiv.innerHTML = '<p>ไม่มีสคริปต์ในหมวดนี้</p>';
+    return;
+  }
+  
   filtered.forEach((s,i)=>{
     let card = document.createElement('div');
     card.className='card';
-    card.innerHTML=`<h3>${s.title}</h3><p class="toggle-detail" onclick="toggleDetail(${i})">View Details</p><div id="detail${i}" class="hidden"><pre>${s.content}</pre></div>`;
+    card.innerHTML=`
+      <h3>${s.title}</h3>
+      <p class="toggle-detail" onclick="toggleDetail(${i})">View Details</p>
+      <div id="detail${i}" class="hidden">
+        <pre>${s.content}</pre>
+      </div>
+    `;
     listDiv.appendChild(card);
   });
 }
@@ -162,422 +229,133 @@ function toggleDetail(idx){
 }
 
 // ================== OBJECTIONS ==================
-let objectionsData = JSON.parse(localStorage.getItem('objectionsData')) || [];
 function loadObjections(){
+  const objectionsData = JSON.parse(localStorage.getItem('objectionsData')) || [];
   let tbody = document.getElementById('objectionTable');
   tbody.innerHTML='';
+  
   objectionsData.forEach(o=>{
     let tr=document.createElement('tr');
-    tr.innerHTML=`<td>${o.category}</td><td>${o.question}</td><td>${o.answer}</td>`;
+    tr.innerHTML=`
+      <td>${o.category}</td>
+      <td>${o.question}</td>
+      <td>${o.answer}</td>
+    `;
     tbody.appendChild(tr);
   });
 }
 
 // ================== Q&A ==================
-let qaData = JSON.parse(localStorage.getItem('qaData')) || [];
 function loadQA(){
-  let list = document.getElementById('qaList'); list.innerHTML='';
+  const qaData = JSON.parse(localStorage.getItem('qaData')) || [];
+  let list = document.getElementById('qaList'); 
+  list.innerHTML='';
+  
   qaData.forEach((q,i)=>{
-    let card = document.createElement('div'); card.className='qa-card';
-    card.innerHTML=`<b>${q.user}</b>: ${q.question}<div class="answer">${q.answer || ''}</div>`;
+    let card = document.createElement('div'); 
+    card.className='qa-card';
+    card.innerHTML=`
+      <b>${q.user}</b>: ${q.question}
+      <div class="answer">${q.answer || 'ยังไม่มีคำตอบ'}</div>
+    `;
     list.appendChild(card);
   });
 }
+
 function postQA(){
   let user = document.getElementById('qaUser').value;
   let question = document.getElementById('qaQuestion').value;
   if(user && question){
-    qaData.push({user,question,answer:''});
-    localStorage.setItem('qaData',JSON.stringify(qaData));
+    const qaData = JSON.parse(localStorage.getItem('qaData')) || [];
+    qaData.push({user, question, answer: ''});
+    localStorage.setItem('qaData', JSON.stringify(qaData));
+    
     document.getElementById('qaUser').value='';
     document.getElementById('qaQuestion').value='';
     loadQA();
+  } else {
+    alert('กรุณากรอกชื่อและคำถาม');
   }
 }
 
 // ================== TRAINER MANAGEMENT ==================
 function loadTrainerScripts(){
-  let listDiv=document.getElementById('trainerScriptList'); listDiv.innerHTML='';
+  const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
+  let listDiv = document.getElementById('trainerScriptList'); 
+  listDiv.innerHTML='';
+  
   scriptsData.forEach((s,i)=>{
-    let div=document.createElement('div'); div.className='card';
-    div.innerHTML=`<b>${s.title}</b> [${s.type}]
+    let div = document.createElement('div'); 
+    div.className='card';
+    div.innerHTML=`
+      <b>${s.title}</b> [${s.type}]
       <button onclick="editScript(${i})">Edit</button>
-      <button onclick="deleteScript(${i})">Delete</button>`;
+      <button onclick="deleteScript(${i})">Delete</button>
+      <div style="margin-top: 10px;">
+        <pre>${s.content}</pre>
+      </div>
+    `;
     listDiv.appendChild(div);
   });
 }
 
 function addScript(){
-  let title=document.getElementById('adminTitle').value;
-  let type=document.getElementById('adminType').value;
-  let content=document.getElementById('adminContent').value;
-  if(!title||!content){alert('กรอกข้อมูลให้ครบ');return;}
-  // Check if updating existing
-  let idx = scriptsData.findIndex(s=>s.title===title);
-  if(idx>-1){scriptsData[idx]={title,type,content};}
-  else{scriptsData.push({title,type,content});}
-  localStorage.setItem('scriptsData',JSON.stringify(scriptsData));
+  let title = document.getElementById('adminTitle').value;
+  let type = document.getElementById('adminType').value;
+  let content = document.getElementById('adminContent').value;
+  
+  if(!title || !content){
+    alert('กรุณากรอกข้อมูลให้ครบ');
+    return;
+  }
+  
+  const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
+  
+  // Check if updating existing script with same title
+  let existingIndex = scriptsData.findIndex(s => s.title === title && s.type === type);
+  
+  if(existingIndex > -1){
+    // Update existing
+    scriptsData[existingIndex] = {title, type, content};
+  } else {
+    // Add new
+    scriptsData.push({title, type, content});
+  }
+  
+  localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
   loadScripts();
   loadTrainerScripts();
-  alert('Saved Successfully');
+  
+  // Clear form
+  document.getElementById('adminTitle').value = '';
+  document.getElementById('adminContent').value = '';
+  
+  alert('บันทึกสำเร็จ!');
 }
 
-function editScript(i){
-  let s = scriptsData[i];
-  document.getElementById('adminTitle').value=s.title;
-  document.getElementById('adminType').value=s.type;
-  document.getElementById('adminContent').value=s.content;
+function editScript(index){
+  const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
+  let s = scriptsData[index];
+  
+  document.getElementById('adminTitle').value = s.title;
+  document.getElementById('adminType').value = s.type;
+  document.getElementById('adminContent').value = s.content;
 }
 
-function deleteScript(i){
-  if(confirm('ต้องการลบสคริปนี้?')){
-    scriptsData.splice(i,1);
-    localStorage.setItem('scriptsData',JSON.stringify(scriptsData));
+function deleteScript(index){
+  if(confirm('ต้องการลบสคริปต์นี้ใช่หรือไม่?')){
+    const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
+    scriptsData.splice(index, 1);
+    localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
     loadScripts();
     loadTrainerScripts();
   }
 }
 
-// ================== INIT ==================
-document.addEventListener('DOMContentLoaded',()=>{
-  if(currentRole){loadScripts();loadObjections();loadQA();loadTrainerScripts();}
+// ================== INITIALIZE APP ==================
+document.addEventListener('DOMContentLoaded', function() {
+  initializeData();
 });
 </script>
 </body>
-  <!-- Trainer Management Section -->
-<div id="trainerSection" class="hidden">
-  <h3>Trainer Management</h3>
-  <select id="manageGroup" onchange="loadTrainerScripts()">
-    <option value="new">New Customer</option>
-    <option value="familiar">Familiar Customer</option>
-    <option value="vip">VIP Customer</option>
-  </select>
-  <button onclick="addScript()">+ Add Script</button>
-  <div id="trainerScriptsList"></div>
-
-  <h3>Manage Objections</h3>
-  <button onclick="addObjection()">+ Add Objection</button>
-  <div id="trainerObjectionList"></div>
-</div>
-
-<script>
-// ---------- Scripts for Trainer ----------
-function loadTrainerScripts(){
-  const group = document.getElementById('manageGroup').value;
-  let scriptsData = JSON.parse(localStorage.getItem('scriptsData')||JSON.stringify(scripts));
-  const list = document.getElementById('trainerScriptsList');
-  list.innerHTML='';
-  scriptsData.filter(s=>s.type===group).forEach((s,i)=>{
-    const card = document.createElement('div');
-    card.className='card';
-    card.innerHTML=`<h4>${s.title}</h4>
-      <button onclick="editScript('${group}',${i})">Edit</button>
-      <button onclick="deleteScript('${group}',${i})">Delete</button>
-      <pre>${s.content}</pre>`;
-    list.appendChild(card);
-  });
-}
-
-function addScript(){
-  const group = document.getElementById('manageGroup').value;
-  const title = prompt("ใส่หัวข้อ Script:");
-  if(!title) return;
-  const content = prompt("ใส่รายละเอียด Script (Step / Content):");
-  if(!content) return;
-  let scriptsData = JSON.parse(localStorage.getItem('scriptsData')||JSON.stringify(scripts));
-  scriptsData.push({type:group, title, content});
-  localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
-  loadTrainerScripts();
-  alert('เพิ่ม Script สำเร็จ!');
-}
-
-function editScript(group,index){
-  let scriptsData = JSON.parse(localStorage.getItem('scriptsData')||JSON.stringify(scripts));
-  const title = prompt("แก้ไขหัวข้อ Script:", scriptsData[index].title);
-  if(!title) return;
-  const content = prompt("แก้ไขรายละเอียด Script:", scriptsData[index].content);
-  if(!content) return;
-  scriptsData[index].title = title;
-  scriptsData[index].content = content;
-  localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
-  loadTrainerScripts();
-  alert('แก้ไข Script สำเร็จ!');
-}
-
-function deleteScript(group,index){
-  if(!confirm('ยืนยันการลบ Script?')) return;
-  let scriptsData = JSON.parse(localStorage.getItem('scriptsData')||JSON.stringify(scripts));
-  scriptsData.splice(index,1);
-  localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
-  loadTrainerScripts();
-}
-
-// ---------- Objection Advanced ----------
-function loadTrainerObjections(){
-  let obsData = JSON.parse(localStorage.getItem('objectionsData')||JSON.stringify(objections));
-  const list = document.getElementById('trainerObjectionList');
-  list.innerHTML='';
-  obsData.forEach((o,i)=>{
-    const card = document.createElement('div');
-    card.className='card';
-    card.innerHTML=`<h4>[${o.category}] ${o.question}</h4>
-      <button onclick="editObjection(${i})">Edit</button>
-      <button onclick="deleteObjection(${i})">Delete</button>
-      <pre>${o.answer}</pre>`;
-    list.appendChild(card);
-  });
-}
-
-function addObjection(){
-  const category = prompt("หมวดหมู่ Objection (Price/Time/Interest/Authority/Other):");
-  if(!category) return;
-  const question = prompt("ใส่คำถาม Objection:");
-  if(!question) return;
-  const answer = prompt("ใส่คำตอบ Objection:");
-  if(!answer) return;
-  let obsData = JSON.parse(localStorage.getItem('objectionsData')||JSON.stringify(objections));
-  obsData.push({category, question, answer});
-  localStorage.setItem('objectionsData', JSON.stringify(obsData));
-  loadTrainerObjections();
-}
-
-function editObjection(index){
-  let obsData = JSON.parse(localStorage.getItem('objectionsData')||JSON.stringify(objections));
-  const category = prompt("แก้ไขหมวดหมู่:", obsData[index].category);
-  if(!category) return;
-  const question = prompt("แก้ไขคำถาม:", obsData[index].question);
-  if(!question) return;
-  const answer = prompt("แก้ไขคำตอบ:", obsData[index].answer);
-  if(!answer) return;
-  obsData[index]={category, question, answer};
-  localStorage.setItem('objectionsData', JSON.stringify(obsData));
-  loadTrainerObjections();
-}
-
-function deleteObjection(index){
-  if(!confirm('ยืนยันการลบ Objection?')) return;
-  let obsData = JSON.parse(localStorage.getItem('objectionsData')||JSON.stringify(objections));
-  obsData.splice(index,1);
-  localStorage.setItem('objectionsData', JSON.stringify(obsData));
-  loadTrainerObjections();
-}
-
-// ---------- Show Trainer Section for Trainer Role ----------
-if(currentRole==='trainer'){
-  document.getElementById('trainerSection').classList.remove('hidden');
-  loadTrainerScripts();
-  loadTrainerObjections();
-}
-<script>
-// ---------- Initialize Full Scripts ----------
-let scriptsData = [
-  // ----------- New Customer (5 ชุด) -----------
-  {
-    type: 'new',
-    title: 'ตรวจสิทธิ์ลดหย่อนภาษีปีล่าสุด',
-    content: `Step 1: แนะนำตัวและบอกเหตุผลการโทรแบบ Service Tone
-Step 2: อธิบายสิทธิ์ลดหย่อนภาษีที่ลูกค้าอาจยังไม่ได้ใช้
-Step 3: เชิญนัดหมายสั้น ๆ 15 นาทีเพื่อช่วยตรวจสิทธิ์และให้ข้อมูลเพิ่มเติม
-Q&A Hook:
-  - "ปีนี้ใช้สิทธิ์ลดหย่อนครบหรือยังคะ/ครับ?"
-  - "สนใจให้ช่วยเช็กสิทธิ์เบื้องต้นไหมคะ/ครับ?"
-Objection Example:
-  - "ไม่สนใจ": "ไม่เป็นไรค่ะ แค่โทรมาแจ้งสิทธิ์ที่บางท่านยังไม่ทราบเท่านั้นเอง"
-  - "ไม่มีเวลา": "เข้าใจเลยค่ะ/ครับ ช่วงปลายปีงานยุ่งมากจริง ๆ แค่ 15 นาทีเท่านั้นเอง"
-  `
-  },
-  {
-    type: 'new',
-    title: 'แนะนำบริการวางแผนเงินออมสำหรับดอกเบี้ยขาลง',
-    content: `Step 1: เริ่มการสนทนาแบบ Friendly Tone
-Step 2: อธิบายว่าดอกเบี้ยเริ่มลด การฝากเงินแบบเดิมอาจโตช้ากว่าเดิม
-Step 3: เสนอเวลาพบสั้น ๆ เพื่อแนะนำแนวทางการวางแผน
-Q&A Hook:
-  - "ปกติคุณวางเงินออมแบบไหนคะ/ครับ?"
-  - "สนใจแนวทางให้เงินออมโตขึ้นในช่วงดอกเบี้ยต่ำไหม?"
-Objection Example:
-  - "กลัวขายของ": "เข้าใจค่ะ/ครับ ครั้งนี้ไม่ใช่การขาย เป็นบริการเช็กข้อมูลฟรี"
-  `
-  },
-  {
-    type: 'new',
-    title: 'ตรวจสอบสิทธิ์ประกันชีวิตเพื่อภาษี',
-    content: `Step 1: แนะนำตัวพร้อมเหตุผลการโทร
-Step 2: อธิบายว่าบางสิทธิ์ประกันชีวิตยังไม่ได้ใช้เต็มที่
-Step 3: เชิญนัดหมายสั้น ๆ 15 นาที
-Q&A Hook:
-  - "มีใครดูแลเรื่องประกันชีวิตและภาษีอยู่หรือยัง?"
-  - "สนใจให้เราช่วยตรวจสิทธิ์ไหม?"
-Objection Example:
-  - "จัดภาษีเรียบร้อยแล้ว": "เยี่ยมเลยค่ะ/ครับ ขออนุญาตเช็กให้ฟรีอีกครั้ง เผื่อมีสิทธิ์เพิ่มเติม"
-  `
-  },
-  {
-    type: 'new',
-    title: 'บริการตรวจเช็คผลตอบแทนเงินฝาก',
-    content: `Step 1: สวัสดีและแนะนำตัวแบบ Service Tone
-Step 2: แจ้งว่าดอกเบี้ยฝากเริ่มลด ต้องปรับพอร์ตเงินออม
-Step 3: เสนอเวลาพบ 15 นาทีเพื่อปรับแผนเงินออม
-Q&A Hook:
-  - "สนใจผลตอบแทนเงินออมปัจจุบันไหมคะ/ครับ?"
-  - "อยากได้คำแนะนำปรับเงินฝากให้เหมาะกับดอกเบี้ยต่ำไหม?"
-Objection Example:
-  - "ไม่อยากเสียเวลา": "ใช้เวลาแค่ 15 นาที แถมได้ข้อมูลดี ๆ ไปใช้ตัดสินใจเรื่องภาษี"
-  `
-  },
-  {
-    type: 'new',
-    title: 'ให้ข้อมูลสิทธิ์เงินออมและลดหย่อนภาษีรวม',
-    content: `Step 1: แนะนำตัวและวัตถุประสงค์การโทร
-Step 2: รวมสิทธิ์ที่ลูกค้ามีทั้งประกันและเงินออม
-Step 3: เชิญนัดหมายเพื่อให้ข้อมูลครบถ้วน
-Q&A Hook:
-  - "ปีนี้มีการวางแผนภาษีครบหรือยังคะ/ครับ?"
-  - "สนใจให้เราช่วยเช็กสิทธิ์แบบรวมทั้งหมดไหม?"
-Objection Example:
-  - "ไม่สนใจ": "ไม่เป็นไรค่ะ แค่แจ้งข้อมูลฟรี เผื่อสนใจตรวจภายหลัง"
-  `
-  },
-  
-  // ----------- Familiar Customer (5 ชุด) -----------
-  {
-    type: 'familiar',
-    title: 'อัปเดตสิทธิ์ลดหย่อนภาษีสำหรับลูกค้าประจำ',
-    content: `Step 1: ทักทายลูกค้าคุ้นเคย
-Step 2: แจ้งสิทธิ์เพิ่มเติมจากปีที่แล้ว
-Step 3: เชิญนัดหมาย 15 นาทีเพื่ออัปเดตข้อมูล
-Q&A Hook:
-  - "สนใจตรวจสิทธิ์เพิ่มเติมไหมคะ/ครับ?"
-Objection Example:
-  - "มีคนดูแลอยู่แล้ว": "ดีเลยค่ะ ถือว่าเป็นการตรวจสอบซ้ำเพื่อความมั่นใจ"
-  `
-  },
-  {
-    type: 'familiar',
-    title: 'บริการปรับพอร์ตเงินออมสำหรับลูกค้าคุ้นเคย',
-    content: `Step 1: เริ่มด้วย Service Tone
-Step 2: อธิบายว่าดอกเบี้ยลด การวางเงินแบบเดิมอาจโตช้า
-Step 3: นัดหมายสั้น ๆ เพื่อปรับพอร์ต
-Q&A Hook:
-  - "สนใจให้เราปรับพอร์ตเงินออมให้เหมาะกับดอกเบี้ยปัจจุบันไหม?"
-Objection Example:
-  - "ไม่มีเวลา": "แค่ 15 นาทีค่ะ จะจัดช่วงที่สะดวกที่สุดให้"
-  `
-  },
-  {
-    type: 'familiar',
-    title: 'ตรวจสอบสิทธิ์ประกันชีวิตเพิ่มเติม',
-    content: `Step 1: ทักทายและแจ้งวัตถุประสงค์
-Step 2: ตรวจสอบสิทธิ์ประกันชีวิตที่อาจยังไม่ได้ใช้
-Step 3: นัดหมายเพื่อสรุปข้อมูล
-Q&A Hook:
-  - "สนใจให้เราเช็กสิทธิ์ประกันชีวิตแบบรายบุคคลไหม?"
-Objection Example:
-  - "กลัวขายของ": "ครั้งนี้เป็นบริการเช็กสิทธิ์ฟรีค่ะ/ครับ"
-  `
-  },
-  {
-    type: 'familiar',
-    title: 'อัปเดตผลตอบแทนเงินฝากและการลงทุน',
-    content: `Step 1: ทักทายลูกค้า
-Step 2: อัปเดตผลตอบแทนเงินฝากล่าสุด
-Step 3: เสนอเวลาพบเพื่อปรับการลงทุน
-Q&A Hook:
-  - "สนใจคำแนะนำปรับเงินฝาก/ลงทุนให้เหมาะกับดอกเบี้ยไหม?"
-Objection Example:
-  - "ไม่อยากเสียเวลา": "ใช้เวลาแค่ 15 นาทีค่ะ ข้อมูลครบถ้วนและคุ้มค่า"
-  `
-  },
-  {
-    type: 'familiar',
-    title: 'รวมสิทธิ์และแผนการเงินสำหรับลูกค้าประจำ',
-    content: `Step 1: แนะนำตัว
-Step 2: แจ้งรวมสิทธิ์ประกันและเงินออม
-Step 3: นัดหมายเพื่ออัปเดตแผนการเงิน
-Q&A Hook:
-  - "อยากให้เราช่วยตรวจสิทธิ์รวมทั้งหมดไหม?"
-Objection Example:
-  - "จัดภาษีเรียบร้อยแล้ว": "ขออนุญาตเช็กฟรีอีกครั้ง เผื่อมีสิทธิ์เพิ่มเติม"
-  `
-  },
-
-  // ----------- VIP Customer (5 ชุด) -----------
-  {
-    type: 'vip',
-    title: 'บริการเช็กสิทธิ์ภาษีและผลตอบแทนสำหรับ VIP',
-    content: `Step 1: ทักทายลูกค้า VIP
-Step 2: อธิบายสิทธิ์พิเศษและผลตอบแทนเฉพาะกลุ่ม
-Step 3: นัดหมาย 15 นาทีเพื่อสรุปข้อมูล
-Q&A Hook:
-  - "สนใจตรวจสิทธิ์และผลตอบแทนเฉพาะบุคคลไหม?"
-Objection Example:
-  - "มีผู้ดูแลอยู่แล้ว": "ถือว่าเป็นการตรวจสอบซ้ำเพื่อความมั่นใจค่ะ/ครับ"
-  `
-  },
-  {
-    type: 'vip',
-    title: 'ปรับพอร์ตการลงทุนเฉพาะ VIP',
-    content: `Step 1: เริ่มด้วยทักทายแบบ Professional Tone
-Step 2: อธิบายว่าดอกเบี้ยลด การลงทุนต้องปรับสัดส่วน
-Step 3: นัดหมายสั้น ๆ 15 นาทีเพื่อปรับพอร์ต
-Q&A Hook:
-  - "สนใจให้เราปรับพอร์ตเฉพาะ VIP ให้เหมาะสมไหม?"
-Objection Example:
-  - "ไม่มีเวลา": "แค่ 15 นาทีค่ะ จะจัดช่วงที่สะดวกที่สุดให้"
-  `
-  },
-  {
-    type: 'vip',
-    title: 'ตรวจสอบสิทธิ์ประกันชีวิต VIP',
-    content: `Step 1: แนะนำตัวเป็นผู้ดูแลบัญชี VIP
-Step 2: ตรวจสอบสิทธิ์ประกันชีวิตเฉพาะบุคคล
-Step 3: นัดหมายเพื่อสรุปสิทธิ์
-Q&A Hook:
-  - "สนใจให้เราช่วยตรวจสิทธิ์เฉพาะบุคคลไหม?"
-Objection Example:
-  - "กลัวขายของ": "เป็นบริการเช็กสิทธิ์เฉพาะ VIP ฟรีค่ะ/ครับ"
-  `
-  },
-  {
-    type: 'vip',
-    title: 'อัปเดตผลตอบแทนเงินฝากและการลงทุน VIP',
-    content: `Step 1: ทักทาย VIP
-Step 2: อัปเดตผลตอบแทนล่าสุด
-Step 3: นัดหมายสั้น ๆ เพื่อปรับแผนการเงิน
-Q&A Hook:
-  - "อยากได้คำแนะนำปรับเงินฝาก/ลงทุน VIP ไหมคะ/ครับ?"
-Objection Example:
-  - "ไม่อยากเสียเวลา": "15 นาทีค่ะ ข้อมูลครบถ้วนและคุ้มค่า"
-  `
-  },
-  {
-    type: 'vip',
-    title: 'รวมสิทธิ์และแผนการเงินสำหรับ VIP',
-    content: `Step 1: แนะนำตัว
-Step 2: รวมสิทธิ์ประกันและเงินออมสำหรับ VIP
-Step 3: นัดหมายเพื่อสรุปข้อมูล
-Q&A Hook:
-  - "สนใจตรวจสิทธิ์และแผนเงินเฉพาะ VIP ไหมคะ/ครับ?"
-Objection Example:
-  - "จัดภาษีเรียบร้อยแล้ว": "ขอเช็กฟรีอีกครั้ง เผื่อมีสิทธิ์เพิ่มเติม"
-  `
-  }
-];
-
-// Save to localStorage
-localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
-console.log("Scripts 15 ชุด ถูกบันทึกเรียบร้อยใน localStorage");
-
-// ---------- Initialize Objections ----------
-let objectionsData = [
-  {category:'Time', question:'ไม่มีเวลาเลย', answer:'เข้าใจค่ะ/ครับ แค่ 15 นาทีเท่านั้นเอง'},
-  {category:'Interest', question:'ไม่สนใจ', answer:'ไม่เป็นไรค่ะ แค่แจ้งข้อมูลฟรี เผื่อสนใจตรวจภายหลัง'},
-  {category:'Authority', question:'มีคนดูแลอยู่แล้ว', answer:'ถือว่าเป็นการตรวจสอบซ้ำเพื่อความมั่นใจ'},
-  {category:'Price', question:'กลัวค่าใช้จ่าย', answer:'บริการนี้ฟรีค่ะ/ครับ'},
-  {category:'Other', question:'กลัวขายของ', answer:'เป็นบริการเช็กสิทธิ์ฟรี ไม่มีขายใด ๆ'}
-];
-
-localStorage.setItem('objectionsData', JSON.stringify(objectionsData));
-console.log("Objections ถูกบันทึกเรียบร้อยใน localStorage");
-</script>
 </html>
