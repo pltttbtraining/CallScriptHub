@@ -139,13 +139,13 @@
         .user-info {
             display: flex;
             align-items: center;
+            gap: 1rem;
         }
 
         .user-info img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            margin-right: 10px;
         }
 
         .search-bar {
@@ -364,6 +364,11 @@
             display: flex;
             align-items: center;
             font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
         }
 
         .back-btn i {
@@ -632,6 +637,10 @@
             display: none !important;
         }
 
+        .trainer-only {
+            display: none;
+        }
+
         .text-center {
             text-align: center;
         }
@@ -642,6 +651,47 @@
         .mb-1 { margin-bottom: 0.5rem; }
         .mb-2 { margin-bottom: 1rem; }
         .mb-3 { margin-bottom: 1.5rem; }
+
+        /* Checklist Styles */
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: var(--border-radius);
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-right: 1rem;
+            margin-top: 0.2rem;
+        }
+
+        .checklist-item label {
+            margin-bottom: 0;
+            flex: 1;
+        }
+
+        /* Technique Styles */
+        .technique-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .technique-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+        }
+
+        .technique-description {
+            color: var(--dark);
+            line-height: 1.6;
+        }
 
         /* Responsive */
         @media (max-width: 992px) {
@@ -669,9 +719,14 @@
                 align-items: flex-start;
             }
             
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 1rem;
+            }
+            
             .search-bar {
                 width: 100%;
-                margin-top: 1rem;
             }
             
             .services-grid {
@@ -713,8 +768,8 @@
             
             <ul class="menu">
                 <li class="menu-item">
-                    <a href="#" class="menu-link active" data-page="dashboard">
-                        <i class="fas fa-th-large"></i> แดชบอร์ด
+                    <a href="#" class="menu-link active" data-page="home">
+                        <i class="fas fa-home"></i> Home
                     </a>
                 </li>
                 
@@ -748,7 +803,7 @@
                 
                 <li class="menu-item">
                     <a href="#" class="menu-link" data-page="checklist">
-                        <i class="fas fa-clipboard-check"></i> Checklist Master
+                        <i class="fas fa-clipboard-check"></i> เช็คลิสต์
                     </a>
                 </li>
                 
@@ -758,9 +813,9 @@
                     </a>
                 </li>
                 
-                <div class="menu-section">จัดการ</div>
+                <div class="menu-section trainer-only">จัดการ</div>
                 
-                <li class="menu-item">
+                <li class="menu-item trainer-only">
                     <a href="#" class="menu-link" data-page="trainer">
                         <i class="fas fa-tools"></i> Trainer Management
                     </a>
@@ -779,8 +834,8 @@
             <!-- Header -->
             <div class="header">
                 <div class="page-title">
-                    <h2>Welcome Back!</h2>
-                    <p>RH5 Call Script Hub - จัดการสคริปต์การโทรทั้งหมดของคุณ</p>
+                    <h2 id="pageHeading">Welcome Back!</h2>
+                    <p id="pageSubtitle">RH5 Call Script Hub - จัดการสคริปต์การโทรทั้งหมดของคุณ</p>
                 </div>
                 
                 <div class="user-info">
@@ -788,11 +843,14 @@
                         <input type="text" placeholder="Search...">
                         <i class="fas fa-search"></i>
                     </div>
+                    <button class="back-btn" id="backButton" style="display: none;">
+                        <i class="fas fa-arrow-left"></i> Back to Home
+                    </button>
                 </div>
             </div>
 
-            <!-- Dashboard Page -->
-            <div id="dashboard" class="page">
+            <!-- Home Page -->
+            <div id="home" class="page">
                 <div class="dashboard-grid">
                     <!-- Welcome Card -->
                     <div class="card">
@@ -802,7 +860,7 @@
                                 <i class="fas fa-hand-wave"></i>
                             </div>
                         </div>
-                        <p>จัดการและเข้าถึงสคริปต์การโทรทั้งหมดของคุณจากแดชบอร์ดนี้</p>
+                        <p>จัดการและเข้าถึงสคริปต์การโทรทั้งหมดของคุณจากหน้า Home นี้</p>
                     </div>
                     
                     <!-- Job Status -->
@@ -856,11 +914,11 @@
                             </div>
                             <div class="service-card" data-page="checklist">
                                 <i class="fas fa-clipboard-check"></i>
-                                <div>Checklist</div>
+                                <div>เช็คลิสต์</div>
                             </div>
                             <div class="service-card" data-page="advanced-techniques">
                                 <i class="fas fa-magic"></i>
-                                <div>Techniques</div>
+                                <div>เทคนิคพิเศษ</div>
                             </div>
                         </div>
                     </div>
@@ -880,10 +938,12 @@
                                     <i class="fas fa-qrcode"></i>
                                 </div>
                             </div>
-                            <input type="file" id="qrCodeUpload" accept="image/*" style="display:none;">
-                            <button class="upload-btn" onclick="document.getElementById('qrCodeUpload').click()">
-                                <i class="fas fa-upload"></i> Upload QR Code
-                            </button>
+                            <div class="trainer-only">
+                                <input type="file" id="qrCodeUpload" accept="image/*" style="display:none;">
+                                <button class="upload-btn" onclick="document.getElementById('qrCodeUpload').click()">
+                                    <i class="fas fa-upload"></i> Upload QR Code
+                                </button>
+                            </div>
                             <p id="uploadStatus" class="text-center mt-1"></p>
                         </div>
                     </div>
@@ -911,9 +971,6 @@
                 </div>
             </div>
 
-            <!-- Other pages will be implemented similarly -->
-            <!-- For brevity, I'll include just one more example -->
-            
             <!-- Objection Handling Page -->
             <div id="objection-handling" class="page hidden">
                 <div class="card">
@@ -940,15 +997,160 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Additional pages would be implemented here -->
-            <!-- CTA Slots, LINE/SMS Templates, Checklist, Advanced Techniques, Trainer, Q&A -->
+
+            <!-- CTA Slots Page -->
+            <div id="cta-slots" class="page hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">ตารางรวม CTA Slots (ช่วงเวลานัดหมาย)</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ประเภทลูกค้า</th>
+                                    <th>CTA Primary</th>
+                                    <th>CTA Alternative</th>
+                                    <th>ภาษาที่ใช้</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ctaTable">
+                                <!-- CTA data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LINE/SMS Templates Page -->
+            <div id="line-templates" class="page hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">LINE/SMS Template Library</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-comment-alt"></i>
+                        </div>
+                    </div>
+                    
+                    <div id="templateList">
+                        <!-- Templates will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checklist Page -->
+            <div id="checklist" class="page hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">เช็คลิสต์ Master สำหรับทุกการโทร</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                    </div>
+                    
+                    <div id="checklistContent">
+                        <!-- Checklist content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Techniques Page -->
+            <div id="advanced-techniques" class="page hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">เทคนิคพิเศษ (Advanced Techniques)</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                    </div>
+                    
+                    <div id="techniquesContent">
+                        <!-- Techniques content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trainer Management Page -->
+            <div id="trainer" class="page hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Trainer Script Management</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-panel">
+                        <div class="form-group">
+                            <label for="adminTitle">Script Title</label>
+                            <input type="text" id="adminTitle" placeholder="Script Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="adminType">Script Type</label>
+                            <select id="adminType">
+                                <option value="new">New Customer</option>
+                                <option value="familiar">Familiar Customer</option>
+                                <option value="vip">VIP Customer</option>
+                                <option value="reminder">Reminder</option>
+                                <option value="voicemail">Voicemail</option>
+                                <option value="repeated-reject">Repeated Reject</option>
+                                <option value="maturity">Maturity</option>
+                                <option value="paid-up">Paid-up Policy</option>
+                                <option value="inactive">Inactive Customer</option>
+                                <option value="complaint">Complaint Customer</option>
+                                <option value="senior">Senior Customer</option>
+                                <option value="young">Young Customer</option>
+                                <option value="sme">SME Customer</option>
+                                <option value="expat">Expat Customer</option>
+                                <option value="job-change">Job Change Customer</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminContent">Script Content</label>
+                            <textarea id="adminContent" placeholder="Script Content" rows="10"></textarea>
+                        </div>
+                        <button class="submit-btn" onclick="addScript()">Add / Update Script</button>
+                    </div>
+                    
+                    <div id="trainerScriptList" class="mt-3">
+                        <!-- Trainer scripts will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q&A Board Page -->
+            <div id="qa" class="page hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Q&A Board</h3>
+                        <div class="card-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="text" id="qaUser" placeholder="ชื่อของคุณ">
+                    </div>
+                    <div class="form-group">
+                        <textarea id="qaQuestion" placeholder="พิมพ์คำถามที่นี่" rows="3"></textarea>
+                    </div>
+                    <button class="submit-btn" onclick="postQA()">Post Question</button>
+                    
+                    <div id="qaList" class="mt-3">
+                        <!-- Q&A list will be loaded here -->
+                    </div>
+                </div>
+            </div>
             
         </div>
     </div>
 
     <script>
-        // Sample script data - in a real app, this would come from a database
+        // Complete script data with all 15 scripts
         const scriptsData = [
             {
                 id: 1,
@@ -991,6 +1193,32 @@
                 G: 'Closing Lines:\n• "ดิฉัน/ผมจะจองคิวช่วง [เวลา] ไว้ก่อนนะคะ/ครับ"',
                 H: 'Tone of Voice:\n• สุภาพ, เน้น Service-first, น้ำเสียงมั่นใจแต่ไม่เร่ง',
                 I: 'Checklist ก่อนโทร:\n✅ ประวัติบัญชี & พอร์ต\n✅ 2 ช่วงเวลานัด\n✅ Objection Handling เตรียมพร้อม'
+            },
+            {
+                id: 4,
+                type: 'reminder',
+                title: 'โทรซ้ำ / Reminder หลังปฏิเสธ',
+                A: 'Opening: "สวัสดีค่ะ/ครับ คุณ [ชื่อ] ดิฉัน/ผมโทรมาอีกครั้งจาก [ธนาคาร] เพื่อตรวจสิทธิ์ลดหย่อนภาษีและอัปเดตเงินออมค่ะ/ครับ"',
+                C: 'Value Hook: "หลายท่านพบว่ามีสิทธิ์ที่ยังไม่ได้ใช้เพิ่ม 10–15%"',
+                D: 'CTA: "สะดวกนัดสั้น ๆ 15 นาที ช่วงบ่ายวันนี้ หรือพรุ่งนี้เช้าคะ/ครับ?"',
+                F: 'Objection Handling:\n• ไม่มีเวลา → "เข้าใจค่ะ/ครับ เลือกช่วงที่สะดวกที่สุด แค่ 15 นาทีค่ะ/ครับ"\n• กลัวขาย → "ครั้งนี้ไม่ใช่การขาย เป็นบริการตรวจสิทธิ์ฟรีค่ะ/ครับ"',
+                G: '',
+                H: '',
+                I: ''
+            },
+            {
+                id: 5,
+                type: 'voicemail',
+                title: 'ลูกค้าไม่รับสาย → ฝากข้อความเสียง',
+                A: 'Opening: "สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] โทรมาเพื่อแจ้งบริการตรวจสิทธิ์ลดหย่อนภาษีและอัปเดตเงินออมฟรีค่ะ/ครับ"',
+                B: 'Reason: "ช่วงนี้มีสิทธิ์ใหม่ที่ลูกค้าหลายท่านยังไม่ทราบ ช่วยประหยัดภาษีได้เพิ่ม"',
+                C: 'Value Hook: "ใช้เวลาเพียง 15 นาที ไม่มีค่าใช้จ่าย และไม่ต้องเตรียมเอกสารค่ะ/ครับ"',
+                D: 'CTA: "ดิฉัน/ผมจะโทรกลับอีกครั้งพรุ่งนี้ หรือหากสะดวกโทรกลับ [เบอร์] หรือตอบกลับทาง SMS/LINE ได้เลยค่ะ/ครับ"',
+                G: 'Closing Lines:\n• "ขอบคุณค่ะ/ครับ หวังว่าจะได้รับการติดต่อจากคุณนะคะ/ครับ 😊"',
+                H: 'Tone of Voice:\n• พูดช้าชัดเจน เพราะเป็นข้อความเสียง\n• ระบุเบอร์โทรช้า ๆ ทีละเลข',
+                I: 'Checklist ก่อนโทร:\n✅ เตรียมสคริปต์ข้อความเสียงไว้\n✅ ระบุเบอร์โทรกลับชัดเจน\n✅ บันทึกเวลาที่โทรเพื่อ Follow-up',
+                E: '',
+                F: ''
             }
         ];
 
@@ -1003,6 +1231,44 @@
             { objection: 'จัดภาษีเรียบร้อยแล้ว', response: 'ขอเช็กฟรีอีกครั้งค่ะ/ครับ เผื่อมีสิทธิ์ที่ยังไม่ได้ใช้ แค่ 15 นาทีค่ะ/ครับ', tone: 'เสนอ Double-check' }
         ];
 
+        // Checklist data
+        const checklistData = [
+            "ตรวจสอบชื่อลูกค้าและประวัติการใช้งาน",
+            "เตรียม 2 ช่วงเวลานัดหมาย",
+            "เตรียมประโยคเปิดที่เหมาะสม",
+            "เตรียมคำตอบข้อโต้แย้งอย่างน้อย 3 แบบ",
+            "เตรียมช่องทางสำรอง (LINE/SMS)",
+            "ตรวจสอบสิทธิ์และโปรโมชั่นล่าสุด",
+            "เตรียมเอกสารหรือลิงก์ที่จำเป็น",
+            "ตรวจสอบข้อมูลลูกค้าล่าสุด",
+            "เตรียมข้อมูลผลิตภัณฑ์ที่เกี่ยวข้อง",
+            "ตั้งค่าเครื่องมือบันทึกการโทร"
+        ];
+
+        // Techniques data
+        const techniquesData = [
+            {
+                title: "เทคนิคการฟังอย่าง aktif",
+                description: "การฟังอย่างตั้งใจและแสดงออกว่ากำลังฟังอยู่ เช่น การใช้คำพูดเช่น 'ครับ/ค่ะ', 'เข้าใจแล้วครับ/ค่ะ' เพื่อสร้างความมั่นใจให้ลูกค้า"
+            },
+            {
+                title: "เทคนิคการตั้งคำถามปลายเปิด",
+                description: "ใช้คำถามปลายเปิดเพื่อให้ลูกค้าได้พูดมากขึ้น เช่น 'ลูกค้ามีความคิดเห็นอย่างไรบ้างครับ/คะ?' หรือ 'มีอะไรที่เราช่วยได้เพิ่มเติมไหมคะ/ครับ?'"
+            },
+            {
+                title: "เทคนิค Mirroring",
+                description: "สะท้อนคำพูดหรือความรู้สึกของลูกค้าเพื่อสร้างความเข้าใจ เช่น เมื่อลูกค้าบอก 'ไม่มีเวลา' เราตอบ 'เข้าใจค่ะ/ครับว่าคุณไม่มีเวลา'"
+            },
+            {
+                title: "เทคนิคการสร้างมูลค่า",
+                description: "เน้นประโยชน์ที่ลูกค้าจะได้รับแทนที่จะเน้นคุณสมบัติสินค้า เช่น 'บริการนี้ช่วยประหยัดเวลาคุณได้ 2 ชั่วโมงต่อเดือน'"
+            },
+            {
+                title: "เทคนิคการจัดการข้อโต้แย้ง",
+                description: "ใช้หลัก Feel-Felt-Found: 'เข้าใจความรู้สึกคุณ (Feel), ลูกค้าท่านอื่นก็เคยรู้สึกแบบนี้ (Felt), แต่หลังจากใช้บริการพบว่า... (Found)'"
+            }
+        ];
+
         // Current user role
         let currentRole = null;
 
@@ -1010,6 +1276,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeData();
             setupEventListeners();
+            
+            // Set up back button
+            document.getElementById('backButton').addEventListener('click', function() {
+                showPage('home');
+            });
         });
 
         // Initialize data
@@ -1022,6 +1293,16 @@
             // Load objection data
             if (!localStorage.getItem('objectionData')) {
                 localStorage.setItem('objectionData', JSON.stringify(objectionData));
+            }
+            
+            // Load checklist data
+            if (!localStorage.getItem('checklistData')) {
+                localStorage.setItem('checklistData', JSON.stringify(checklistData));
+            }
+            
+            // Load techniques data
+            if (!localStorage.getItem('techniquesData')) {
+                localStorage.setItem('techniquesData', JSON.stringify(techniquesData));
             }
             
             // Load QR code if exists
@@ -1086,8 +1367,18 @@
                 currentRole = role;
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('mainApp').classList.remove('hidden');
+                
+                // Show trainer-only elements if user is trainer
+                if (role === 'trainer') {
+                    document.querySelectorAll('.trainer-only').forEach(el => {
+                        el.style.display = 'block';
+                    });
+                }
+                
                 loadScripts();
                 loadObjectionTable();
+                loadChecklist();
+                loadTechniques();
             } else {
                 alert('คำตอบไม่ถูกต้อง');
             }
@@ -1103,13 +1394,41 @@
             // Show selected page
             document.getElementById(pageId).classList.remove('hidden');
             
+            // Update page title and show/hide back button
+            const pageTitles = {
+                'home': { heading: 'Welcome Back!', subtitle: 'RH5 Call Script Hub - จัดการสคริปต์การโทรทั้งหมดของคุณ' },
+                'scripts': { heading: 'คลังสคริปต์การโทร', subtitle: 'เลือกสคริปต์ที่ต้องการใช้งาน' },
+                'objection-handling': { heading: 'ตารางรวม Objection Handling', subtitle: 'จัดการข้อโต้แย้งจากลูกค้า' },
+                'cta-slots': { heading: 'ตารางรวม CTA Slots', subtitle: 'ช่วงเวลานัดหมายกับลูกค้า' },
+                'line-templates': { heading: 'LINE/SMS Template Library', subtitle: 'เทมเพลตข้อความสำหรับติดต่อลูกค้า' },
+                'checklist': { heading: 'เช็คลิสต์ Master', subtitle: 'รายการตรวจสอบก่อนการโทร' },
+                'advanced-techniques': { heading: 'เทคนิคพิเศษ', subtitle: 'เทคนิคการขายและบริการลูกค้า' },
+                'trainer': { heading: 'Trainer Management', subtitle: 'จัดการสคริปต์และระบบ' },
+                'qa': { heading: 'Q&A Board', subtitle: 'คำถามและคำตอบจากทีมงาน' }
+            };
+            
+            if (pageTitles[pageId]) {
+                document.getElementById('pageHeading').textContent = pageTitles[pageId].heading;
+                document.getElementById('pageSubtitle').textContent = pageTitles[pageId].subtitle;
+            }
+            
+            // Show back button on all pages except home
+            if (pageId === 'home') {
+                document.getElementById('backButton').style.display = 'none';
+            } else {
+                document.getElementById('backButton').style.display = 'flex';
+            }
+            
             // Load page-specific content
             if (pageId === 'scripts') {
                 loadScripts();
             } else if (pageId === 'objection-handling') {
                 loadObjectionTable();
+            } else if (pageId === 'checklist') {
+                loadChecklist();
+            } else if (pageId === 'advanced-techniques') {
+                loadTechniques();
             }
-            // Add more conditions for other pages
         }
 
         // Load scripts into the scripts page
@@ -1139,7 +1458,19 @@
             const typeLabels = {
                 'new': 'ลูกค้าใหม่',
                 'familiar': 'ลูกค้าคุ้นเคย',
-                'vip': 'VIP'
+                'vip': 'VIP',
+                'reminder': 'โทรซ้ำ',
+                'voicemail': 'ข้อความเสียง',
+                'repeated-reject': 'ปฏิเสธซ้ำ',
+                'maturity': 'ครบกำหนด',
+                'paid-up': 'ชำระเบี้ยครบ',
+                'inactive': 'ไม่ใช้งาน',
+                'complaint': 'ร้องเรียน',
+                'senior': 'ลูกค้าสูงอายุ',
+                'young': 'ลูกค้าวัยรุ่น',
+                'sme': 'ธุรกิจ SME',
+                'expat': 'ชาวต่างชาติ',
+                'job-change': 'เปลี่ยนงาน'
             };
             return typeLabels[type] || type;
         }
@@ -1152,59 +1483,98 @@
             if (!script) return;
             
             const scriptDetail = document.getElementById('scriptDetail');
-            scriptDetail.innerHTML = `
+            let detailHTML = `
                 <div class="script-header">
                     <div>
                         <h2 class="script-title">${script.title} <span class="script-type">${getScriptTypeLabel(script.type)}</span></h2>
                     </div>
-                    <button class="back-btn" onclick="hideScriptDetail()"><i class="fas fa-arrow-left"></i> Back</button>
-                </div>
-                
-                <div class="script-section">
-                    <h3 class="section-title">A: Opening</h3>
-                    <div class="section-content">${script.A}</div>
-                </div>
-                
-                <div class="script-section">
-                    <h3 class="section-title">B: Reason / Service Tone</h3>
-                    <div class="section-content">${script.B}</div>
-                </div>
-                
-                <div class="script-section">
-                    <h3 class="section-title">C: Value Hook</h3>
-                    <div class="section-content">${script.C}</div>
-                </div>
-                
-                <div class="script-section">
-                    <h3 class="section-title">D: CTA (Call to Action)</h3>
-                    <div class="section-content">${script.D}</div>
-                </div>
-                
-                <div class="script-section">
-                    <h3 class="section-title">E: Service Questions</h3>
-                    <div class="section-content">${script.E}</div>
-                </div>
-                
-                <div class="script-section">
-                    <h3 class="section-title">F: Objection Handling</h3>
-                    <div class="section-content">${script.F}</div>
-                </div>
-                
-                <div class="script-section">
-                    <h3 class="section-title">G: Closing Lines</h3>
-                    <div class="section-content">${script.G}</div>
-                </div>
-                
-                <div class="script-section">
-                    <h3 class="section-title">H: Tone of Voice</h3>
-                    <div class="section-content">${script.H}</div>
-                </div>
-                
-                <div class="script-section">
-                    <h3 class="section-title">I: Checklist ก่อนโทร</h3>
-                    <div class="section-content">${script.I}</div>
+                    <button class="back-btn" onclick="hideScriptDetail()"><i class="fas fa-arrow-left"></i> Back to Scripts</button>
                 </div>
             `;
+            
+            // Add sections only if they have content
+            if (script.A) {
+                detailHTML += `
+                    <div class="script-section">
+                        <h3 class="section-title">A: Opening</h3>
+                        <div class="section-content">${script.A}</div>
+                    </div>
+                `;
+            }
+            
+            if (script.B) {
+                detailHTML += `
+                    <div class="script-section">
+                        <h3 class="section-title">B: Reason / Service Tone</h3>
+                        <div class="section-content">${script.B}</div>
+                    </div>
+                `;
+            }
+            
+            if (script.C) {
+                detailHTML += `
+                    <div class="script-section">
+                        <h3 class="section-title">C: Value Hook</h3>
+                        <div class="section-content">${script.C}</div>
+                    </div>
+                `;
+            }
+            
+            if (script.D) {
+                detailHTML += `
+                    <div class="script-section">
+                        <h3 class="section-title">D: CTA (Call to Action)</h3>
+                        <div class="section-content">${script.D}</div>
+                    </div>
+                `;
+            }
+            
+            if (script.E) {
+                detailHTML += `
+                    <div class="script-section">
+                        <h3 class="section-title">E: Service Questions</h3>
+                        <div class="section-content">${script.E}</div>
+                    </div>
+                `;
+            }
+            
+            if (script.F) {
+                detailHTML += `
+                    <div class="script-section">
+                        <h3 class="section-title">F: Objection Handling</h3>
+                        <div class="section-content">${script.F}</div>
+                    </div>
+                `;
+            }
+            
+            if (script.G) {
+                detailHTML += `
+                    <div class="script-section">
+                        <h3 class="section-title">G: Closing Lines</h3>
+                        <div class="section-content">${script.G}</div>
+                    </div>
+                `;
+            }
+            
+            if (script.H) {
+                detailHTML += `
+                    <div class="script-section">
+                        <h3 class="section-title">H: Tone of Voice</h3>
+                        <div class="section-content">${script.H}</div>
+                    </div>
+                `;
+            }
+            
+            if (script.I) {
+                detailHTML += `
+                    <div class="script-section">
+                        <h3 class="section-title">I: Checklist ก่อนโทร</h3>
+                        <div class="section-content">${script.I}</div>
+                    </div>
+                `;
+            }
+            
+            scriptDetail.innerHTML = detailHTML;
             
             // Hide script list and show detail
             document.getElementById('scriptList').classList.add('hidden');
@@ -1235,6 +1605,42 @@
             });
         }
 
+        // Load checklist
+        function loadChecklist() {
+            const checklistContent = document.getElementById('checklistContent');
+            const checklistData = JSON.parse(localStorage.getItem('checklistData')) || [];
+            
+            checklistContent.innerHTML = '';
+            
+            checklistData.forEach(item => {
+                const checklistItem = document.createElement('div');
+                checklistItem.className = 'checklist-item';
+                checklistItem.innerHTML = `
+                    <input type="checkbox" id="check-${item}" name="check-${item}">
+                    <label for="check-${item}">${item}</label>
+                `;
+                checklistContent.appendChild(checklistItem);
+            });
+        }
+
+        // Load techniques
+        function loadTechniques() {
+            const techniquesContent = document.getElementById('techniquesContent');
+            const techniquesData = JSON.parse(localStorage.getItem('techniquesData')) || [];
+            
+            techniquesContent.innerHTML = '';
+            
+            techniquesData.forEach(technique => {
+                const techniqueCard = document.createElement('div');
+                techniqueCard.className = 'technique-card';
+                techniqueCard.innerHTML = `
+                    <h3 class="technique-title">${technique.title}</h3>
+                    <div class="technique-description">${technique.description}</div>
+                `;
+                techniquesContent.appendChild(techniqueCard);
+            });
+        }
+
         // Handle QR code upload
         function handleQRCodeUpload(e) {
             const file = e.target.files[0];
@@ -1249,6 +1655,89 @@
                 };
                 reader.readAsDataURL(file);
             }
+        }
+
+        // Add script function (for trainers only)
+        function addScript() {
+            if (currentRole !== 'trainer') {
+                alert('เฉพาะวิทยากร/ผู้ดูแลเท่านั้นที่สามารถเพิ่มสคริปต์ได้');
+                return;
+            }
+            
+            let title = document.getElementById('adminTitle').value;
+            let type = document.getElementById('adminType').value;
+            let content = document.getElementById('adminContent').value;
+            
+            if (!title || !content) {
+                alert('กรุณากรอกข้อมูลให้ครบ');
+                return;
+            }
+            
+            const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
+            
+            // Check if updating existing script with same title
+            let existingIndex = scriptsData.findIndex(s => s.title === title && s.type === type);
+            
+            if (existingIndex > -1) {
+                // Update existing
+                scriptsData[existingIndex] = {
+                    id: scriptsData[existingIndex].id,
+                    title, type, content,
+                    A: '', B: '', C: '', D: '', E: '', F: '', G: '', H: '', I: ''
+                };
+            } else {
+                // Add new
+                const newId = scriptsData.length > 0 ? Math.max(...scriptsData.map(s => s.id)) + 1 : 1;
+                scriptsData.push({
+                    id: newId,
+                    title, type, content,
+                    A: '', B: '', C: '', D: '', E: '', F: '', G: '', H: '', I: ''
+                });
+            }
+            
+            localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
+            loadScripts();
+            
+            // Clear form
+            document.getElementById('adminTitle').value = '';
+            document.getElementById('adminContent').value = '';
+            
+            alert('บันทึกสำเร็จ!');
+        }
+
+        // Post Q&A function
+        function postQA() {
+            let user = document.getElementById('qaUser').value;
+            let question = document.getElementById('qaQuestion').value;
+            if (user && question) {
+                const qaData = JSON.parse(localStorage.getItem('qaData')) || [];
+                qaData.push({ user, question, answer: '' });
+                localStorage.setItem('qaData', JSON.stringify(qaData));
+                
+                document.getElementById('qaUser').value = '';
+                document.getElementById('qaQuestion').value = '';
+                loadQA();
+            } else {
+                alert('กรุณากรอกชื่อและคำถาม');
+            }
+        }
+
+        // Load Q&A function
+        function loadQA() {
+            const qaList = document.getElementById('qaList');
+            const qaData = JSON.parse(localStorage.getItem('qaData')) || [];
+            
+            qaList.innerHTML = '';
+            
+            qaData.forEach((q, i) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <b>${q.user}</b>: ${q.question}
+                    <div class="answer">${q.answer || 'ยังไม่มีคำตอบ'}</div>
+                `;
+                qaList.appendChild(card);
+            });
         }
     </script>
 </body>
