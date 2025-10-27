@@ -3,26 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Call Script Hub</title>
+<title>RH5 Call Script Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   /* --- General Styles --- */
   * {margin:0;padding:0;box-sizing:border-box;font-family:'Prompt',sans-serif;}
-  body {background-color:#0D1F3C;color:#0D1F3C;}
+  body {background-color:#f5f7fa;color:#333;}
   h2,h3{font-weight:600;margin-bottom:0.5em;}
   button{cursor:pointer;font-family:'Prompt',sans-serif;}
   
   /* --- Login Styles --- */
-  #loginPage{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#0D1F3C;color:#fff;padding:1em;}
-  .role-btn{background:#1E90FF;color:#fff;padding:1em 2em;margin:1em;border:none;border-radius:20px;box-shadow:0 3px 6px rgba(0,0,0,0.2);font-size:1.2em;transition:transform 0.2s;}
+  #loginPage{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg, #0D1F3C 0%, #1a3a6b 100%);color:#fff;padding:1em;}
+  .login-container{background:rgba(255,255,255,0.1);padding:2em;border-radius:20px;backdrop-filter:blur(10px);text-align:center;max-width:400px;width:100%;}
+  .role-btn{background:#1E90FF;color:#fff;padding:1em 2em;margin:1em;border:none;border-radius:20px;box-shadow:0 3px 6px rgba(0,0,0,0.2);font-size:1.2em;transition:transform 0.2s;width:100%;}
+  .role-btn:hover{background:#0077e6;}
   .role-btn:active{transform:scale(0.95);}
   
-  /* --- Tab & Card Styles --- */
-  #mainApp{display:none;flex-direction:column;height:100vh;}
-  .tabs{display:flex;justify-content:space-around;background:#0D1F3C;color:#fff;}
+  /* --- Dashboard Styles --- */
+  #mainApp{display:none;}
+  
+  /* Header */
+  .dashboard-header{background:#0D1F3C;color:#fff;padding:1em 2em;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,0.1);}
+  .header-left h1{font-size:1.5em;margin-bottom:0.2em;}
+  .header-left p{font-size:0.9em;opacity:0.8;}
+  .search-bar{display:flex;background:#fff;border-radius:30px;padding:0.5em 1em;width:300px;}
+  .search-bar input{border:none;outline:none;width:100%;padding:0.5em;}
+  .search-bar i{color:#0D1F3C;margin:auto;cursor:pointer;}
+  
+  /* Dashboard Content */
+  .dashboard-content{padding:2em;display:grid;grid-template-columns:2fr 1fr;gap:2em;}
+  
+  /* Welcome Section */
+  .welcome-card{background:#fff;border-radius:15px;padding:2em;box-shadow:0 4px 15px rgba(0,0,0,0.05);margin-bottom:2em;}
+  .welcome-card h2{color:#0D1F3C;margin-bottom:0.5em;}
+  .welcome-card p{color:#666;margin-bottom:1.5em;}
+  
+  /* Job Status */
+  .job-status{background:#fff;border-radius:15px;padding:1.5em;box-shadow:0 4px 15px rgba(0,0,0,0.05);margin-bottom:2em;}
+  .job-status h3{margin-bottom:1em;color:#0D1F3C;}
+  .status-cards{display:flex;gap:1em;}
+  .status-card{flex:1;padding:1.5em;border-radius:10px;text-align:center;color:#fff;}
+  .status-card.pending{background:#FF9F43;}
+  .status-card.prepare{background:#54A0FF;}
+  .status-card.cancel{background:#FF6B6B;}
+  .status-card .count{font-size:2em;font-weight:bold;margin-bottom:0.2em;}
+  
+  /* Services */
+  .services{background:#fff;border-radius:15px;padding:1.5em;box-shadow:0 4px 15px rgba(0,0,0,0.05);}
+  .services h3{margin-bottom:1em;color:#0D1F3C;}
+  .service-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:1em;}
+  .service-card{background:#f8f9fa;border-radius:10px;padding:1.5em;text-align:center;cursor:pointer;transition:transform 0.2s, box-shadow 0.2s;}
+  .service-card:hover{transform:translateY(-5px);box-shadow:0 5px 15px rgba(0,0,0,0.1);}
+  .service-card i{font-size:2em;color:#1E90FF;margin-bottom:0.5em;}
+  
+  /* Document Section */
+  .document-section{background:#fff;border-radius:15px;padding:1.5em;box-shadow:0 4px 15px rgba(0,0,0,0.05);}
+  .document-section h3{margin-bottom:1em;color:#0D1F3C;}
+  .document-card{background:#e6f2ff;border-radius:10px;padding:1.5em;text-align:center;}
+  .qr-code-container{background:#fff;border-radius:10px;padding:1em;margin:1em auto;display:inline-block;}
+  .qr-code{width:200px;height:200px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;margin:0 auto;border:1px dashed #ccc;}
+  .qr-code i{font-size:3em;color:#ccc;}
+  .upload-btn{background:#1E90FF;color:#fff;border:none;padding:0.7em 1.5em;border-radius:8px;margin-top:1em;cursor:pointer;}
+  .document-card p{margin-top:1em;color:#666;}
+  
+  /* --- Tab & Card Styles (Hidden by default) --- */
+  .tab-section{display:none;padding:2em;}
+  .tabs{display:flex;justify-content:space-around;background:#0D1F3C;color:#fff;border-radius:10px 10px 0 0;overflow:hidden;}
   .tab-btn{flex:1;padding:0.8em;text-align:center;cursor:pointer;font-weight:600;}
   .tab-btn.active{background:#1E90FF;}
-  .tab-content{flex:1;overflow-y:auto;padding:1em;background:#fff;color:#0D1F3C;}
+  .tab-content{background:#fff;padding:1.5em;border-radius:0 0 10px 10px;box-shadow:0 4px 15px rgba(0,0,0,0.05);}
   .card{background:#f0f8ff;border-radius:12px;padding:1em;margin-bottom:1em;box-shadow:0 2px 4px rgba(0,0,0,0.1);}
   .card h3{margin-bottom:0.5em;}
   .card p{font-size:0.9em;line-height:1.4em;}
@@ -44,71 +94,168 @@
   /* --- Trainer Management --- */
   .admin-panel{background:#f0f8ff;padding:1em;border-radius:12px;margin-bottom:1em;}
   .admin-panel input, .admin-panel textarea, .admin-panel select{margin-bottom:0.5em;}
+  
+  /* --- Back Button --- */
+  .back-btn{background:#6c757d;color:#fff;border:none;padding:0.5em 1em;border-radius:8px;margin-bottom:1em;cursor:pointer;}
 </style>
 </head>
 <body>
 
 <!-- ================== LOGIN ================== -->
 <div id="loginPage">
-  <h2>Call Script Hub</h2>
-  <p>เลือก Role เพื่อเข้าถึงฟีเจอร์ของคุณ</p>
-  <button class="role-btn" onclick="roleLogin('user')">ผู้ใช้งานทั่วไป</button>
-  <button class="role-btn" onclick="roleLogin('trainer')">วิทยากร / ผู้ดูแล</button>
+  <div class="login-container">
+    <h2>RH5 Call Script Hub</h2>
+    <p>เลือก Role เพื่อเข้าถึงฟีเจอร์ของคุณ</p>
+    <button class="role-btn" onclick="roleLogin('user')">ผู้ใช้งานทั่วไป</button>
+    <button class="role-btn" onclick="roleLogin('trainer')">วิทยากร / ผู้ดูแล</button>
+  </div>
 </div>
 
-<!-- ================== MAIN APP ================== -->
+<!-- ================== DASHBOARD ================== -->
 <div id="mainApp">
-  <!-- Tabs -->
-  <div class="tabs">
-    <div class="tab-btn active" onclick="showTab('scriptsTab')">📘 Scripts</div>
-    <div class="tab-btn" onclick="showTab('objectionTab')">⚡ Objections</div>
-    <div class="tab-btn" onclick="showTab('qaTab')">💬 Q&A</div>
-    <div class="tab-btn" onclick="showTab('trainerTab')">🛠 Trainer</div>
-  </div>
-  
-  <!-- Tab Contents -->
-  <div class="tab-content" id="scriptsTab">
-    <div>
-      <button class="filter-btn" onclick="filterScripts('new')">New Customer</button>
-      <button class="filter-btn" onclick="filterScripts('familiar')">Familiar Customer</button>
-      <button class="filter-btn" onclick="filterScripts('vip')">VIP Customer</button>
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div class="header-left">
+      <h1>Welcome Back!</h1>
+      <p>RH5 Call Script Hub</p>
+      <p>https://us/users/idmsfins-itaninson/idnfo/uploading/admin/8080-RH5</p>
     </div>
-    <div id="scriptList"></div>
-  </div>
-  
-  <div class="tab-content hidden" id="objectionTab">
-    <h3>Objection Library</h3>
-    <table>
-      <thead>
-        <tr><th>Category</th><th>Question</th><th>Answer</th></tr>
-      </thead>
-      <tbody id="objectionTable"></tbody>
-    </table>
-  </div>
-  
-  <div class="tab-content hidden" id="qaTab">
-    <h3>Q&A Board</h3>
-    <div>
-      <input type="text" id="qaUser" placeholder="ชื่อของคุณ">
-      <textarea id="qaQuestion" placeholder="พิมพ์คำถามที่นี่"></textarea>
-      <button class="submit-btn" onclick="postQA()">Post Question</button>
+    <div class="search-bar">
+      <input type="text" placeholder="Search...">
+      <i class="fas fa-search"></i>
     </div>
-    <div id="qaList"></div>
   </div>
   
-  <div class="tab-content hidden" id="trainerTab">
-    <h3>Trainer Script Management</h3>
-    <div class="admin-panel">
-      <input type="text" id="adminTitle" placeholder="Script Title">
-      <select id="adminType">
-        <option value="new">New Customer</option>
-        <option value="familiar">Familiar Customer</option>
-        <option value="vip">VIP Customer</option>
-      </select>
-      <textarea id="adminContent" placeholder="Script Content"></textarea>
-      <button class="submit-btn" onclick="addScript()">Add / Update Script</button>
+  <!-- Dashboard Content -->
+  <div class="dashboard-content">
+    <div class="left-column">
+      <!-- Welcome Card -->
+      <div class="welcome-card">
+        <h2>Welcome Back!</h2>
+        <p>จัดการและเข้าถึงสคริปต์การโทรทั้งหมดของคุณจากแดชบอร์ดนี้</p>
+      </div>
+      
+      <!-- Job Status -->
+      <div class="job-status">
+        <h3>Your job status</h3>
+        <div class="status-cards">
+          <div class="status-card pending">
+            <div class="count">12</div>
+            <div class="label">Pending</div>
+          </div>
+          <div class="status-card prepare">
+            <div class="count">8</div>
+            <div class="label">Prepare</div>
+          </div>
+          <div class="status-card cancel">
+            <div class="count">3</div>
+            <div class="label">Cancel</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Services -->
+      <div class="services">
+        <h3>Our services</h3>
+        <div class="service-grid">
+          <div class="service-card" onclick="showSection('scriptsSection')">
+            <i class="fas fa-file-alt"></i>
+            <div>Script</div>
+          </div>
+          <div class="service-card" onclick="showSection('objectionSection')">
+            <i class="fas fa-bolt"></i>
+            <div>Objection</div>
+          </div>
+          <div class="service-card" onclick="showSection('qaSection')">
+            <i class="fas fa-comments"></i>
+            <div>Q&A board</div>
+          </div>
+          <div class="service-card" onclick="showSection('documentSection')">
+            <i class="fas fa-file-pdf"></i>
+            <div>Full document</div>
+          </div>
+          <div class="service-card" onclick="showSection('trainerSection')">
+            <i class="fas fa-tools"></i>
+            <div>Trainer</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="trainerScriptList"></div>
+    
+    <div class="right-column">
+      <!-- Document Section -->
+      <div class="document-section">
+        <h3>Full document</h3>
+        <div class="document-card">
+          <p>Can scan to see the document here.</p>
+          <div class="qr-code-container">
+            <div class="qr-code" id="qrCodeDisplay">
+              <i class="fas fa-qrcode"></i>
+            </div>
+          </div>
+          <input type="file" id="qrCodeUpload" accept="image/*" style="display:none;">
+          <button class="upload-btn" onclick="document.getElementById('qrCodeUpload').click()">Upload QR Code</button>
+          <p id="uploadStatus"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ================== SECTIONS ================== -->
+  
+  <!-- Scripts Section -->
+  <div class="tab-section" id="scriptsSection">
+    <button class="back-btn" onclick="showDashboard()"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+    <div class="tabs">
+      <div class="tab-btn active" onclick="showScriptTab('scriptsTab')">📘 Scripts</div>
+      <div class="tab-btn" onclick="showScriptTab('objectionTab')">⚡ Objections</div>
+      <div class="tab-btn" onclick="showScriptTab('qaTab')">💬 Q&A</div>
+      <div class="tab-btn" onclick="showScriptTab('trainerTab')">🛠 Trainer</div>
+    </div>
+    
+    <div class="tab-content" id="scriptsTab">
+      <div>
+        <button class="filter-btn" onclick="filterScripts('new')">New Customer</button>
+        <button class="filter-btn" onclick="filterScripts('familiar')">Familiar Customer</button>
+        <button class="filter-btn" onclick="filterScripts('vip')">VIP Customer</button>
+      </div>
+      <div id="scriptList"></div>
+    </div>
+    
+    <div class="tab-content hidden" id="objectionTab">
+      <h3>Objection Library</h3>
+      <table>
+        <thead>
+          <tr><th>Category</th><th>Question</th><th>Answer</th></tr>
+        </thead>
+        <tbody id="objectionTable"></tbody>
+      </table>
+    </div>
+    
+    <div class="tab-content hidden" id="qaTab">
+      <h3>Q&A Board</h3>
+      <div>
+        <input type="text" id="qaUser" placeholder="ชื่อของคุณ">
+        <textarea id="qaQuestion" placeholder="พิมพ์คำถามที่นี่"></textarea>
+        <button class="submit-btn" onclick="postQA()">Post Question</button>
+      </div>
+      <div id="qaList"></div>
+    </div>
+    
+    <div class="tab-content hidden" id="trainerTab">
+      <h3>Trainer Script Management</h3>
+      <div class="admin-panel">
+        <input type="text" id="adminTitle" placeholder="Script Title">
+        <select id="adminType">
+          <option value="new">New Customer</option>
+          <option value="familiar">Familiar Customer</option>
+          <option value="vip">VIP Customer</option>
+        </select>
+        <textarea id="adminContent" placeholder="Script Content"></textarea>
+        <button class="submit-btn" onclick="addScript()">Add / Update Script</button>
+      </div>
+      <div id="trainerScriptList"></div>
+    </div>
   </div>
 </div>
 
@@ -136,6 +283,29 @@ const initialObjections = [
   {category:'Other', question:'กลัวขายของ', answer:'เป็นบริการเช็กสิทธิ์ฟรี ไม่มีขายใด ๆ'}
 ];
 
+// ================== NAVIGATION ==================
+function showSection(sectionId) {
+  document.querySelector('.dashboard-content').style.display = 'none';
+  document.querySelectorAll('.tab-section').forEach(section => {
+    section.style.display = 'none';
+  });
+  document.getElementById(sectionId).style.display = 'block';
+}
+
+function showDashboard() {
+  document.querySelector('.dashboard-content').style.display = 'grid';
+  document.querySelectorAll('.tab-section').forEach(section => {
+    section.style.display = 'none';
+  });
+}
+
+function showScriptTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(tc => tc.classList.add('hidden'));
+  document.getElementById(tabId).classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
 // ================== INITIALIZE DATA ==================
 function initializeData() {
   if (!localStorage.getItem('scriptsData')) {
@@ -146,6 +316,15 @@ function initializeData() {
   }
   if (!localStorage.getItem('qaData')) {
     localStorage.setItem('qaData', JSON.stringify([]));
+  }
+  if (!localStorage.getItem('qrCode')) {
+    localStorage.setItem('qrCode', '');
+  } else {
+    // Load saved QR code if exists
+    const qrCodeData = localStorage.getItem('qrCode');
+    if (qrCodeData) {
+      document.getElementById('qrCodeDisplay').innerHTML = `<img src="${qrCodeData}" alt="QR Code" style="width:100%;height:100%;object-fit:contain;">`;
+    }
   }
 }
 
@@ -166,7 +345,7 @@ function roleLogin(role){
   if(userAnswer && userAnswer.toLowerCase()===answer.toLowerCase()){
     currentRole = role;
     document.getElementById('loginPage').style.display='none';
-    document.getElementById('mainApp').style.display='flex';
+    document.getElementById('mainApp').style.display='block';
     initializeData();
     loadScripts();
     loadObjections();
@@ -179,22 +358,24 @@ function roleLogin(role){
   }
 }
 
-// ================== TAB FUNCTION ==================
-function showTab(tabId){
-  document.querySelectorAll('.tab-content').forEach(tc=>tc.classList.add('hidden'));
-  document.getElementById(tabId).classList.remove('hidden');
-  document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
-  event.target.classList.add('active');
-  
-  // โหลดข้อมูลเฉพาะเมื่อเปลี่ยนแท็บ
-  if (tabId === 'trainerTab' && currentRole === 'trainer') {
-    loadTrainerScripts();
+// ================== QR CODE UPLOAD ==================
+document.getElementById('qrCodeUpload').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const imageData = event.target.result;
+      localStorage.setItem('qrCode', imageData);
+      document.getElementById('qrCodeDisplay').innerHTML = `<img src="${imageData}" alt="QR Code" style="width:100%;height:100%;object-fit:contain;">`;
+      document.getElementById('uploadStatus').textContent = 'QR Code อัพโหลดสำเร็จ!';
+      document.getElementById('uploadStatus').style.color = 'green';
+    };
+    reader.readAsDataURL(file);
   }
-}
+});
 
 // ================== SCRIPTS ==================
 function loadScripts() {
-  // ฟังก์ชันนี้โหลดสคริปต์สำหรับแสดงในหน้า Scripts
   filterScripts('new'); // โหลด New Customer โดยค่าเริ่มต้น
 }
 
