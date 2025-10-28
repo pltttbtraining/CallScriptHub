@@ -1529,7 +1529,7 @@ const scriptsData = [
 
         // Current user role
         let currentRole = null;
-
+        let currentEditingId = null;
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
             initializeData();
@@ -1724,28 +1724,63 @@ const scriptsData = [
             }
         }
 
-        // Load scripts into the scripts page
-        function loadScripts() {
-            const scriptList = document.getElementById('scriptList');
-            const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
-            
-            scriptList.innerHTML = '';
-            
-            scriptsData.forEach(script => {
-                const scriptCard = document.createElement('div');
-                scriptCard.className = 'script-card';
-                scriptCard.innerHTML = `
-                    <div class="script-card-header">
-                        <div class="script-card-title">${script.title}</div>
-                        <div class="script-card-type">${getScriptTypeLabel(script.type)}</div>
-                    </div>
-                    <div class="script-card-content">${script.A}</div>
-                    <button class="view-btn" onclick="viewScriptDetail(${script.id})">View Details</button>
-                `;
-                scriptList.appendChild(scriptCard);
-            });
-        }
-
+// Show specific page
+function showPage(pageId) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.add('hidden');
+    });
+    
+    // Show selected page
+    document.getElementById(pageId).classList.remove('hidden');
+    
+    // Update page title and show/hide back button
+    const pageTitles = {
+        'home': { heading: 'Welcome Back!', subtitle: 'RH5 Call Script Hub - จัดการสคริปต์การโทรทั้งหมดของคุณ' },
+        'scripts': { heading: 'คลังสคริปต์การโทร', subtitle: 'เลือกสคริปต์ที่ต้องการใช้งาน' },
+        'objection-handling': { heading: 'ตารางรวม Objection Handling', subtitle: 'จัดการข้อโต้แย้งจากลูกค้า' },
+        'cta-slots': { heading: 'ตารางรวม CTA Slots', subtitle: 'ช่วงเวลานัดหมายกับลูกค้า' },
+        'line-templates': { heading: 'LINE/SMS Template Library', subtitle: 'เทมเพลตข้อความสำหรับติดต่อลูกค้า' },
+        'checklist': { heading: 'เช็คลิสต์ Master', subtitle: 'รายการตรวจสอบก่อนการโทร' },
+        'advanced-techniques': { heading: 'เทคนิคพิเศษ', subtitle: 'เทคนิคการขายและบริการลูกค้า' },
+        'trainer': { heading: 'Trainer Management', subtitle: 'จัดการสคริปต์และระบบ' },
+        'qa': { heading: 'Q&A Board', subtitle: 'คำถามและคำตอบจากทีมงาน' }
+    };
+    
+    if (pageTitles[pageId]) {
+        document.getElementById('pageHeading').textContent = pageTitles[pageId].heading;
+        document.getElementById('pageSubtitle').textContent = pageTitles[pageId].subtitle;
+    }
+    
+    // Show back button on all pages except home
+    if (pageId === 'home') {
+        document.getElementById('backButton').style.display = 'none';
+        // อัพเดตหัวเรื่องหน้า Home
+        document.getElementById('pageHeading').textContent = 'Welcome Back!';
+        document.getElementById('pageSubtitle').textContent = 'RH5 Call Script Hub - จัดการสคริปต์การโทรทั้งหมดของคุณ';
+    } else {
+        document.getElementById('backButton').style.display = 'flex';
+    }
+    
+    // Load page-specific content
+    if (pageId === 'scripts') {
+        loadScripts();
+    } else if (pageId === 'objection-handling') {
+        loadObjectionTable();
+    } else if (pageId === 'checklist') {
+        loadChecklist();
+    } else if (pageId === 'advanced-techniques') {
+        loadTechniques();
+    } else if (pageId === 'cta-slots') {
+        loadCTATable();
+    } else if (pageId === 'line-templates') {
+        loadTemplates();
+    } else if (pageId === 'qa') {
+        loadQA();
+    } else if (pageId === 'trainer') {
+        loadTrainerScripts();
+    }
+}
         // Get script type label - แก้ไขให้รองรับประเภทสคริปต์ทั้งหมด
         function getScriptTypeLabel(type) {
             const typeLabels = {
@@ -2030,62 +2065,70 @@ const scriptsData = [
 
         // Add script function (for trainers only) - แก้ไขให้ทำงานสมบูรณ์
         function addScript() {
-            if (currentRole !== 'trainer') {
-                alert('เฉพาะวิทยากร/ผู้ดูแลเท่านั้นที่สามารถเพิ่มสคริปต์ได้');
-                return;
-            }
-            
-            let title = document.getElementById('adminTitle').value;
-            let type = document.getElementById('adminType').value;
-            let content = document.getElementById('adminContent').value;
-            
-            if (!title || !content) {
-                alert('กรุณากรอกข้อมูลให้ครบ');
-                return;
-            }
-            
-            let scriptData;
-            try {
-                scriptData = JSON.parse(content);
-            } catch (e) {
-                alert('รูปแบบ JSON ไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง');
-                return;
-            }
-            
-            const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
-            
-            // Check if updating existing script with same title and type
-            let existingIndex = scriptsData.findIndex(s => s.title === title && s.type === type);
-            
-            if (existingIndex > -1) {
-                // Update existing
-                scriptsData[existingIndex] = {
-                    id: scriptsData[existingIndex].id,
-                    title,
-                    type,
-                    ...scriptData
-                };
-            } else {
-                // Add new
-                const newId = scriptsData.length > 0 ? Math.max(...scriptsData.map(s => s.id)) + 1 : 1;
-                scriptsData.push({
-                    id: newId,
-                    title,
-                    type,
-                    ...scriptData
-                });
-            }
-            
-            localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
-            loadScripts();
-            loadTrainerScripts();
-            
-            // Clear form
-            document.getElementById('adminTitle').value = '';
-            document.getElementById('adminContent').value = '';
-            
-            alert('บันทึกสำเร็จ!');
+    if (currentRole !== 'trainer') {
+        alert('เฉพาะวิทยากร/ผู้ดูแลเท่านั้นที่สามารถเพิ่มสคริปต์ได้');
+        return;
+    }
+    
+    let title = document.getElementById('adminTitle').value;
+    let type = document.getElementById('adminType').value;
+    let content = document.getElementById('adminContent').value;
+    
+    if (!title || !content) {
+        alert('กรุณากรอกข้อมูลให้ครบ');
+        return;
+    }
+    
+    let scriptData;
+    try {
+        scriptData = JSON.parse(content);
+        // ตรวจสอบว่ามีฟิลด์ที่จำเป็นหรือไม่
+        if (!scriptData.A && !scriptData.B && !scriptData.C) {
+            alert('รูปแบบ JSON ไม่ถูกต้อง กรุณาตรวจสอบว่ามีข้อมูลในฟิลด์ A, B, C ฯลฯ');
+            return;
         }
+    } catch (e) {
+        alert('รูปแบบ JSON ไม่ถูกต้อง กรุณาตรวจสอบรูปแบบอีกครั้ง\nข้อผิดพลาด: ' + e.message);
+        return;
+    }
+    
+    const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
+    
+    if (currentEditingId) {
+        // Update existing script
+        const existingIndex = scriptsData.findIndex(s => s.id === currentEditingId);
+        if (existingIndex > -1) {
+            scriptsData[existingIndex] = {
+                id: currentEditingId,
+                title,
+                type,
+                ...scriptData
+            };
+        }
+        currentEditingId = null;
+    } else {
+        // Add new script
+        const newId = scriptsData.length > 0 ? Math.max(...scriptsData.map(s => s.id)) + 1 : 1;
+        scriptsData.push({
+            id: newId,
+            title,
+            type,
+            ...scriptData
+        });
+    }
+    
+    localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
+    loadScripts();
+    loadTrainerScripts();
+    
+    // Clear form
+    document.getElementById('adminTitle').value = '';
+    document.getElementById('adminType').value = 'new'; // รีเซ็ตเป็นค่าเริ่มต้น
+    document.getElementById('adminContent').value = '';
+    currentEditingId = null;
+    
+    alert('บันทึกสำเร็จ!');
+}
 
         // Edit script function
         function editScript(scriptId) {
