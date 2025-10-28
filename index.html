@@ -949,30 +949,6 @@
                         <p>จัดการและเข้าถึงสคริปต์การโทรทั้งหมดของคุณจากหน้า Home นี้</p>
                     </div>
                     
-                    <!-- Job Status -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Your Job Status</h3>
-                            <div class="card-icon">
-                                <i class="fas fa-tasks"></i>
-                            </div>
-                        </div>
-                        <div class="status-cards">
-                            <div class="status-card pending">
-                                <div class="count">12</div>
-                                <div class="label">Pending</div>
-                            </div>
-                            <div class="status-card prepare">
-                                <div class="count">8</div>
-                                <div class="label">Prepare</div>
-                            </div>
-                            <div class="status-card cancel">
-                                <div class="count">3</div>
-                                <div class="label">Cancel</div>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <!-- Services -->
                     <div class="card">
                         <div class="card-header">
@@ -1687,6 +1663,7 @@ const scriptsData = [
                 loadTechniques();
                 loadCTATable();
                 loadTemplates();
+                loadQA();
             } else {
                 alert('คำตอบไม่ถูกต้อง');
             }
@@ -1895,12 +1872,12 @@ const scriptsData = [
             
             // Hide script list and show detail
             document.getElementById('scriptList').classList.add('hidden');
-            scriptDetail.classList.remove('hidden');
+            scriptDetail.style.display = 'block';
         }
 
         // Hide script detail and show list
         function hideScriptDetail() {
-            document.getElementById('scriptDetail').classList.add('hidden');
+            document.getElementById('scriptDetail').style.display = 'none';
             document.getElementById('scriptList').classList.remove('hidden');
         }
 
