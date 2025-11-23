@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RH5 Call Script Hub</title>
+    <title>RH5 Script Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #6C63FF;
-            --secondary: #4A43D9;
-            --accent: #FF7B54;
-            --light: #F8F9FF;
-            --dark: #2D2B55;
+            --primary: #6AB7FF;
+            --secondary: #4A90E2;
+            --accent: #87CEEB;
+            --light: #F0F8FF;
+            --dark: #2C3E50;
             --success: #4CAF50;
             --warning: #FFC107;
             --danger: #F44336;
             --gray: #7E7E9C;
             --border-radius: 16px;
-            --box-shadow: 0 4px 20px rgba(108, 99, 255, 0.15);
+            --box-shadow: 0 4px 20px rgba(106, 183, 255, 0.15);
             --transition: all 0.3s ease;
         }
 
@@ -30,438 +30,151 @@
         }
 
         body {
-            background-color: #F5F7FF;
+            background: linear-gradient(135deg, #F0F8FF 0%, #E6F7FF 100%);
             color: #333;
             line-height: 1.6;
-            padding-bottom: 80px; /* สำหรับ bottom navigation */
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 100%;
+        /* Loading Screen */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: var(--transition);
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+            padding: 2rem;
+        }
+
+        .loading-logo {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .loading-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+
+        .loading-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1s forwards;
+        }
+
+        .start-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            opacity: 0;
+            animation: fadeInUp 1s ease 1.5s forwards;
+            backdrop-filter: blur(10px);
+        }
+
+        .start-btn:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Main App */
+        #mainApp {
+            display: none;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 1rem;
+            padding: 1rem;
         }
 
-        /* Header Styles */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 1rem 0;
             margin-bottom: 1.5rem;
-            position: sticky;
-            top: 0;
-            background-color: #F5F7FF;
-            z-index: 100;
         }
 
         .logo {
             display: flex;
             align-items: center;
-        }
-
-        .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .logo h1 {
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-info img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
-
-        .search-bar {
-            display: flex;
-            background: white;
-            border-radius: 30px;
-            padding: 0.5rem 1rem;
-            width: 100%;
-            box-shadow: var(--box-shadow);
-            margin: 1rem 0;
-        }
-
-        .search-bar input {
-            border: none;
-            outline: none;
-            width: 100%;
-            padding: 0.5rem;
-            background: transparent;
-        }
-
-        .search-bar i {
-            color: var(--gray);
-            margin: auto;
-            cursor: pointer;
-        }
-
-        /* Page Title */
-        .page-title {
-            margin-bottom: 1.5rem;
-        }
-
-        .page-title h2 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .page-title p {
-            color: var(--gray);
-        }
-
-        /* Dashboard Styles */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--box-shadow);
-            transition: var(--transition);
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.2);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .card-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(108, 99, 255, 0.1);
-            color: var(--primary);
-            font-size: 1.5rem;
-        }
-
-        .status-cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-        }
-
-        .status-card {
-            padding: 1.5rem;
-            border-radius: var(--border-radius);
-            color: white;
-            text-align: center;
-        }
-
-        .status-card.pending {
-            background: var(--warning);
-        }
-
-        .status-card.prepare {
-            background: var(--primary);
-        }
-
-        .status-card.cancel {
-            background: var(--danger);
-        }
-
-        .status-card .count {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .status-card .label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        .service-card {
-            background: var(--light);
-            border-radius: var(--border-radius);
-            padding: 1.5rem 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid rgba(108, 99, 255, 0.1);
-        }
-
-        .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--box-shadow);
-            background: white;
-        }
-
-        .service-card i {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .document-card {
-            text-align: center;
-            padding: 2rem;
-        }
-
-        .qr-code-container {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin: 1rem auto;
-            display: inline-block;
-            box-shadow: var(--box-shadow);
-        }
-
-        .qr-code {
-            width: 200px;
-            height: 200px;
-            background: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-        }
-
-        .qr-code i {
-            font-size: 3rem;
-            color: #ccc;
-        }
-
-        .upload-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 30px;
-            margin-top: 1rem;
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
             gap: 0.5rem;
         }
 
-        .upload-btn:hover {
-            background: var(--secondary);
+        .logo i {
+            font-size: 2rem;
+            color: var(--primary);
         }
 
-        /* Script Detail Styles */
-        .script-detail {
-            display: none;
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--box-shadow);
-            margin-bottom: 2rem;
-        }
-
-        .script-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.5rem;
-        }
-
-        .script-title {
+        .logo h1 {
             font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--primary);
+            font-weight: 700;
+            color: var(--dark);
         }
 
-        .script-type {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            background: var(--light);
-            color: var(--primary);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            margin-left: 1rem;
-        }
-
-        .back-btn {
-            background: var(--gray);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 30px;
-            cursor: pointer;
+        /* Navigation */
+        .nav-tabs {
             display: flex;
-            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .nav-tab {
+            padding: 0.8rem 1.5rem;
+            background: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
             font-weight: 500;
             transition: var(--transition);
+            white-space: nowrap;
+            box-shadow: var(--box-shadow);
         }
 
-        .back-btn:hover {
-            background: #5a6268;
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
         }
 
-        .back-btn i {
-            margin-right: 5px;
-        }
-
-        .script-section {
-            margin-bottom: 2rem;
-        }
-
-        .section-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 0.8rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #eee;
-        }
-
-        .section-content {
+        .nav-tab:hover:not(.active) {
             background: var(--light);
-            padding: 1.2rem;
-            border-radius: var(--border-radius);
-            white-space: pre-line;
-            line-height: 1.7;
         }
 
-        .script-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        .script-card {
+        /* Content Area */
+        .content-area {
             background: white;
             border-radius: var(--border-radius);
             padding: 1.5rem;
             box-shadow: var(--box-shadow);
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid rgba(108, 99, 255, 0.1);
-        }
-
-        .script-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-
-        .script-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-        .script-card-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .script-card-type {
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            background: var(--light);
-            color: var(--primary);
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 500;
-        }
-
-        .script-card-content {
-            color: var(--gray);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .view-btn {
-            background: transparent;
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: var(--transition);
-        }
-
-        .view-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Tab Styles */
-        .tab-container {
-            background: white;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-            margin-bottom: 2rem;
-        }
-
-        .tabs {
-            display: flex;
-            background: var(--light);
-            overflow-x: auto;
-        }
-
-        .tab-btn {
-            padding: 1rem 1.5rem;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            white-space: nowrap;
-            transition: var(--transition);
-        }
-
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
+            min-height: 500px;
         }
 
         .tab-content {
-            padding: 1.5rem;
             display: none;
         }
 
@@ -469,792 +182,603 @@
             display: block;
         }
 
-        /* Table Styles */
-        .table-container {
-            overflow-x: auto;
+        /* Script Cards */
+        .script-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        th, td {
-            padding: 0.8rem;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        th {
+        .script-card {
             background: var(--light);
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        tr:hover {
-            background: #f8f9fa;
-        }
-
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--dark);
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
             border-radius: var(--border-radius);
-            font-size: 1rem;
+            padding: 1.5rem;
+            border-left: 4px solid var(--primary);
             transition: var(--transition);
+            cursor: pointer;
         }
 
-        input:focus, textarea:focus, select:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
+        .script-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow);
         }
 
-        .submit-btn {
+        .script-card h3 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .script-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .script-structure {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* Builder Styles */
+        .builder-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .node-palette {
+            width: 250px;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+        }
+
+        .node {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            cursor: grab;
+            border-radius: 8px;
+        }
+
+        .node h4 {
+            margin: 0 0 5px 0;
+        }
+
+        .tree-node {
+            margin-left: 20px;
+            border-left: 1px dashed #ccc;
+            padding-left: 10px;
+        }
+
+        .dragging {
+            opacity: 0.5;
+        }
+
+        .option-btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 30px;
+            margin: 2px;
+            padding: 5px 10px;
+            border-radius: 4px;
             cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .submit-btn:hover {
-            background: var(--secondary);
-        }
-
-        /* Login Styles */
-        #loginPage {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 1em;
-        }
-
-        .login-container {
-            background: rgba(255,255,255,0.1);
-            padding: 2.5rem;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            text-align: center;
-            max-width: 450px;
-            width: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .login-logo {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: white;
-        }
-
-        .login-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .login-subtitle {
-            margin-bottom: 2rem;
-            opacity: 0.8;
-        }
-
-        .role-btn {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            padding: 1rem 2rem;
-            margin: 0.5rem;
-            border: none;
-            border-radius: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            font-size: 1.1rem;
-            transition: var(--transition);
-            width: 100%;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .role-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-        }
-
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 0.8rem 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: var(--gray);
             font-size: 0.8rem;
-            transition: var(--transition);
-            padding: 0.5rem;
-            border-radius: 10px;
         }
 
-        .nav-item.active {
-            color: var(--primary);
-        }
-
-        .nav-item i {
-            font-size: 1.2rem;
-            margin-bottom: 0.3rem;
-        }
-
-        /* Utility Classes */
-        .hidden {
-            display: none !important;
-        }
-
-        .trainer-only {
-            display: none;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .mt-1 { margin-top: 0.5rem; }
-        .mt-2 { margin-top: 1rem; }
-        .mt-3 { margin-top: 1.5rem; }
-        .mb-1 { margin-bottom: 0.5rem; }
-        .mb-2 { margin-bottom: 1rem; }
-        .mb-3 { margin-bottom: 1.5rem; }
-
-        /* Checklist Styles */
-        .checklist-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            background: var(--light);
-            border-radius: var(--border-radius);
-        }
-
-        .checklist-item input[type="checkbox"] {
-            margin-right: 1rem;
-            margin-top: 0.2rem;
-        }
-
-        .checklist-item label {
-            margin-bottom: 0;
+        .workspace {
             flex: 1;
-        }
-
-        /* Technique Styles */
-        .technique-card {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--box-shadow);
-        }
-
-        .technique-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 0.8rem;
-        }
-
-        .technique-description {
-            color: var(--dark);
-            line-height: 1.6;
-        }
-
-        /* Banner Styles */
-        .banner-container {
-            margin-bottom: 2rem;
-        }
-
-        .banner {
-            width: 100%;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-        }
-
-        .banner img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .banner-placeholder {
-            width: 100%;
-            height: 200px;
             background: var(--light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gray);
-            border: 2px dashed #ddd;
             border-radius: var(--border-radius);
-        }
-
-        .banner-placeholder i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Template Styles */
-        .template-card {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--box-shadow);
-        }
-
-        .template-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 0.8rem;
-        }
-
-        .template-content {
-            background: var(--light);
             padding: 1rem;
-            border-radius: var(--border-radius);
-            white-space: pre-line;
-            line-height: 1.6;
-            font-family: monospace;
+            min-height: 400px;
+            border: 2px dashed #ddd;
         }
 
-        /* Toast Notification */
-        .toast {
+        /* Admin Modal */
+        .modal {
+            display: none;
             position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--dark);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            z-index: 1001;
-            display: flex;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
             align-items: center;
-            gap: 0.5rem;
-            max-width: 90%;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 2px solid var(--light);
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-size: 1.2rem;
+            letter-spacing: 0.2rem;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Responsive */
-        @media (min-width: 768px) {
-            .container {
-                max-width: 720px;
-            }
-            
-            .services-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            
+        @media (max-width: 768px) {
             .script-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
             }
             
-            .dashboard-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (min-width: 992px) {
-            .container {
-                max-width: 960px;
+            .nav-tabs {
+                flex-wrap: wrap;
             }
             
-            .services-grid {
-                grid-template-columns: repeat(4, 1fr);
+            .loading-title {
+                font-size: 2rem;
             }
             
-            .script-grid {
-                grid-template-columns: repeat(3, 1fr);
+            .loading-subtitle {
+                font-size: 1rem;
             }
             
-            .dashboard-grid {
-                grid-template-columns: repeat(3, 1fr);
+            .builder-container {
+                flex-direction: column;
+            }
+            
+            .node-palette {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Login Page -->
-    <div id="loginPage">
-        <div class="login-container">
-            <div class="login-logo">
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-logo">
                 <i class="fas fa-headset"></i>
             </div>
-            <h1 class="login-title">RH5 Call Script Hub</h1>
-            <p class="login-subtitle">ระบบจัดการสคริปต์การโทรและเทคนิคการขาย</p>
-            <button class="role-btn" onclick="roleLogin('user')">
-                <i class="fas fa-user"></i> ผู้ใช้งานทั่วไป
-            </button>
-            <button class="role-btn" onclick="roleLogin('trainer')">
-                <i class="fas fa-chalkboard-teacher"></i> วิทยากร / ผู้ดูแล
+            <h1 class="loading-title">RH5 Script Hub</h1>
+            <p class="loading-subtitle">ระบบจัดการสคริปต์การโทรแบบมืออาชีพ</p>
+            <button class="start-btn" onclick="startApp()">
+                <i class="fas fa-play"></i> เริ่มใช้งาน
             </button>
         </div>
     </div>
 
     <!-- Main Application -->
-    <div id="mainApp" class="container hidden">
+    <div id="mainApp">
         <!-- Header -->
         <div class="header">
             <div class="logo">
                 <i class="fas fa-headset"></i>
                 <h1>RH5 Script Hub</h1>
             </div>
-            
-            <div class="user-info">
-                <button class="back-btn" id="backButton" style="display: none;">
-                    <i class="fas fa-arrow-left"></i> Back
-                </button>
-            </div>
         </div>
 
-        <!-- Search Bar -->
-        <div class="search-bar">
-            <input type="text" placeholder="ค้นหาสคริปต์...">
-            <i class="fas fa-search"></i>
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('call')">Call Scripts</button>
+            <button class="nav-tab" onclick="showTab('counter')">Counter Scripts</button>
+            <button class="nav-tab" onclick="showTab('builder')">Conversation Builder</button>
+            <button class="nav-tab" onclick="showAdminModal()">Admin Panel</button>
         </div>
 
-        <!-- Page Title -->
-        <div class="page-title">
-            <h2 id="pageHeading">Welcome Back!</h2>
-            <p id="pageSubtitle">RH5 Call Script Hub - จัดการสคริปต์การโทรทั้งหมดของคุณ</p>
-        </div>
-
-        <!-- Banner Section (Trainer Only) -->
-        <div class="banner-container trainer-only">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">แบนเนอร์ประกาศข่าวสาร</h3>
-                    <div class="card-icon">
-                        <i class="fas fa-bullhorn"></i>
-                    </div>
-                </div>
-                <div id="bannerDisplay" class="banner">
-                    <div class="banner-placeholder">
-                        <div class="text-center">
-                            <i class="fas fa-image"></i>
-                            <p>ยังไม่มีแบนเนอร์</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center mt-2">
-                    <input type="file" id="bannerUpload" accept="image/*" style="display:none;">
-                    <button class="upload-btn" onclick="document.getElementById('bannerUpload').click()">
-                        <i class="fas fa-upload"></i> อัพโหลดแบนเนอร์
-                    </button>
+        <!-- Content Area -->
+        <div class="content-area">
+            <div id="callContent" class="tab-content active">
+                <h2>Call Scripts</h2>
+                <p>สคริปต์สำหรับการโทรหาลูกค้า</p>
+                <div class="script-grid" id="callScriptsList">
+                    <!-- Call scripts will be loaded here -->
                 </div>
             </div>
-        </div>
 
-        <!-- Home Page -->
-        <div id="home" class="page">
-            <div class="dashboard-grid">
-                <!-- Welcome Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Welcome Back!</h3>
-                        <div class="card-icon">
-                            <i class="fas fa-hand-wave"></i>
-                        </div>
-                    </div>
-                    <p>จัดการและเข้าถึงสคริปต์การโทรทั้งหมดของคุณจากหน้า Home นี้</p>
+            <div id="counterContent" class="tab-content">
+                <h2>Counter Scripts</h2>
+                <p>สคริปต์สำหรับการบริการที่เคาน์เตอร์</p>
+                <div class="script-grid" id="counterScriptsList">
+                    <!-- Counter scripts will be loaded here -->
                 </div>
-                
-                <!-- Services -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Our Services</h3>
-                        <div class="card-icon">
-                            <i class="fas fa-concierge-bell"></i>
-                        </div>
+            </div>
+
+            <div id="builderContent" class="tab-content">
+                <h2>Conversation Builder</h2>
+                <p>สร้างบทสนทนาแบบ Tree Structure</p>
+                <div class="builder-container">
+                    <div class="node-palette" id="nodePalette">
+                        <!-- Node palette will be loaded here -->
                     </div>
-                    <div class="services-grid">
-                        <div class="service-card" data-page="scripts">
-                            <i class="fas fa-file-alt"></i>
-                            <div>Script</div>
-                        </div>
-                        <div class="service-card" data-page="objection-handling">
-                            <i class="fas fa-bolt"></i>
-                            <div>Objection</div>
-                        </div>
-                        <div class="service-card" data-page="qa">
-                            <i class="fas fa-comments"></i>
-                            <div>Q&A Board</div>
-                        </div>
-                        <div class="service-card" data-page="line-templates">
-                            <i class="fas fa-comment-alt"></i>
-                            <div>LINE/SMS</div>
-                        </div>
-                        <div class="service-card" data-page="checklist">
-                            <i class="fas fa-clipboard-check"></i>
-                            <div>เช็คลิสต์</div>
-                        </div>
-                        <div class="service-card" data-page="advanced-techniques">
-                            <i class="fas fa-magic"></i>
-                            <div>เทคนิคพิเศษ</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Document Section -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Full Document</h3>
-                        <div class="card-icon">
-                            <i class="fas fa-file-pdf"></i>
-                        </div>
-                    </div>
-                    <div class="document-card">
-                        <p>Can scan to see the document here.</p>
-                        <div class="qr-code-container">
-                            <div class="qr-code" id="qrCodeDisplay">
-                                <i class="fas fa-qrcode"></i>
-                            </div>
-                        </div>
-                        <div class="trainer-only">
-                            <input type="file" id="qrCodeUpload" accept="image/*" style="display:none;">
-                            <button class="upload-btn" onclick="document.getElementById('qrCodeUpload').click()">
-                                <i class="fas fa-upload"></i> Upload QR Code
-                            </button>
-                        </div>
-                        <p id="uploadStatus" class="text-center mt-1"></p>
+                    <div class="workspace" id="workspace">
+                        <p>ลากโหนดจากด้านซ้ายมาวางที่นี่เพื่อสร้างบทสนทนา</p>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Scripts Page -->
-        <div id="scripts" class="page hidden">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">คลังสคริปต์การโทรนัดหมายลูกค้า</h3>
-                    <div class="card-icon">
-                        <i class="fas fa-book"></i>
-                    </div>
-                </div>
-                
-                <div class="script-grid" id="scriptList">
-                    <!-- Script cards will be loaded here -->
-                </div>
-            </div>
-            
-            <!-- Script Detail View -->
-            <div id="scriptDetail" class="script-detail">
-                <!-- Script details will be loaded here -->
-            </div>
-        </div>
-
-        <!-- Objection Handling Page -->
-        <div id="objection-handling" class="page hidden">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">ตารางรวม Objection Handling</h3>
-                    <div class="card-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                </div>
-                
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ข้อโต้แย้ง</th>
-                                <th>คำตอบ (แนวทาง)</th>
-                                <th>Tone</th>
-                            </tr>
-                        </thead>
-                        <tbody id="objectionTable">
-                            <!-- Objection data will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- CTA Slots Page -->
-        <div id="cta-slots" class="page hidden">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">ตารางรวม CTA Slots (ช่วงเวลานัดหมาย)</h3>
-                    <div class="card-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                </div>
-                
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ประเภทลูกค้า</th>
-                                <th>CTA Primary</th>
-                                <th>CTA Alternative</th>
-                                <th>ภาษาที่ใช้</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ctaTable">
-                            <!-- CTA data will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- LINE/SMS Templates Page -->
-        <div id="line-templates" class="page hidden">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">LINE/SMS Template Library</h3>
-                    <div class="card-icon">
-                        <i class="fas fa-comment-alt"></i>
-                    </div>
-                </div>
-                
-                <div id="templateList">
-                    <!-- Templates will be loaded here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Checklist Page -->
-        <div id="checklist" class="page hidden">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">เช็คลิสต์ Master สำหรับทุกการโทร</h3>
-                    <div class="card-icon">
-                        <i class="fas fa-clipboard-check"></i>
-                    </div>
-                </div>
-                
-                <div id="checklistContent">
-                    <!-- Checklist content will be loaded here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Advanced Techniques Page -->
-        <div id="advanced-techniques" class="page hidden">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">เทคนิคพิเศษ (Advanced Techniques)</h3>
-                    <div class="card-icon">
-                        <i class="fas fa-magic"></i>
-                    </div>
-                </div>
-                
-                <div id="techniquesContent">
-                    <!-- Techniques content will be loaded here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Trainer Management Page -->
-        <div id="trainer" class="page hidden">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Trainer Script Management</h3>
-                    <div class="card-icon">
-                        <i class="fas fa-tools"></i>
-                    </div>
-                </div>
-                
-                <div class="admin-panel">
-                    <div class="form-group">
-                        <label for="adminTitle">Script Title</label>
-                        <input type="text" id="adminTitle" placeholder="Script Title">
-                    </div>
-                    <div class="form-group">
-                        <label for="adminType">Script Type</label>
-                        <select id="adminType">
-                            <option value="new">New Customer</option>
-                            <option value="familiar">Familiar Customer</option>
-                            <option value="vip">VIP Customer</option>
-                            <option value="reminder">Reminder</option>
-                            <option value="voicemail">Voicemail</option>
-                            <option value="repeated-reject">Repeated Reject</option>
-                            <option value="maturity">Maturity</option>
-                            <option value="paid-up">Paid-up Policy</option>
-                            <option value="inactive">Inactive Customer</option>
-                            <option value="complaint">Complaint Customer</option>
-                            <option value="senior">Senior Customer</option>
-                            <option value="young">Young Customer</option>
-                            <option value="sme">SME Customer</option>
-                            <option value="expat">Expat Customer</option>
-                            <option value="job-change">Job Change Customer</option>
-                            <option value="fixed-deposit">Fixed Deposit Maturity</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="adminContent">Script Content (JSON Format)</label>
-                        <textarea id="adminContent" placeholder='{
-  "A": "Opening content",
-  "B": "Reason content",
-  "C": "Value Hook content",
-  "D": "CTA content",
-  "E": "Service Questions content",
-  "F": "Objection Handling content",
-  "G": "Closing Lines content",
-  "H": "Tone of Voice content",
-  "I": "Checklist content"
-}' rows="15"></textarea>
-                    </div>
-                    <button class="submit-btn" onclick="addScript()">
-                        <i class="fas fa-save"></i> Add / Update Script
-                    </button>
-                </div>
-                
-                <div id="trainerScriptList" class="mt-3">
-                    <!-- Trainer scripts will be loaded here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Q&A Board Page -->
-        <div id="qa" class="page hidden">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Q&A Board</h3>
-                    <div class="card-icon">
-                        <i class="fas fa-question-circle"></i>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <input type="text" id="qaUser" placeholder="ชื่อของคุณ">
-                </div>
-                <div class="form-group">
-                    <textarea id="qaQuestion" placeholder="พิมพ์คำถามที่นี่" rows="3"></textarea>
-                </div>
-                <button class="submit-btn" onclick="postQA()">
-                    <i class="fas fa-paper-plane"></i> Post Question
-                </button>
-                
-                <div id="qaList" class="mt-3">
-                    <!-- Q&A list will be loaded here -->
-                </div>
-            </div>
-        </div>
-        
     </div>
 
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <a href="#" class="nav-item active" data-page="home">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </a>
-        <a href="#" class="nav-item" data-page="scripts">
-            <i class="fas fa-file-alt"></i>
-            <span>Scripts</span>
-        </a>
-        <a href="#" class="nav-item" data-page="objection-handling">
-            <i class="fas fa-bolt"></i>
-            <span>Objection</span>
-        </a>
-        <a href="#" class="nav-item" data-page="qa">
-            <i class="fas fa-comments"></i>
-            <span>Q&A</span>
-        </a>
-        <a href="#" class="nav-item" data-page="checklist">
-            <i class="fas fa-clipboard-check"></i>
-            <span>Checklist</span>
-        </a>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast hidden">
-        <i class="fas fa-info-circle"></i>
-        <span id="toastMessage">This is a toast message</span>
+    <!-- Admin Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeAdminModal()">&times;</button>
+            <h2>Admin Access</h2>
+            <p>กรุณากรอกรหัสผ่าน</p>
+            <input type="password" id="adminPasscode" placeholder="รหัสผ่าน" maxlength="4">
+            <button class="start-btn" onclick="checkAdminPasscode()" style="margin-top: 1rem;">
+                ยืนยัน
+            </button>
+        </div>
     </div>
 
     <script>
-        // (โค้ด JavaScript เดิมอยู่ที่นี่)
-        // เนื่องจากโค้ดยาวมาก ผมได้ตัดบางส่วนออกเพื่อให้พอดีกับข้อจำกัด
-        // โค้ดเต็มจะอยู่ในไฟล์แยก
-        
-        // ฟังก์ชันแสดงการแจ้งเตือน
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
+        // Script Data
+        const callScripts = [
+            {
+                id: 1,
+                title: "เงินนิ่งในบัญชี / ดอกเบี้ยต่ำ",
+                structure: {
+                    OBJECTIVE: "แนะนำให้ลูกค้าโยกเงินไปบัญชีดอกเบี้ยพิเศษ",
+                    OPENER: "แสดงตัวเลขผลตอบแทนเสียโอกาส",
+                    PAIN: "เปรียบเทียบว่าถ้าไม่ทำตอนนี้จะเสียโอกาสเท่าไหร่",
+                    URGENCY: "โปรโมชันมีเวลาจำกัด"
+                },
+                objections: [
+                    { question: "ไม่สะดวกไปสาขา", answer: "ผมไปพบคุณได้ 15 นาที" }
+                ]
+            },
+            {
+                id: 2,
+                title: "เงินฝากประจำใกล้ครบ",
+                structure: {
+                    OBJECTIVE: "เตือนว่าดอกเบี้ยต่ำ ต้องรีบทบทวน",
+                    OPENER: "แสดงระยะเวลารอครบบัญชีประจำ",
+                    PAIN: "เปรียบเทียบผลตอบแทนที่จะเสียหาย",
+                    URGENCY: "แนะนำโปรดักที่เหมาะสมตามความเสี่ยง"
+                },
+                objections: [
+                    { question: "ยุ่งไม่มีเวลา", answer: "ใช้เวลาเพียง 10 นาที" }
+                ]
+            },
+            {
+                id: 3,
+                title: "กองทุนติดลบ",
+                structure: {
+                    OBJECTIVE: "ชวนลูกค้าทบทวนพอร์ตลงทุน",
+                    OPENER: "แสดงความผันผวนของเศรษฐกิจ",
+                    PAIN: "แสดงโอกาสในการปรับพอร์ต",
+                    URGENCY: "ต้องตัดสินใจเร็วเพื่อไม่เสียโอกาส"
+                },
+                objections: [
+                    { question: "กลัวความเสี่ยง", answer: "เราจะปรับพอร์ตตามระดับความเสี่ยงของคุณ" }
+                ]
+            },
+            {
+                id: 4,
+                title: "ประกันครบเบี้ย",
+                structure: {
+                    OBJECTIVE: "ทบทวนประกันก่อนหมดระยะ",
+                    OPENER: "แสดงสิทธิ์ลดหย่อนภาษี",
+                    PAIN: "หากไม่ต่อ จะเสียสิทธิ์ทางภาษี",
+                    URGENCY: "รีบต่อเพื่อได้เบี้ยถูก และคุ้มครองเร็ว"
+                },
+                objections: [
+                    { question: "ไม่อยากคิดเรื่องประกันตอนนี้", answer: "ใช้เวลาแค่ 5 นาที ทบทวนได้ง่าย ๆ" }
+                ]
+            },
+            {
+                id: 5,
+                title: "Tax Season",
+                structure: {
+                    OBJECTIVE: "ชวนลูกค้ามาวางแผนภาษี",
+                    OPENER: "เตือนว่าปีนี้สิ้นสุดโปรแกรม",
+                    PAIN: "หากรอแล้วพลาดสิทธิ์ จะเสียเงินภาษีเทียบเท่าเงินเดือน 1 เดือน",
+                    URGENCY: "ต้องรีบทำก่อนสิ้นปี"
+                },
+                objections: [
+                    { question: "ไม่มีเวลามา", answer: "สามารถช่วยคำนวณทางออนไลน์หรือสาขาที่สะดวกได้" }
+                ]
+            }
+        ];
+
+        const counterScripts = [
+            {
+                id: "counter_001",
+                title: "อัพเดทที่อยู่ล่าสุด",
+                step1_chat: [
+                    {
+                        text: "ขออัพเดทที่อยู่ เพื่อไม่ให้เอกสารสำคัญตกหล่น อย่างหนังสือรับรองต่างๆ ที่ต้องใช้ลดหย่อนช่วงต้นปี - เตรียมไว้ครบถ้วนหรือยัง",
+                        objection: [
+                            { question: "ไม่ว่างตอนนี้", answer: "ใช้เวลาเพียง 5 นาที" }
+                        ]
+                    }
+                ],
+                step2_followup: [
+                    { text: "อัปเดตข้อมูลเรียบร้อย" }
+                ]
+            },
+            {
+                id: "counter_002",
+                title: "คนละครึ่งพลัส",
+                step1_chat: [
+                    { text: "ชวนสนทนาเกี่ยวกับโครงการคนละครึ่งพลัส" }
+                ],
+                step2_followup: [
+                    { text: "เชื่อมโยงลงไม่ทันอดได้สิทธิ เสียดายที่จ่ายภาษีไป" }
+                ]
+            },
+            {
+                id: "counter_003",
+                title: "Easy e-Receipt",
+                step1_chat: [
+                    { text: "ชวนคุยเรื่องเตรียมเอกสาร" }
+                ],
+                step2_followup: [
+                    { text: "เชื่อมโยงเรื่องสิทธิลดหย่อนอื่นๆ" }
+                ]
+            },
+            {
+                id: "counter_004",
+                title: "ภาษีดอกเบี้ยเงินฝาก",
+                step1_chat: [
+                    { text: "ชวนคุยเกี่ยวกับภาษีดอกเบี้ยเงินฝาก" }
+                ],
+                step2_followup: [
+                    { text: "ช่วยคำนวณคืนภาษี" }
+                ]
+            },
+            {
+                id: "counter_005",
+                title: "สิ้นปีเตรียมวางแผนภาษี",
+                step1_chat: [
+                    { text: "เตือนลูกค้าเกี่ยวกับภาษีสิ้นปี" }
+                ],
+                step2_followup: [
+                    { text: "วางแผนให้ทันปีนี้" }
+                ]
+            }
+        ];
+
+        const builderNodes = [
+            { "nodeId":"node_001","text":"สวัสดีครับ/ค่ะ","options":[{"text":"ถามเรื่องบัญชีเงินฝาก","nextNodeId":"call_001"},{"text":"ถามเรื่องประกัน","nextNodeId":"call_004"}]},
+            { "nodeId":"call_001","text":"เงินนิ่งในบัญชี / ดอกเบี้ยต่ำ","options":[{"text":"สนใจรายละเอียด","nextNodeId":"call_001_detail"}]},
+            { "nodeId":"call_001_detail","text":"OBJECTIVE → OPENER → PAIN → URGENCY","options":[]},
+            { "nodeId":"call_002","text":"เงินฝากประจำใกล้ครบ","options":[]},
+            { "nodeId":"call_003","text":"กองทุนติดลบ","options":[]},
+            { "nodeId":"call_004","text":"ประกันครบเบี้ย","options":[]},
+            { "nodeId":"call_005","text":"Tax Season","options":[]},
+            { "nodeId":"counter_001","text":"อัพเดทที่อยู่ล่าสุด","options":[]},
+            { "nodeId":"counter_002","text":"คนละครึ่งพลัส","options":[]},
+            { "nodeId":"counter_003","text":"Easy e-Receipt","options":[]},
+            { "nodeId":"counter_004","text":"ภาษีดอกเบี้ยเงินฝาก","options":[]},
+            { "nodeId":"counter_005","text":"สิ้นปีเตรียมวางแผนภาษี","options":[]}
+        ];
+
+        // Start Application
+        function startApp() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const mainApp = document.getElementById('mainApp');
             
-            toastMessage.textContent = message;
-            toast.classList.remove('hidden');
-            
+            loadingScreen.style.opacity = '0';
             setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3000);
+                loadingScreen.style.display = 'none';
+                mainApp.style.display = 'block';
+                loadCallScripts();
+            }, 500);
         }
-        
-        // ฟังก์ชันสำหรับการจัดการเมนูด้านล่าง
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // อัพเดตสถานะเมนูที่เลือก
-                document.querySelectorAll('.nav-item').forEach(nav => {
-                    nav.classList.remove('active');
-                });
-                this.classList.add('active');
-                
-                // แสดงหน้าเพจที่เลือก
-                const page = this.getAttribute('data-page');
-                showPage(page);
+
+        // Show Tab Content
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
             });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab and add active class
+            document.getElementById(tabName + 'Content').classList.add('active');
+            event.target.classList.add('active');
+            
+            // Load content if needed
+            if (tabName === 'call') {
+                loadCallScripts();
+            } else if (tabName === 'counter') {
+                loadCounterScripts();
+            } else if (tabName === 'builder') {
+                loadBuilder();
+            }
+        }
+
+        // Load Call Scripts
+        function loadCallScripts() {
+            const container = document.getElementById('callScriptsList');
+            container.innerHTML = '';
+            
+            callScripts.forEach(script => {
+                const card = document.createElement('div');
+                card.className = 'script-card';
+                card.innerHTML = `
+                    <h3>${script.title}</h3>
+                    <div class="script-structure">
+                        <p><strong>OBJECTIVE:</strong> ${script.structure.OBJECTIVE}</p>
+                        <p><strong>OPENER:</strong> ${script.structure.OPENER}</p>
+                        <p><strong>PAIN:</strong> ${script.structure.PAIN}</p>
+                        <p><strong>URGENCY:</strong> ${script.structure.URGENCY}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Load Counter Scripts
+        function loadCounterScripts() {
+            const container = document.getElementById('counterScriptsList');
+            container.innerHTML = '';
+            
+            counterScripts.forEach(script => {
+                const card = document.createElement('div');
+                card.className = 'script-card';
+                
+                let step1HTML = '';
+                if (script.step1_chat && script.step1_chat.length > 0) {
+                    step1HTML = `<p><strong>Step 1:</strong> ${script.step1_chat[0].text}</p>`;
+                    
+                    // Add objections if available
+                    if (script.step1_chat[0].objection && script.step1_chat[0].objection.length > 0) {
+                        step1HTML += `<p><strong>Objection Handling:</strong> ${script.step1_chat[0].objection[0].question} → ${script.step1_chat[0].objection[0].answer}</p>`;
+                    }
+                }
+                
+                let step2HTML = '';
+                if (script.step2_followup && script.step2_followup.length > 0) {
+                    step2HTML = `<p><strong>Step 2:</strong> ${script.step2_followup[0].text}</p>`;
+                }
+                
+                card.innerHTML = `
+                    <h3>${script.title}</h3>
+                    ${step1HTML}
+                    ${step2HTML}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Load Builder
+        function loadBuilder() {
+            const palette = document.getElementById('nodePalette');
+            const workspace = document.getElementById('workspace');
+            
+            palette.innerHTML = '<h3>โหนดที่มีอยู่</h3>';
+            workspace.innerHTML = '<h3>พื้นที่ทำงาน</h3><p>ลากโหนดจากด้านซ้ายมาวางที่นี่เพื่อสร้างบทสนทนา</p>';
+            
+            builderNodes.forEach(node => {
+                const nodeElement = document.createElement('div');
+                nodeElement.className = 'node';
+                nodeElement.draggable = true;
+                nodeElement.id = node.nodeId;
+                nodeElement.innerHTML = `<h4>${node.nodeId}</h4><p>${node.text}</p>`;
+                
+                // Add drag events
+                nodeElement.addEventListener('dragstart', dragStart);
+                
+                palette.appendChild(nodeElement);
+            });
+            
+            // Add drop event to workspace
+            workspace.addEventListener('dragover', dragOver);
+            workspace.addEventListener('drop', dropNode);
+        }
+
+        // Drag and Drop Functions
+        let draggedNode = null;
+
+        function dragStart(e) {
+            draggedNode = e.target;
+            e.dataTransfer.setData('text/plain', e.target.id);
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+        }
+
+        function dropNode(e) {
+            e.preventDefault();
+            if (draggedNode) {
+                const clone = draggedNode.cloneNode(true);
+                clone.id = draggedNode.id + '_copy';
+                clone.style.margin = '10px';
+                clone.style.cursor = 'move';
+                
+                // Add drag events to the clone
+                clone.addEventListener('dragstart', dragStart);
+                
+                e.target.appendChild(clone);
+            }
+        }
+
+        // Admin Modal Functions
+        function showAdminModal() {
+            document.getElementById('adminModal').style.display = 'flex';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+            document.getElementById('adminPasscode').value = '';
+        }
+
+        function checkAdminPasscode() {
+            const passcode = document.getElementById('adminPasscode').value;
+            if (passcode === '2025') {
+                alert('เข้าสู่ระบบแอดมินสำเร็จ!');
+                closeAdminModal();
+                // Here you would typically show admin features
+            } else {
+                alert('รหัสผ่านไม่ถูกต้อง');
+                document.getElementById('adminPasscode').value = '';
+            }
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('adminModal');
+            if (event.target === modal) {
+                closeAdminModal();
+            }
         });
-        
-        // ฟังก์ชันสำหรับการจัดการการอัพโหลดไฟล์
-        document.getElementById('bannerUpload').addEventListener('change', function(e) {
-            showToast('ระบบอัพโหลดแบนเนอร์ยังไม่พร้อมใช้งาน');
-        });
-        
-        document.getElementById('qrCodeUpload').addEventListener('change', function(e) {
-            showToast('ระบบอัพโหลด QR Code ยังไม่พร้อมใช้งาน');
-        });
-        
-        // ฟังก์ชันสำหรับการจัดการการค้นหา
-        document.querySelector('.search-bar input').addEventListener('input', function(e) {
-            showToast('ระบบค้นหายังไม่พร้อมใช้งาน');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto start after 5 seconds if user doesn't click
+            setTimeout(() => {
+                if (document.getElementById('loadingScreen').style.display !== 'none') {
+                    startApp();
+                }
+            }, 5000);
         });
     </script>
 </body>
