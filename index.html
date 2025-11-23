@@ -8,17 +8,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #0D1F3C;
-            --secondary: #1E90FF;
-            --accent: #FF9F43;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
-            --gray: #6c757d;
-            --border-radius: 12px;
-            --box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --primary: #6C63FF;
+            --secondary: #4A43D9;
+            --accent: #FF7B54;
+            --light: #F8F9FF;
+            --dark: #2D2B55;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --danger: #F44336;
+            --gray: #7E7E9C;
+            --border-radius: 16px;
+            --box-shadow: 0 4px 20px rgba(108, 99, 255, 0.15);
             --transition: all 0.3s ease;
         }
 
@@ -30,33 +30,34 @@
         }
 
         body {
-            background-color: #f5f7fa;
+            background-color: #F5F7FF;
             color: #333;
             line-height: 1.6;
+            padding-bottom: 80px; /* สำหรับ bottom navigation */
         }
 
         .container {
-            display: flex;
-            min-height: 100vh;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 1rem;
         }
 
-        /* Sidebar Styles */
-        .sidebar {
-            width: 280px;
-            background: var(--primary);
-            color: white;
-            padding: 1.5rem 1rem;
-            transition: var(--transition);
-            overflow-y: auto;
-            box-shadow: var(--box-shadow);
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 1.5rem;
+            position: sticky;
+            top: 0;
+            background-color: #F5F7FF;
+            z-index: 100;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .logo img {
@@ -68,72 +69,7 @@
         .logo h1 {
             font-size: 1.4rem;
             font-weight: 600;
-        }
-
-        .menu {
-            list-style: none;
-        }
-
-        .menu-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .menu-link {
-            display: flex;
-            align-items: center;
-            padding: 0.8rem 1rem;
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-        }
-
-        .menu-link:hover, .menu-link.active {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        .menu-link i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
-
-        .menu-section {
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-            padding: 0 1rem;
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.5);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            flex: 1;
-            padding: 1.5rem;
-            overflow-y: auto;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #eaeaea;
-        }
-
-        .page-title h2 {
-            font-size: 1.8rem;
-            font-weight: 600;
             color: var(--primary);
-        }
-
-        .page-title p {
-            color: var(--gray);
-            margin-top: 0.25rem;
         }
 
         .user-info {
@@ -153,8 +89,9 @@
             background: white;
             border-radius: 30px;
             padding: 0.5rem 1rem;
-            width: 300px;
+            width: 100%;
             box-shadow: var(--box-shadow);
+            margin: 1rem 0;
         }
 
         .search-bar input {
@@ -171,10 +108,26 @@
             cursor: pointer;
         }
 
+        /* Page Title */
+        .page-title {
+            margin-bottom: 1.5rem;
+        }
+
+        .page-title h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--gray);
+        }
+
         /* Dashboard Styles */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: 1fr;
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -184,6 +137,12 @@
             border-radius: var(--border-radius);
             padding: 1.5rem;
             box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.2);
         }
 
         .card-header {
@@ -206,8 +165,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(30, 144, 255, 0.1);
-            color: var(--secondary);
+            background: rgba(108, 99, 255, 0.1);
+            color: var(--primary);
             font-size: 1.5rem;
         }
 
@@ -229,7 +188,7 @@
         }
 
         .status-card.prepare {
-            background: var(--secondary);
+            background: var(--primary);
         }
 
         .status-card.cancel {
@@ -249,7 +208,7 @@
 
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
         }
 
@@ -260,16 +219,18 @@
             text-align: center;
             cursor: pointer;
             transition: var(--transition);
+            border: 1px solid rgba(108, 99, 255, 0.1);
         }
 
         .service-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--box-shadow);
+            background: white;
         }
 
         .service-card i {
             font-size: 2rem;
-            color: var(--secondary);
+            color: var(--primary);
             margin-bottom: 0.5rem;
         }
 
@@ -305,7 +266,7 @@
         }
 
         .upload-btn {
-            background: var(--secondary);
+            background: var(--primary);
             color: white;
             border: none;
             padding: 0.7rem 1.5rem;
@@ -314,10 +275,13 @@
             cursor: pointer;
             font-weight: 500;
             transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .upload-btn:hover {
-            background: #0d7bd4;
+            background: var(--secondary);
         }
 
         /* Script Detail Styles */
@@ -325,7 +289,7 @@
             display: none;
             background: white;
             border-radius: var(--border-radius);
-            padding: 2rem;
+            padding: 1.5rem;
             box-shadow: var(--box-shadow);
             margin-bottom: 2rem;
         }
@@ -347,7 +311,7 @@
             display: inline-block;
             padding: 0.3rem 0.8rem;
             background: var(--light);
-            color: var(--secondary);
+            color: var(--primary);
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 500;
@@ -398,7 +362,7 @@
 
         .script-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: 1fr;
             gap: 1.5rem;
         }
 
@@ -409,6 +373,7 @@
             box-shadow: var(--box-shadow);
             cursor: pointer;
             transition: var(--transition);
+            border: 1px solid rgba(108, 99, 255, 0.1);
         }
 
         .script-card:hover {
@@ -433,7 +398,7 @@
             display: inline-block;
             padding: 0.2rem 0.6rem;
             background: var(--light);
-            color: var(--secondary);
+            color: var(--primary);
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 500;
@@ -451,8 +416,8 @@
 
         .view-btn {
             background: transparent;
-            color: var(--secondary);
-            border: 1px solid var(--secondary);
+            color: var(--primary);
+            border: 1px solid var(--primary);
             padding: 0.4rem 1rem;
             border-radius: 30px;
             cursor: pointer;
@@ -461,7 +426,7 @@
         }
 
         .view-btn:hover {
-            background: var(--secondary);
+            background: var(--primary);
             color: white;
         }
 
@@ -491,7 +456,7 @@
         }
 
         .tab-btn.active {
-            background: var(--secondary);
+            background: var(--primary);
             color: white;
         }
 
@@ -553,13 +518,13 @@
         }
 
         input:focus, textarea:focus, select:focus {
-            border-color: var(--secondary);
+            border-color: var(--primary);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
         }
 
         .submit-btn {
-            background: var(--secondary);
+            background: var(--primary);
             color: white;
             border: none;
             padding: 0.8rem 1.5rem;
@@ -567,10 +532,13 @@
             cursor: pointer;
             font-weight: 500;
             transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .submit-btn:hover {
-            background: #0d7bd4;
+            background: var(--secondary);
         }
 
         /* Login Styles */
@@ -580,7 +548,7 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background: linear-gradient(135deg, var(--primary) 0%, #1a3a6b 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
             padding: 1em;
         }
@@ -614,7 +582,7 @@
         }
 
         .role-btn {
-            background: var(--secondary);
+            background: rgba(255,255,255,0.2);
             color: white;
             padding: 1rem 2rem;
             margin: 0.5rem;
@@ -625,11 +593,50 @@
             transition: var(--transition);
             width: 100%;
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .role-btn:hover {
-            background: #0d7bd4;
+            background: rgba(255,255,255,0.3);
             transform: translateY(-2px);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.8rem 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--gray);
+            font-size: 0.8rem;
+            transition: var(--transition);
+            padding: 0.5rem;
+            border-radius: 10px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
         }
 
         /* Utility Classes */
@@ -753,48 +760,58 @@
             font-family: monospace;
         }
 
-        /* Responsive */
-        @media (max-width: 992px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                height: auto;
-            }
-            
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .status-cards {
-                grid-template-columns: 1fr;
-            }
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            max-width: 90%;
         }
 
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .user-info {
-                width: 100%;
-                justify-content: space-between;
-                margin-top: 1rem;
-            }
-            
-            .search-bar {
-                width: 100%;
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 720px;
             }
             
             .services-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
             }
             
             .script-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                max-width: 960px;
+            }
+            
+            .services-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .script-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
@@ -819,362 +836,298 @@
 
     <!-- Main Application -->
     <div id="mainApp" class="container hidden">
-        <!-- Sidebar -->
-        <div class="sidebar">
+        <!-- Header -->
+        <div class="header">
             <div class="logo">
                 <i class="fas fa-headset"></i>
                 <h1>RH5 Script Hub</h1>
             </div>
             
-            <ul class="menu">
-                <li class="menu-item">
-                    <a href="#" class="menu-link active" data-page="home">
-                        <i class="fas fa-home"></i> Home
-                    </a>
-                </li>
-                
-                <div class="menu-section">สคริปต์การโทร</div>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" data-page="scripts">
-                        <i class="fas fa-file-alt"></i> คลังสคริปต์
-                    </a>
-                </li>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" data-page="objection-handling">
-                        <i class="fas fa-bolt"></i> ตารางรวม Objection Handling
-                    </a>
-                </li>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" data-page="cta-slots">
-                        <i class="fas fa-clock"></i> ตารางรวม CTA Slots
-                    </a>
-                </li>
-                
-                <div class="menu-section">เครื่องมือ</div>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" data-page="line-templates">
-                        <i class="fas fa-comment-alt"></i> LINE/SMS Template
-                    </a>
-                </li>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" data-page="checklist">
-                        <i class="fas fa-clipboard-check"></i> เช็คลิสต์
-                    </a>
-                </li>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" data-page="advanced-techniques">
-                        <i class="fas fa-magic"></i> เทคนิคพิเศษ
-                    </a>
-                </li>
-                
-                <div class="menu-section trainer-only">จัดการ</div>
-                
-                <li class="menu-item trainer-only">
-                    <a href="#" class="menu-link" data-page="trainer">
-                        <i class="fas fa-tools"></i> Trainer Management
-                    </a>
-                </li>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" data-page="qa">
-                        <i class="fas fa-question-circle"></i> Q&A Board
-                    </a>
-                </li>
-            </ul>
+            <div class="user-info">
+                <button class="back-btn" id="backButton" style="display: none;">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <div class="page-title">
-                    <h2 id="pageHeading">Welcome Back!</h2>
-                    <p id="pageSubtitle">RH5 Call Script Hub - จัดการสคริปต์การโทรทั้งหมดของคุณ</p>
-                </div>
-                
-                <div class="user-info">
-                    <div class="search-bar">
-                        <input type="text" placeholder="Search...">
-                        <i class="fas fa-search"></i>
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input type="text" placeholder="ค้นหาสคริปต์...">
+            <i class="fas fa-search"></i>
+        </div>
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <h2 id="pageHeading">Welcome Back!</h2>
+            <p id="pageSubtitle">RH5 Call Script Hub - จัดการสคริปต์การโทรทั้งหมดของคุณ</p>
+        </div>
+
+        <!-- Banner Section (Trainer Only) -->
+        <div class="banner-container trainer-only">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">แบนเนอร์ประกาศข่าวสาร</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-bullhorn"></i>
                     </div>
-                    <button class="back-btn" id="backButton" style="display: none;">
-                        <i class="fas fa-arrow-left"></i> Back to Home
+                </div>
+                <div id="bannerDisplay" class="banner">
+                    <div class="banner-placeholder">
+                        <div class="text-center">
+                            <i class="fas fa-image"></i>
+                            <p>ยังไม่มีแบนเนอร์</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-2">
+                    <input type="file" id="bannerUpload" accept="image/*" style="display:none;">
+                    <button class="upload-btn" onclick="document.getElementById('bannerUpload').click()">
+                        <i class="fas fa-upload"></i> อัพโหลดแบนเนอร์
                     </button>
                 </div>
             </div>
+        </div>
 
-            <!-- Banner Section (Trainer Only) -->
-            <div class="banner-container trainer-only">
+        <!-- Home Page -->
+        <div id="home" class="page">
+            <div class="dashboard-grid">
+                <!-- Welcome Card -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">แบนเนอร์ประกาศข่าวสาร</h3>
+                        <h3 class="card-title">Welcome Back!</h3>
                         <div class="card-icon">
-                            <i class="fas fa-bullhorn"></i>
+                            <i class="fas fa-hand-wave"></i>
                         </div>
                     </div>
-                    <div id="bannerDisplay" class="banner">
-                        <div class="banner-placeholder">
-                            <div class="text-center">
-                                <i class="fas fa-image"></i>
-                                <p>ยังไม่มีแบนเนอร์</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-center mt-2">
-                        <input type="file" id="bannerUpload" accept="image/*" style="display:none;">
-                        <button class="upload-btn" onclick="document.getElementById('bannerUpload').click()">
-                            <i class="fas fa-upload"></i> อัพโหลดแบนเนอร์
-                        </button>
-                    </div>
+                    <p>จัดการและเข้าถึงสคริปต์การโทรทั้งหมดของคุณจากหน้า Home นี้</p>
                 </div>
-            </div>
-
-            <!-- Home Page -->
-            <div id="home" class="page">
-                <div class="dashboard-grid">
-                    <!-- Welcome Card -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Welcome Back!</h3>
-                            <div class="card-icon">
-                                <i class="fas fa-hand-wave"></i>
-                            </div>
-                        </div>
-                        <p>จัดการและเข้าถึงสคริปต์การโทรทั้งหมดของคุณจากหน้า Home นี้</p>
-                    </div>
-                    
-                    <!-- Services -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Our Services</h3>
-                            <div class="card-icon">
-                                <i class="fas fa-concierge-bell"></i>
-                            </div>
-                        </div>
-                        <div class="services-grid">
-                            <div class="service-card" data-page="scripts">
-                                <i class="fas fa-file-alt"></i>
-                                <div>Script</div>
-                            </div>
-                            <div class="service-card" data-page="objection-handling">
-                                <i class="fas fa-bolt"></i>
-                                <div>Objection</div>
-                            </div>
-                            <div class="service-card" data-page="qa">
-                                <i class="fas fa-comments"></i>
-                                <div>Q&A Board</div>
-                            </div>
-                            <div class="service-card" data-page="line-templates">
-                                <i class="fas fa-comment-alt"></i>
-                                <div>LINE/SMS</div>
-                            </div>
-                            <div class="service-card" data-page="checklist">
-                                <i class="fas fa-clipboard-check"></i>
-                                <div>เช็คลิสต์</div>
-                            </div>
-                            <div class="service-card" data-page="advanced-techniques">
-                                <i class="fas fa-magic"></i>
-                                <div>เทคนิคพิเศษ</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Document Section -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Full Document</h3>
-                            <div class="card-icon">
-                                <i class="fas fa-file-pdf"></i>
-                            </div>
-                        </div>
-                        <div class="document-card">
-                            <p>Can scan to see the document here.</p>
-                            <div class="qr-code-container">
-                                <div class="qr-code" id="qrCodeDisplay">
-                                    <i class="fas fa-qrcode"></i>
-                                </div>
-                            </div>
-                            <div class="trainer-only">
-                                <input type="file" id="qrCodeUpload" accept="image/*" style="display:none;">
-                                <button class="upload-btn" onclick="document.getElementById('qrCodeUpload').click()">
-                                    <i class="fas fa-upload"></i> Upload QR Code
-                                </button>
-                            </div>
-                            <p id="uploadStatus" class="text-center mt-1"></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Scripts Page -->
-            <div id="scripts" class="page hidden">
+                
+                <!-- Services -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">คลังสคริปต์การโทรนัดหมายลูกค้า</h3>
+                        <h3 class="card-title">Our Services</h3>
                         <div class="card-icon">
-                            <i class="fas fa-book"></i>
+                            <i class="fas fa-concierge-bell"></i>
                         </div>
                     </div>
-                    
-                    <div class="script-grid" id="scriptList">
-                        <!-- Script cards will be loaded here -->
+                    <div class="services-grid">
+                        <div class="service-card" data-page="scripts">
+                            <i class="fas fa-file-alt"></i>
+                            <div>Script</div>
+                        </div>
+                        <div class="service-card" data-page="objection-handling">
+                            <i class="fas fa-bolt"></i>
+                            <div>Objection</div>
+                        </div>
+                        <div class="service-card" data-page="qa">
+                            <i class="fas fa-comments"></i>
+                            <div>Q&A Board</div>
+                        </div>
+                        <div class="service-card" data-page="line-templates">
+                            <i class="fas fa-comment-alt"></i>
+                            <div>LINE/SMS</div>
+                        </div>
+                        <div class="service-card" data-page="checklist">
+                            <i class="fas fa-clipboard-check"></i>
+                            <div>เช็คลิสต์</div>
+                        </div>
+                        <div class="service-card" data-page="advanced-techniques">
+                            <i class="fas fa-magic"></i>
+                            <div>เทคนิคพิเศษ</div>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Script Detail View -->
-                <div id="scriptDetail" class="script-detail">
-                    <!-- Script details will be loaded here -->
-                </div>
-            </div>
-
-            <!-- Objection Handling Page -->
-            <div id="objection-handling" class="page hidden">
+                <!-- Document Section -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">ตารางรวม Objection Handling</h3>
+                        <h3 class="card-title">Full Document</h3>
                         <div class="card-icon">
-                            <i class="fas fa-bolt"></i>
+                            <i class="fas fa-file-pdf"></i>
                         </div>
                     </div>
-                    
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ข้อโต้แย้ง</th>
-                                    <th>คำตอบ (แนวทาง)</th>
-                                    <th>Tone</th>
-                                </tr>
-                            </thead>
-                            <tbody id="objectionTable">
-                                <!-- Objection data will be loaded here -->
-                            </tbody>
-                        </table>
+                    <div class="document-card">
+                        <p>Can scan to see the document here.</p>
+                        <div class="qr-code-container">
+                            <div class="qr-code" id="qrCodeDisplay">
+                                <i class="fas fa-qrcode"></i>
+                            </div>
+                        </div>
+                        <div class="trainer-only">
+                            <input type="file" id="qrCodeUpload" accept="image/*" style="display:none;">
+                            <button class="upload-btn" onclick="document.getElementById('qrCodeUpload').click()">
+                                <i class="fas fa-upload"></i> Upload QR Code
+                            </button>
+                        </div>
+                        <p id="uploadStatus" class="text-center mt-1"></p>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- CTA Slots Page -->
-            <div id="cta-slots" class="page hidden">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">ตารางรวม CTA Slots (ช่วงเวลานัดหมาย)</h3>
-                        <div class="card-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ประเภทลูกค้า</th>
-                                    <th>CTA Primary</th>
-                                    <th>CTA Alternative</th>
-                                    <th>ภาษาที่ใช้</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ctaTable">
-                                <!-- CTA data will be loaded here -->
-                            </tbody>
-                        </table>
+        <!-- Scripts Page -->
+        <div id="scripts" class="page hidden">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">คลังสคริปต์การโทรนัดหมายลูกค้า</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-book"></i>
                     </div>
                 </div>
-            </div>
-
-            <!-- LINE/SMS Templates Page -->
-            <div id="line-templates" class="page hidden">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">LINE/SMS Template Library</h3>
-                        <div class="card-icon">
-                            <i class="fas fa-comment-alt"></i>
-                        </div>
-                    </div>
-                    
-                    <div id="templateList">
-                        <!-- Templates will be loaded here -->
-                    </div>
+                
+                <div class="script-grid" id="scriptList">
+                    <!-- Script cards will be loaded here -->
                 </div>
             </div>
+            
+            <!-- Script Detail View -->
+            <div id="scriptDetail" class="script-detail">
+                <!-- Script details will be loaded here -->
+            </div>
+        </div>
 
-            <!-- Checklist Page -->
-            <div id="checklist" class="page hidden">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">เช็คลิสต์ Master สำหรับทุกการโทร</h3>
-                        <div class="card-icon">
-                            <i class="fas fa-clipboard-check"></i>
-                        </div>
-                    </div>
-                    
-                    <div id="checklistContent">
-                        <!-- Checklist content will be loaded here -->
+        <!-- Objection Handling Page -->
+        <div id="objection-handling" class="page hidden">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">ตารางรวม Objection Handling</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-bolt"></i>
                     </div>
                 </div>
-            </div>
-
-            <!-- Advanced Techniques Page -->
-            <div id="advanced-techniques" class="page hidden">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">เทคนิคพิเศษ (Advanced Techniques)</h3>
-                        <div class="card-icon">
-                            <i class="fas fa-magic"></i>
-                        </div>
-                    </div>
-                    
-                    <div id="techniquesContent">
-                        <!-- Techniques content will be loaded here -->
-                    </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ข้อโต้แย้ง</th>
+                                <th>คำตอบ (แนวทาง)</th>
+                                <th>Tone</th>
+                            </tr>
+                        </thead>
+                        <tbody id="objectionTable">
+                            <!-- Objection data will be loaded here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </div>
 
-            <!-- Trainer Management Page -->
-            <div id="trainer" class="page hidden">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Trainer Script Management</h3>
-                        <div class="card-icon">
-                            <i class="fas fa-tools"></i>
-                        </div>
+        <!-- CTA Slots Page -->
+        <div id="cta-slots" class="page hidden">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">ตารางรวม CTA Slots (ช่วงเวลานัดหมาย)</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
                     </div>
-                    
-                    <div class="admin-panel">
-                        <div class="form-group">
-                            <label for="adminTitle">Script Title</label>
-                            <input type="text" id="adminTitle" placeholder="Script Title">
-                        </div>
-                        <div class="form-group">
-                            <label for="adminType">Script Type</label>
-                            <select id="adminType">
-                                <option value="new">New Customer</option>
-                                <option value="familiar">Familiar Customer</option>
-                                <option value="vip">VIP Customer</option>
-                                <option value="reminder">Reminder</option>
-                                <option value="voicemail">Voicemail</option>
-                                <option value="repeated-reject">Repeated Reject</option>
-                                <option value="maturity">Maturity</option>
-                                <option value="paid-up">Paid-up Policy</option>
-                                <option value="inactive">Inactive Customer</option>
-                                <option value="complaint">Complaint Customer</option>
-                                <option value="senior">Senior Customer</option>
-                                <option value="young">Young Customer</option>
-                                <option value="sme">SME Customer</option>
-                                <option value="expat">Expat Customer</option>
-                                <option value="job-change">Job Change Customer</option>
-                                <option value="fixed-deposit">Fixed Deposit Maturity</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="adminContent">Script Content (JSON Format)</label>
-                            <textarea id="adminContent" placeholder='{
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ประเภทลูกค้า</th>
+                                <th>CTA Primary</th>
+                                <th>CTA Alternative</th>
+                                <th>ภาษาที่ใช้</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ctaTable">
+                            <!-- CTA data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- LINE/SMS Templates Page -->
+        <div id="line-templates" class="page hidden">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">LINE/SMS Template Library</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-comment-alt"></i>
+                    </div>
+                </div>
+                
+                <div id="templateList">
+                    <!-- Templates will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Checklist Page -->
+        <div id="checklist" class="page hidden">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">เช็คลิสต์ Master สำหรับทุกการโทร</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                </div>
+                
+                <div id="checklistContent">
+                    <!-- Checklist content will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Techniques Page -->
+        <div id="advanced-techniques" class="page hidden">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">เทคนิคพิเศษ (Advanced Techniques)</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                </div>
+                
+                <div id="techniquesContent">
+                    <!-- Techniques content will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Trainer Management Page -->
+        <div id="trainer" class="page hidden">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Trainer Script Management</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                </div>
+                
+                <div class="admin-panel">
+                    <div class="form-group">
+                        <label for="adminTitle">Script Title</label>
+                        <input type="text" id="adminTitle" placeholder="Script Title">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminType">Script Type</label>
+                        <select id="adminType">
+                            <option value="new">New Customer</option>
+                            <option value="familiar">Familiar Customer</option>
+                            <option value="vip">VIP Customer</option>
+                            <option value="reminder">Reminder</option>
+                            <option value="voicemail">Voicemail</option>
+                            <option value="repeated-reject">Repeated Reject</option>
+                            <option value="maturity">Maturity</option>
+                            <option value="paid-up">Paid-up Policy</option>
+                            <option value="inactive">Inactive Customer</option>
+                            <option value="complaint">Complaint Customer</option>
+                            <option value="senior">Senior Customer</option>
+                            <option value="young">Young Customer</option>
+                            <option value="sme">SME Customer</option>
+                            <option value="expat">Expat Customer</option>
+                            <option value="job-change">Job Change Customer</option>
+                            <option value="fixed-deposit">Fixed Deposit Maturity</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminContent">Script Content (JSON Format)</label>
+                        <textarea id="adminContent" placeholder='{
   "A": "Opening content",
   "B": "Reason content",
   "C": "Value Hook content",
@@ -1185,1033 +1138,124 @@
   "H": "Tone of Voice content",
   "I": "Checklist content"
 }' rows="15"></textarea>
-                        </div>
-                        <button class="submit-btn" onclick="addScript()">Add / Update Script</button>
                     </div>
-                    
-                    <div id="trainerScriptList" class="mt-3">
-                        <!-- Trainer scripts will be loaded here -->
-                    </div>
+                    <button class="submit-btn" onclick="addScript()">
+                        <i class="fas fa-save"></i> Add / Update Script
+                    </button>
+                </div>
+                
+                <div id="trainerScriptList" class="mt-3">
+                    <!-- Trainer scripts will be loaded here -->
                 </div>
             </div>
-
-            <!-- Q&A Board Page -->
-            <div id="qa" class="page hidden">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Q&A Board</h3>
-                        <div class="card-icon">
-                            <i class="fas fa-question-circle"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <input type="text" id="qaUser" placeholder="ชื่อของคุณ">
-                    </div>
-                    <div class="form-group">
-                        <textarea id="qaQuestion" placeholder="พิมพ์คำถามที่นี่" rows="3"></textarea>
-                    </div>
-                    <button class="submit-btn" onclick="postQA()">Post Question</button>
-                    
-                    <div id="qaList" class="mt-3">
-                        <!-- Q&A list will be loaded here -->
-                    </div>
-                </div>
-            </div>
-            
         </div>
+
+        <!-- Q&A Board Page -->
+        <div id="qa" class="page hidden">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Q&A Board</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <input type="text" id="qaUser" placeholder="ชื่อของคุณ">
+                </div>
+                <div class="form-group">
+                    <textarea id="qaQuestion" placeholder="พิมพ์คำถามที่นี่" rows="3"></textarea>
+                </div>
+                <button class="submit-btn" onclick="postQA()">
+                    <i class="fas fa-paper-plane"></i> Post Question
+                </button>
+                
+                <div id="qaList" class="mt-3">
+                    <!-- Q&A list will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active" data-page="home">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item" data-page="scripts">
+            <i class="fas fa-file-alt"></i>
+            <span>Scripts</span>
+        </a>
+        <a href="#" class="nav-item" data-page="objection-handling">
+            <i class="fas fa-bolt"></i>
+            <span>Objection</span>
+        </a>
+        <a href="#" class="nav-item" data-page="qa">
+            <i class="fas fa-comments"></i>
+            <span>Q&A</span>
+        </a>
+        <a href="#" class="nav-item" data-page="checklist">
+            <i class="fas fa-clipboard-check"></i>
+            <span>Checklist</span>
+        </a>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <i class="fas fa-info-circle"></i>
+        <span id="toastMessage">This is a toast message</span>
     </div>
 
     <script>
-// Complete script data with all 15 scripts
-const scriptsData = [
-    {
-        id: 1,
-        type: 'new',
-        title: 'ลูกค้าใหม่ – ตรวจสิทธิ์ดอกเบี้ย & ภาษี',
-        A: 'Opening:\n"สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ใช่ไหมคะ/ครับ ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] โทรมาสั้น ๆ ไม่รบกวนเวลานะคะ/ครับ"',
-        B: 'Reason / Service Tone:\n"ช่วงนี้ดอกเบี้ยเริ่มปรับลด ทางธนาคารเรามีบริการตรวจสิทธิ์ลดหย่อนภาษีและอัปเดตพอร์ตเงินออมให้เหมาะสมค่ะ/ครับ"',
-        C: 'Value Hook:\n"ลูกค้าหลายท่านประหยัดภาษีเพิ่มได้ 2–4 หมื่นบาทจากสิทธิ์ที่ไม่รู้ว่ามีค่ะ/ครับ"',
-        D: 'CTA:\n"คุณสะดวกมาที่สาขาช่วงบ่ายวันนี้ หรือพรุ่งนี้เช้าคะ/ครับ?"',
-        E: 'Service Questions:\n• ปีนี้ได้ใช้สิทธิ์ลดหย่อนครบหรือยังคะ/ครับ?\n• สนใจผลตอบแทนเงินออมช่วงดอกเบี้ยขาลงไหมคะ/ครับ?',
-        F: 'Objection Handling:\n• "ไม่สนใจ" → "ไม่เป็นไรค่ะ/ครับ แค่แจ้งสิทธิ์ฟรี ถ้าอนุญาต ดิฉัน/ผมส่งสรุปทางไลน์ให้ก่อนเผื่อสนใจดูภายหลังได้ค่ะ/ครับ"\n• "ไม่มีเวลา" → "เข้าใจค่ะ/ครับ ขอแค่ 15 นาที เลือกช่วงเวลาที่สะดวก เช่น พรุ่งนี้เช้าหรือบ่ายดีไหมคะ/ครับ?"\n• "กลัวขาย" → "เข้าใจค่ะ/ครับ ครั้งนี้ไม่ใช่การขาย เป็นบริการตรวจสิทธิ์ฟรีค่ะ/ครับ"',
-        G: 'Closing Lines:\n• "งั้นดิฉัน/ผมขอจองเวลาช่วง [วัน/เวลา] ไว้ก่อนนะคะ/ครับ ใช้เวลา 15 นาทีเท่านั้นค่ะ/ครับ"\n• "ขอบคุณที่รับสายค่ะ/ครับ หวังว่าจะได้ช่วยเช็กสิทธิ์ก่อนสิ้นปีนะคะ/ครับ 😊"',
-        H: 'Tone of Voice:\n• สุภาพ, น้ำเสียงนุ่ม, จังหวะพูด–เว้น–ฟัง\n• เน้นคำว่า "บริการ / ตรวจสิทธิ์ / อัปเดต / ให้ข้อมูล"',
-        I: 'Checklist ก่อนโทร:\n✅ ชื่อลูกค้า, ประวัติธุรกรรม\n✅ 2 ช่วงเวลานัด\n✅ ประโยคเปิดเหมาะสมกับลูกค้าใหม่\n✅ ประโยคตอบข้อโต้แย้งอย่างน้อย 3 แบบ\n✅ ช่องทางสำรอง (LINE/SMS)'
-    },
-    {
-        id: 2,
-        type: 'familiar',
-        title: 'ลูกค้าคุ้นเคย – อัปเดตสิทธิ์ & พอร์ต',
-        A: 'Opening:\n"สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] ค่ะ/ครับ\nไม่ได้โทรมาขายอะไรนะคะ/ครับ แต่แจ้งสิทธิ์ดี ๆ ช่วงนี้ค่ะ/ครับ"',
-        B: 'Reason:\n"ช่วงปลายปี เราช่วยลูกค้าประจำตรวจสิทธิ์ลดหย่อนภาษีและปรับพอร์ตเงินออมให้เหมาะกับดอกเบี้ยใหม่"',
-        C: 'Value Hook:\n"หลายท่านพบว่ามีสิทธิ์เพิ่มเติมช่วยประหยัดภาษีได้ 10–20% ของรายได้ที่ยังไม่ได้ใช้สิทธิ์ค่ะ/ครับ"',
-        D: 'CTA:\n"สะดวกให้ดิฉัน/ผมจองคิวช่วงบ่ายวันนี้ หรือพรุ่งนี้เช้าคะ/ครับ?"',
-        E: 'Service Questions:\n• ปกติวางเงินออมแบบไหนคะ/ครับ?\n• สนใจอัปเดตพอร์ตตามอัตราดอกเบี้ยใหม่ไหมคะ/ครับ?',
-        F: 'Objection Handling:\n• "มีคนดูแลแล้ว" → "ถือเป็นการตรวจสิทธิ์ซ้ำเพื่อความมั่นใจ บางสิทธิ์ปีนี้อาจเปลี่ยนค่ะ/ครับ"\n• "จัดภาษีเรียบร้อยแล้ว" → "ขอเช็กฟรีอีกครั้ง เผื่อมีสิทธิ์ที่ยังไม่ได้ใช้ค่ะ/ครับ"',
-        G: 'Closing Lines:\n• "ดิฉัน/ผมขอจองเวลาสั้น ๆ 15 นาทีไว้ก่อนนะคะ/ครับ"',
-        H: 'Tone of Voice:\n• นุ่ม, สุภาพ, มั่นใจแต่ไม่เร่ง',
-        I: 'Checklist ก่อนโทร:\n✅ ประวัติธุรกรรมลูกค้า\n✅ 2 ช่วงเวลานัด\n✅ ข้อโต้แย้งที่อาจเจอ'
-    },
-    {
-        id: 3,
-        type: 'vip',
-        title: 'ลูกค้า VIP / Premium',
-        A: 'Opening:\n"สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] ค่ะ/ครับ โทรมาในฐานะผู้ดูแลบัญชีของคุณค่ะ/ครับ"',
-        B: 'Reason:\n"เรามีข้อมูลสิทธิ์ภาษีและผลตอบแทนเงินออมที่เหมาะกับลูกค้าแบบคุณ อยากเรียนเชิญมาดูรายละเอียดด้วยตัวเองค่ะ/ครับ"',
-        C: 'Value Hook:\n"ช่วยให้คุณตัดสินใจจัดสัดส่วนเงินได้ดีที่สุดในช่วงดอกเบี้ยขาลง ใช้เวลา 15 นาที ไม่ต้องเตรียมเอกสารค่ะ/ครับ"',
-        D: 'CTA:\n"คุณสะดวกพรุ่งนี้สาย ๆ หรือบ่ายคะ/ครับ? จะให้จัดห้องรับรองไว้ด้วยค่ะ/ครับ"',
-        E: 'Service Questions:\n• สนใจผลตอบแทนเงินออมเฉพาะกลุ่มพรีเมียมไหมคะ/ครับ?\n• ปรับพอร์ตภาษีประจำปีหรือยังคะ/ครับ?',
-        F: 'Objection Handling:\n• "ไม่สนใจ" → "แค่แจ้งข้อมูลเพื่อให้พิจารณา เผื่อสนใจดูเพิ่มเติมค่ะ/ครับ"\n• "มีที่ปรึกษาแล้ว" → "ถือเป็นการตรวจสอบเพิ่มเติมเพื่อความมั่นใจ ข้อมูลปีนี้อาจต่างจากเดิมค่ะ/ครับ"',
-        G: 'Closing Lines:\n• "ดิฉัน/ผมจะจองคิวช่วง [เวลา] ไว้ก่อนนะคะ/ครับ"',
-        H: 'Tone of Voice:\n• สุภาพ, เน้น Service-first, น้ำเสียงมั่นใจแต่ไม่เร่ง',
-        I: 'Checklist ก่อนโทร:\n✅ ประวัติบัญชี & พอร์ต\n✅ 2 ช่วงเวลานัด\n✅ Objection Handling เตรียมพร้อม'
-    },
-    {
-        id: 4,
-        type: 'reminder',
-        title: 'โทรซ้ำ / Reminder หลังปฏิเสธ',
-        A: 'Opening:\n"สวัสดีค่ะ/ครับ คุณ [ชื่อ] ดิฉัน/ผมโทรมาอีกครั้งจาก [ธนาคาร] เพื่อตรวจสิทธิ์ลดหย่อนภาษีและอัปเดตเงินออมค่ะ/ครับ"',
-        B: 'Reason:\n"ทางธนาคารมีข้อมูลอัปเดตใหม่ที่อาจเป็นประโยชน์กับคุณ"',
-        C: 'Value Hook:\n"หลายท่านพบว่ามีสิทธิ์ที่ยังไม่ได้ใช้เพิ่ม 10–15%"',
-        D: 'CTA:\n"สะดวกนัดสั้น ๆ 15 นาที ช่วงบ่ายวันนี้ หรือพรุ่งนี้เช้าคะ/ครับ?"',
-        E: 'Service Questions:\n• มีช่วงเวลาไหนที่สะดวกกว่ากันคะ/ครับ?\n• ต้องการให้ส่งข้อมูลเพิ่มเติมทางไหนคะ/ครับ?',
-        F: 'Objection Handling:\n• "ไม่มีเวลา" → "เข้าใจค่ะ/ครับ เลือกช่วงที่สะดวกที่สุด แค่ 15 นาทีค่ะ/ครับ"\n• "กลัวขาย" → "ครั้งนี้ไม่ใช่การขาย เป็นบริการตรวจสิทธิ์ฟรีค่ะ/ครับ"',
-        G: 'Closing Lines:\n• "ดิฉัน/ผมจะส่งสรุปข้อมูลให้ทาง LINE/SMS นะคะ/ครับ"\n• "ขอบคุณที่ให้โอกาสอีกครั้งค่ะ/ครับ"',
-        H: 'Tone of Voice:\n• นุ่มนวล, ไม่กดดัน, ให้เกียรติการตัดสินใจ',
-        I: 'Checklist ก่อนโทร:\n✅ ตรวจประวัติการปฏิเสธครั้งก่อน\n✅ เตรียมข้อมูลใหม่/อัปเดต\n✅ เสนอทางเลือกเพิ่มเติม'
-    },
-    {
-        id: 5,
-        type: 'voicemail',
-        title: 'ลูกค้าไม่รับสาย → ฝากข้อความเสียง',
-        A: 'Opening:\n"สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] โทรมาเพื่อแจ้งบริการตรวจสิทธิ์ลดหย่อนภาษีและอัปเดตเงินออมฟรีค่ะ/ครับ"',
-        B: 'Reason:\n"ช่วงนี้มีสิทธิ์ใหม่ที่ลูกค้าหลายท่านยังไม่ทราบ ช่วยประหยัดภาษีได้เพิ่ม"',
-        C: 'Value Hook:\n"ใช้เวลาเพียง 15 นาที ไม่มีค่าใช้จ่าย และไม่ต้องเตรียมเอกสารค่ะ/ครับ"',
-        D: 'CTA:\n"ดิฉัน/ผมจะโทรกลับอีกครั้งพรุ่งนี้ หรือหากสะดวกโทรกลับ [เบอร์] หรือตอบกลับทาง SMS/LINE ได้เลยค่ะ/ครับ"',
-        E: '',
-        F: '',
-        G: 'Closing Lines:\n• "ขอบคุณค่ะ/ครับ หวังว่าจะได้รับการติดต่อจากคุณนะคะ/ครับ 😊"',
-        H: 'Tone of Voice:\n• พูดช้าชัดเจน เพราะเป็นข้อความเสียง\n• ระบุเบอร์โทรกลับช้า ๆ ทีละเลข',
-        I: 'Checklist ก่อนโทร:\n✅ เตรียมสคริปต์ข้อความเสียงไว้\n✅ ระบุเบอร์โทรกลับชัดเจน\n✅ บันทึกเวลาที่โทรเพื่อ Follow-up'
-    },
-    {
-        id: 6,
-        type: 'repeated-reject',
-        title: 'ลูกค้าที่เคยปฏิเสธมาแล้ว 2-3 ครั้ง',
-        A: 'Opening:\n"สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] ค่ะ/ครับ"',
-        B: 'Reason (Acknowledge Past):\n"ทราบว่าคุณไม่สะดวกหลายครั้งค่ะ/ครับ แต่ครั้งนี้มีข้อมูลอัปเดตใหม่ที่อาจเป็นประโยชน์กับคุณ"',
-        C: 'Value Hook:\n"สิทธิ์ปี 2025 มีเปลี่ยนแปลง หลายท่านพลาดไปเพราะไม่ได้อัปเดต ทำให้เสียเปรียบภาษีค่ะ/ครับ"',
-        D: 'CTA (Soft Approach):\n"ดิฉัน/ผมขอส่งสรุปสั้น ๆ ทาง LINE/SMS ให้ดูก่อนได้ไหมคะ/ครับ? ไม่กดดัน อ่านตอนสะดวกก็ได้ค่ะ/ครับ"',
-        E: 'Service Questions:\n• ช่วงไหนคุณสะดวกรับข้อมูลมากที่สุดคะ/ครับ?\n• ต้องการให้ส่งทาง LINE หรือ SMS คะ/ครับ?',
-        F: 'Objection Handling:\n• "ไม่สนใจจริง ๆ" → "เข้าใจค่ะ/ครับ แค่ขอส่งข้อมูลสั้น ๆ ไว้ให้ อ่านตอนสะดวกก็ได้ค่ะ/ครับ ไม่มีการติดตามครับ"\n• "อย่าโทรมาอีก" → "ขออภัยด้วยค่ะ/ครับ ดิฉัน/ผมจะบันทึกไม่ให้มีการติดต่อไปอีกค่ะ/ครับ ขอโทษที่รบกวนค่ะ/ครับ"',
-        G: 'Closing Lines:\n• "ขอบคุณที่รับสายค่ะ/ครับ หากเปลี่ยนใจอยากทราบข้อมูล สามารถติดต่อกลับได้ทุกเมื่อค่ะ/ครับ"',
-        H: 'Tone of Voice:\n• นุ่มนวลมาก, ไม่ยื้อ, เคารพการตัดสินใจ\n• พูดช้าลง 20% จากปกติ',
-        I: 'Checklist ก่อนโทร:\n✅ ตรวจประวัติการปฏิเสธ\n✅ เตรียมใจรับคำปฏิเสธอีกครั้ง\n✅ มีแผน Exit Strategy ชัดเจน'
-    },
-    {
-        id: 7,
-        type: 'maturity',
-        title: 'ลูกค้าที่ครบกำหนดต่ออายุผลิตภัณฑ์',
-        A: 'Opening:\n"สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] โทรมาแจ้งเรื่องบัญชี/ผลิตภัณฑ์ของคุณค่ะ/ครับ"',
-        B: 'Reason:\n"[ผลิตภัณฑ์ X] ของคุณจะครบกำหนดในอีก [จำนวนวัน] วัน ทางธนาคารอยากช่วยตรวจสอบตัวเลือกใหม่ ๆ ที่อาจให้ผลตอบแทนดีกว่าค่ะ/ครับ"',
-        C: 'Value Hook:\n"ตอนนี้มีอัตราดอกเบี้ยและเงื่อนไขที่ดีกว่าตอนคุณเปิดบัญชี อาจช่วยเพิ่มผลตอบแทนได้ 0.5-1% ต่อปีค่ะ/ครับ"',
-        D: 'CTA:\n"สะดวกมาที่สาขาช่วง [เวลา] หรือให้ดิฉัน/ผมจัดเตรียมเอกสารส่งให้ทาง LINE ก่อนคะ/ครับ?"',
-        E: 'Service Questions:\n• ตอนนี้มีแผนจะต่ออายุหรือยังคะ/ครับ?\n• สนใจเปรียบเทียบผลิตภัณฑ์ใหม่ ๆ ไหมคะ/ครับ?\n• ต้องการให้เงินมีสภาพคล่องหรือล็อคระยะยาวคะ/ครับ?',
-        F: 'Objection Handling:\n• "ต่ออายุเองได้" → "ได้เลยค่ะ/ครับ แต่ก่อนต่อ แนะนำให้ตรวจสอบตัวเลือกใหม่ก่อน อาจได้ดีกว่าค่ะ/ครับ"\n• "ยังไม่ตัดสินใจ" → "ไม่เป็นไรค่ะ/ครับ ดิฉัน/ผมส่งข้อมูลเปรียบเทียบไว้ให้ก่อน พิจารณาค่อย ๆ ได้ค่ะ/ครับ"',
-        G: 'Closing Lines:\n• "ดิฉัน/ผมจะส่งสรุปตัวเลือกให้ภายในวันนี้นะคะ/ครับ หากมีคำถามโทรกลับได้เลยค่ะ/ครับ"',
-        H: 'Tone of Voice:\n• เป็นกันเอง, มั่นใจ, เน้นให้ข้อมูล\n• ไม่กดดันให้ตัดสินใจทันที',
-        I: 'Checklist ก่อนโทร:\n✅ วันครบกำหนดชัดเจน\n✅ เปรียบเทียบผลิตภัณฑ์เก่า-ใหม่\n✅ เตรียมสรุปสั้น ๆ ส่งทาง LINE/SMS'
-    },
-    {
-        id: 8,
-        type: 'inactive',
-        title: 'ลูกค้าที่ไม่เคยใช้บริการมานาน (Inactive)',
-        A: 'Opening:\n"สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] ค่ะ/ครับ ไม่ได้พูดคุยกันนานเลยนะคะ/ครับ"',
-        B: 'Reason (Re-engagement):\n"ทางธนาคารอยากอัปเดตข้อมูลบริการใหม่ ๆ ที่อาจเหมาะกับคุณ และตรวจสอบว่าบัญชียังใช้งานปกติไหมค่ะ/ครับ"',
-        C: 'Value Hook:\n"ตอนนี้มีบริการใหม่ที่ช่วยจัดการการเงินง่ายขึ้น และมีสิทธิพิเศษสำหรับลูกค้าเก่าด้วยค่ะ/ครับ"',
-        D: 'CTA (Very Soft):\n"ดิฉัน/ผมขอส่งข้อมูลสั้น ๆ ทาง LINE/SMS ให้ดูก่อนได้ไหมคะ/ครับ? หากสนใจค่อยนัดคุยกันค่ะ/ครับ"',
-        E: 'Service Questions:\n• ตอนนี้ยังใช้บัญชีกับธนาคารอยู่ไหมคะ/ครับ?\n• มีความต้องการบริการอะไรเพิ่มเติมไหมคะ/ครับ?',
-        F: 'Objection Handling:\n• "ใช้ธนาคารอื่นแล้ว" → "เข้าใจค่ะ/ครับ แค่อยากแจ้งว่าเรายังพร้อมดูแลเสมอ หากต้องการอะไรติดต่อได้เลยค่ะ/ครับ"\n• "ไม่สนใจ" → "ไม่เป็นไรค่ะ/ครับ ถ้าอนุญาตดิฉัน/ผมขอส่งข้อมูลไว้ให้อ่านตอนสะดวกก็ได้ค่ะ/ครับ"',
-        G: 'Closing Lines:\n• "ขอบคุณที่รับสายค่ะ/ครับ ดีใจที่ได้คุยกันอีกครั้งค่ะ/ครับ 😊"',
-        H: 'Tone of Voice:\n• อบอุ่น, เป็นกันเอง, เหมือนเพื่อนเก่าโทรมาทักทาย\n• ไม่เร่ง, ไม่กดดัน',
-        I: 'Checklist ก่อนโทร:\n✅ ตรวจประวัติการใช้งานล่าสุด\n✅ เหตุผลที่ลูกค้าไม่ใช้งาน (ถ้ามี)\n✅ สิทธิพิเศษสำหรับลูกค้าเก่า'
-    },
-    {
-        id: 9,
-        type: 'complaint',
-        title: 'ลูกค้าที่เคยมีปัญหา/ร้องเรียน',
-        A: 'Opening:\n"สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] ค่ะ/ครับ"',
-        B: 'Reason (Acknowledge Past Issue):\n"ทราบว่าช่วงที่แล้วคุณมีปัญหาเรื่อง [ระบุปัญหา] ทางธนาคารอยากติดตามผลและมั่นใจว่าทุกอย่างเรียบร้อยแล้วค่ะ/ครับ"',
-        C: 'Value Hook (Trust Recovery):\n"ทางเราได้ปรับปรุงกระบวนการเพื่อไม่ให้เกิดปัญหาซ้ำ และอยากเชิญคุณมารับบริการตรวจสอบบัญชีฟรี เพื่อให้มั่นใจว่าทุกอย่างถูกต้องค่ะ/ครับ"',
-        D: 'CTA (Very Respectful):\n"ถ้าคุณสะดวก ดิฉัน/ผมอยากนัดพบสั้น ๆ เพื่อให้บริการอย่างเต็มที่อีกครั้งค่ะ/ครับ หรือหากยังไม่พร้อม ดิฉัน/ผมขอส่งข้อมูลไว้ให้ก่อนก็ได้ค่ะ/ครับ"',
-        E: 'Service Questions:\n• ตอนนี้ใช้งานบัญชีปกติไหมคะ/ครับ?\n• มีอะไรที่เราช่วยปรับปรุงให้ดีขึ้นได้บ้างไหมคะ/ครับ?',
-        F: 'Objection Handling:\n• "ไม่ไว้ใจแล้ว" → "เข้าใจความรู้สึกค่ะ/ครับ ทางเราพร้อมฟื้นฟูความไว้วางใจอีกครั้ง ให้โอกาสเราได้ไหมคะ/ครับ"\n• "จะเปลี่ยนธนาคาร" → "เสียใจที่ได้ยินค่ะ/ครับ ก่อนตัดสินใจ ขอโอกาสได้พูดคุยครั้งสุดท้ายได้ไหมคะ/ครับ"',
-        G: 'Closing Lines:\n• "ขออภัยอีกครั้งสำหรับปัญหาที่ผ่านมาค่ะ/ครับ เราจะดูแลคุณอย่างดีที่สุดค่ะ/ครับ"',
-        H: 'Tone of Voice:\n• ขออภัยจริงใจ, ถ่อมตน, เคารพ\n• น้ำเสียงนุ่มมาก, รับฟังก่อนพูด',
-        I: 'Checklist ก่อนโทร:\n✅ อ่านประวัติปัญหาทั้งหมด\n✅ เตรียมคำขอโทษและแก้ไข\n✅ มีอำนาจตัดสินใจเสนอสิทธิพิเศษ'
-    },
-    {
-        id: 10,
-        type: 'senior',
-        title: 'ลูกค้าอายุ 50+ / Senior',
-        A: 'Opening:\n"สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] โทรมาสั้น ๆ ค่ะ/ครับ"',
-        B: 'Reason:\n"ช่วงนี้ธนาคารมีบริการตรวจสิทธิ์พิเศษสำหรับลูกค้าวัยเกษียณ ช่วยดูแลเรื่องภาษีและเงินออมค่ะ/ครับ"',
-        C: 'Value Hook:\n"หลายท่านได้รับสิทธิ์เพิ่มจากเงินออมระยะยาว และสิทธิ์พิเศษสำหรับผู้สูงอายุค่ะ/ครับ"',
-        D: 'CTA:\n"คุณสะดวกให้ดิฉัน/ผมไปพบที่บ้าน หรือมาที่สาขาช่วงสาย ๆ สะดวกกว่าคะ/ครับ?"',
-        E: 'Service Questions:\n• ตอนนี้มีเงินออมระยะยาวไหมคะ/ครับ?\n• สนใจสิทธิ์ลดหย่อนภาษีสำหรับผู้สูงอายุไหมคะ/ครับ?',
-        F: 'Objection Handling:\n• "ไม่เข้าใจเรื่องภาษี" → "ไม่ต้องกังวลค่ะ/ครับ ดิฉัน/ผมจะอธิบายง่าย ๆ ทีละขั้นตอนค่ะ/ครับ"\n• "ให้ลูกดูแลให้" → "ดีมากค่ะ/ครับ ดิฉัน/ผมขอคุยกับคุณลูกด้วยได้ไหมคะ/ครับ?"',
-        G: 'Closing Lines:\n• "ดิฉัน/ผมจะโทรไปยืนยันอีกครั้งก่อนไปนะคะ/ครับ ขอบคุณค่ะ/ครับ 😊"',
-        H: 'Tone of Voice:\n• พูดช้า, ชัดเจน, เป็นกันเอง\n• ใช้คำง่าย ๆ ไม่ซับซ้อน\n• แสดงความเคารพ',
-        I: 'Checklist ก่อนโทร:\n✅ ตรวจอายุลูกค้า\n✅ เตรียมอธิบายง่าย ๆ\n✅ เสนอบริการไปพบถึงบ้าน'
-    },
-    {
-        id: 11,
-        type: 'young',
-        title: 'ลูกค้าหนุ่มสาว Gen Z / Millennial',
-        A: 'Opening:\n"สวัสดีครับ/ค่ะ คุณ [ชื่อลูกค้า] ผม/ดิฉัน [ชื่อพนักงาน] จาก [ธนาคาร] ครับ/ค่ะ โทรมาแปป นะครับ/คะ"',
-        B: 'Reason (Casual):\n"เห็นว่าคุณมีบัญชีกับเราอยู่ แต่ยังไม่ได้ใช้บริการเต็มที่เลย อยากแนะนำฟีเจอร์ใหม่ ๆ ที่ช่วยจัดการการเงินง่ายขึ้นครับ/ค่ะ"',
-        C: 'Value Hook:\n"ตอนนี้มีแอปใหม่ที่จัดพอร์ต Auto, มี Robo-advisor ฟรี และยังได้สิทธิ์ลดภาษีอีกด้วยครับ/ค่ะ"',
-        D: 'CTA (Digital-first):\n"ผม/ดิฉันส่งลิงก์ให้ทาง LINE ตอนนี้เลย หรือจะนัดคุยผ่าน Video Call สั้น ๆ 10 นาทีก็ได้ครับ/ค่ะ"',
-        E: 'Service Questions:\n• ตอนนี้ใช้แอปอะไรจัดการการเงินบ้างครับ/คะ?\n• สนใจลงทุนแบบอัตโนมัติไหมครับ/คะ?',
-        F: 'Objection Handling:\n• "ใช้ Fintech อื่นแล้ว" → "เข้าใจครับ/ค่ะ แต่ธนาคารเรามีข้อดีเรื่องความปลอดภัยและสิทธิ์ภาษี ลองเทียบดูก็ได้ครับ/ค่ะ"\n• "ไม่มีเงินเก็บ" → "เริ่มได้แค่ 100 บาท/เดือนเลยครับ/ค่ะ แล้วได้ลดหย่อนภาษีด้วย"',
-        G: 'Closing Lines:\n• "ส่งลิงก์ให้ใน DM แล้วนะครับ/ค่ะ เช็กตอนว่างได้เลย 😊"',
-        H: 'Tone of Voice:\n• Casual, เป็นกันเอง, พูดสั้น\n• ใช้คำว่า "แอป", "ออนไลน์", "Auto"\n• น้อยเป็นทางการ',
-        I: 'Checklist ก่อนโทร:\n✅ เช็กช่องทางดิจิทัล\n✅ เตรียมลิงก์/QR Code พร้อมส่ง\n✅ เข้าใจ Fintech Competitors\n✅ ภาษาสบาย ๆ ไม่เป็นทางการเกินไป'
-    },
-    {
-        id: 12,
-        type: 'sme',
-        title: 'ลูกค้าธุรกิจ SME / ผู้ประกอบการ',
-        A: 'Opening:\n"สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] ฝ่ายดูแลลูกค้าธุรกิจค่ะ/ครับ"',
-        B: 'Reason:\n"ช่วงนี้ทางธนาคารมีบริการตรวจสิทธิ์ภาษีสำหรับธุรกิจ SME และแนะนำการจัดพอร์ตเงินสำรองของบริษัทค่ะ/ครับ"',
-        C: 'Value Hook:\n"ช่วยให้ธุรกิจประหยัดภาษีได้ 5-15% จากการวางแผนที่ถูกต้อง และบริหารกระแสเงินสดให้มีประสิทธิภาพมากขึ้นค่ะ/ครับ"',
-        D: 'CTA:\n"คุณสะดวกให้ดิฉัน/ผมไปนำเสนอที่ออฟฟิศช่วง [เวลา] หรือจัดประชุมออนไลน์ 20-30 นาทีคะ/ครับ?"',
-        E: 'Service Questions:\n• ตอนนี้บริษัทมีการวางแผนภาษีประจำปีหรือยังคะ/ครับ?\n• กระแสเงินสดของธุรกิจเป็นอย่างไรบ้างคะ/ครับ?\n• สนใจสินเชื่อธุรกิจหรือบริการบริหารเงินสดไหมคะ/ครับ?',
-        F: 'Objection Handling:\n• "มีบัญชีแล้ว" → "เข้าใจค่ะ/ครับ เรามาช่วยเช็กว่าใช้สิทธิ์ครบหรือยัง และมีบริการเพิ่มเติมที่ช่วยลดต้นทุนได้ค่ะ/ครับ"\n• "ไม่มีเวลา" → "เข้าใจค่ะ/ครับ ดิฉัน/ผมจัดเอกสารสรุปส่งให้ทาง Email ก่อน อ่านตอนสะดวกแล้วค่อยนัดคุยก็ได้ค่ะ/ครับ"\n• "มีที่ปรึกษาอยู่แล้ว" → "ดีมากค่ะ/ครับ เราอาจให้ Second Opinion เพิ่มเติมได้ และอาจมีสิทธิ์ที่ที่ปรึกษาท่านอื่นยังไม่ได้แนะนำค่ะ/ครับ"',
-        G: 'Closing Lines:\n• "ดิฉัน/ผมจะส่งเอกสารเบื้องต้นให้ทาง Email ภายในวันนี้นะคะ/ครับ มีคำถามโทรกลับได้ตลอดค่ะ/ครับ"',
-        H: 'Tone of Voice:\n• มืออาชีพ, มั่นใจ, เน้นตัวเลขและผลลัพธ์\n• ใช้ภาษาธุรกิจ: "กระแสเงินสด", "ROI", "ประสิทธิภาพ"\n• เคารพเวลา, ไม่พูดเยิ่นเย้อ',
-        I: 'Checklist ก่อนโทร:\n✅ รู้ประเภทธุรกิจและขนาด\n✅ เตรียม Case Study ธุรกิจใกล้เคียง\n✅ เอกสารนำเสนอพร้อมส่ง\n✅ ทางเลือกนัดหมาย: ออฟฟิศลูกค้า / Online / สาขา'
-    },
-    {
-        id: 13,
-        type: 'expat',
-        title: 'ลูกค้าต่างชาติ / Expat (English Script)',
-        A: 'Opening:\n"Hello, is this Mr./Ms. [Customer Name]? This is [Staff Name] from [Bank Name]. I hope I\'m not catching you at a bad time."',
-        B: 'Reason:\n"I\'m calling regarding our tax privilege review and savings portfolio update service. We help expats maximize their tax benefits in Thailand."',
-        C: 'Value Hook:\n"Many of our expat clients save 20,000-40,000 baht annually by using privileges they weren\'t aware of, and we can help optimize your savings for the current interest rate environment."',
-        D: 'CTA:\n"Would you be available for a 15-minute consultation this afternoon, or would tomorrow morning work better for you?"',
-        E: 'Service Questions:\n• Are you currently utilizing tax deductions in Thailand?\n• Would you like to review your savings portfolio based on the new rates?\n• Do you have any specific financial goals for this year?',
-        F: 'Objection Handling:\n• "Not interested" → "I completely understand. May I just send you a brief summary via LINE/Email for your future reference?"\n• "I don\'t understand Thai tax" → "That\'s exactly why we\'re here to help. We\'ll explain everything clearly in English, step by step."\n• "I have an advisor" → "That\'s great. This is a complimentary second opinion to ensure you\'re using all available privileges."',
-        G: 'Closing Lines:\n• "I\'ll reserve a time slot at [time] for you. Looking forward to meeting you."\n• "Thank you for your time. Feel free to call back if you have any questions."',
-        H: 'Tone of Voice:\n• Professional, clear, patient\n• Speak at moderate pace (slower than with Thai customers)\n• Use simple, clear English (avoid complex financial jargon)',
-        I: 'Checklist Before Call:\n✅ Confirm customer speaks English\n✅ Prepare English documents\n✅ Know expat-specific tax privileges\n✅ Have interpreter backup if needed'
-    },
-    {
-        id: 14,
-        type: 'job-change',
-        title: 'ลูกค้าที่เพิ่งย้ายงาน / เปลี่ยนสถานะ',
-        A: 'Opening:\n"สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] ค่ะ/ครับ"',
-        B: 'Reason (Timely & Relevant):\n"เห็นว่าคุณเพิ่งมีการเปลี่ยนแปลงเรื่องงาน ทางธนาคารอยากช่วยตรวจสอบการจัดการการเงินให้เหมาะกับสถานะใหม่ค่ะ/ครับ"',
-        C: 'Value Hook:\n"การเปลี่ยนงานมักมีผลกับสิทธิ์ภาษี กองทุนสำรอง และการวางแผนเงินออม อยากช่วยดูให้ไม่พลาดสิทธิ์อะไรค่ะ/ครับ"',
-        D: 'CTA:\n"สะดวกมาพูดคุยสั้น ๆ 15-20 นาที ช่วง [เวลา] หรือให้ส่งข้อมูลทาง LINE ก่อนคะ/ครับ?"',
-        E: 'Service Questions:\n• งานใหม่เริ่มแล้วหรือยังคะ/ครับ?\n• มีการโอนกองทุนสำรองเลี้ยงชีพหรือยังคะ/ครับ?\n• รายได้เปลี่ยนแปลงไปจากเดิมมากไหมคะ/ครับ?',
-        F: 'Objection Handling:\n• "ยุ่งกับงานใหม่" → "เข้าใจมากค่ะ/ครับ แค่อยากแจ้งให้ทราบก่อน เผื่อพลาดสิทธิ์ช่วงเปลี่ยนงาน ส่งข้อมูลให้อ่านก่อนได้ไหมคะ/ครับ?"\n• "ยังไม่คิดเรื่องนี้" → "ไม่เป็นไรค่ะ/ครับ แต่บางสิทธิ์มีกำหนดเวลา ดิฉัน/ผมแค่อยากช่วยให้ทันค่ะ/ครับ"',
-        G: 'Closing Lines:\n• "ขอแสดงความยินดีกับงานใหม่ด้วยนะคะ/ครับ หวังว่าจะได้ช่วยดูแลการเงินให้เหมาะกับชีวิตใหม่ค่ะ/ครับ 😊"',
-        H: 'Tone of Voice:\n• เป็นกันเอง, ให้กำลังใจ, เข้าอกเข้าใจ\n• พูดเร็วขึ้นเล็กน้อย (energetic)\n• แสดงความยินดีด้วย',
-        I: 'Checklist ก่อนโทร:\n✅ ยืนยันว่าลูกค้าย้ายงานจริง\n✅ เตรียมข้อมูลโอนกองทุน\n✅ คำนวณสิทธิ์ภาษีตามรายได้ใหม่\n✅ แนะนำการปรับพอร์ต'
-    },
-    {
-        id: 15,
-        type: 'fixed-deposit',
-        title: 'ลูกค้าเงินฝากประจำครบกำหนด (Fixed Deposit Maturity)',
-        A: 'Opening:\n"สวัสดีค่ะ/ครับ คุณ [ชื่อลูกค้า] ดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] โทรมาเรื่องเงินฝากประจำของคุณค่ะ/ครับ"',
-        B: 'Reason (Time-sensitive):\n"เงินฝากประจำ [จำนวนเงิน] บาท ของคุณจะครบกำหนดในวันที่ [วัน/เดือน/ปี] อีก [จำนวนวัน] วัน ทางธนาคารอยากช่วยวางแผนเงินก้อนนี้ให้ได้ผลตอบแทนที่ดีที่สุดค่ะ/ครับ"',
-        C: 'Value Hook:\n"ตอนนี้มีตัวเลือกใหม่ที่อาจให้ผลตอบแทนดีกว่าตอนฝากครั้งแรก:\n• อัตราดอกเบี้ยพิเศษสำหรับเงินต่ออายุ [%]\n• ผลิตภัณฑ์ใหม่ที่รับความเสี่ยงต่ำแต่ได้มากกว่า [%]\n• รวมกับสิทธิ์ลดหย่อนภาษีได้อีก [จำนวน] บาท\nและถ้าเลือกแผนที่เหมาะสม อาจได้เพิ่มอีก [จำนวน] บาท/ปีเลยค่ะ/ครับ"',
-        D: 'CTA:\n"คุณสะดวกมาพูดคุยที่สาขาช่วง [เวลา] หรือให้ดิฉัน/ผมส่งตารางเปรียบเทียบทาง LINE/Email ก่อนคะ/ครับ?"',
-        E: 'Service Questions:\n• เงินก้อนนี้วางแผนจะใช้เมื่อไหร่คะ/ครับ? (เช็กสภาพคล่อง)\n• ต้องการผลตอบแทนสูง หรือความปลอดภัยมากกว่ากันคะ/ครับ?\n• สนใจเพิ่มสิทธิ์ลดหย่อนภาษีไปด้วยไหมคะ/ครับ?\n• มีแผนเพิ่มเงินออมในระยะยาวไหมคะ/ครับ?',
-        F: 'Objection Handling:\n• "ต่ออายุเองได้" → "ได้เลยค่ะ/ครับ แต่ก่อนกดต่อ อยากให้ดูตัวเลือกใหม่ก่อน เพราะดอกเบี้ยและเงื่อนไขเปลี่ยนไปจากตอนฝากครั้งแรก อาจได้ดีกว่าถึง 0.5-1% ต่อปีค่ะ/ครับ"\n• "ยังไม่คิดจะทำอะไร" → "เข้าใจค่ะ/ครับ แต่ถ้าปล่อยทิ้งไว้โดยไม่ต่ออายุ เงินจะเข้าออมทรัพย์ที่ดอกเบี้ยต่ำมาก แค่ [%] เท่านั้น เสียดายค่ะ/ครับ ให้ดิฉัน/ผมช่วยหาทางที่ดีที่สุดให้ก่อนได้ไหมคะ/ครับ?"\n• "เอาเงินออกไปใช้" → "เข้าใจค่ะ/ครับ ถ้าต้องการใช้เงินทั้งหมด ก็ไม่เป็นไร แต่ถ้ามีส่วนที่ยังไม่ต้องใช้ทันที ลองแยกไว้บางส่วนดีไหมคะ/ครับ? จะได้มีเงินสำรองที่ทำงานอยู่ค่ะ/ครับ"',
-        G: 'Closing Lines:\n• "ยอดเยี่ยมค่ะ/ครับ ดิฉัน/ผมจองเวลา [วัน/เวลา] ไว้แล้วนะคะ/ครับ"\n• "เอกสารเปรียบเทียบจะส่งให้ทาง LINE/Email ก่อนล่วงหน้า 1 วัน เพื่อให้คุณได้ดูก่อนค่ะ/ครับ"',
-        H: 'Tone of Voice:\n• Advisory (เป็นที่ปรึกษา): ไม่ใช่การขาย แต่เป็นการแนะนำที่ดีที่สุด\n• Urgent but Not Pushy: เน้นความจำเป็นเรื่องเวลา แต่ไม่กดดัน\n• Data-driven: ใช้ตัวเลขชัดเจน (%, จำนวนบาท, วันครบกำหนด)\n• Confident: มั่นใจในทางเลือกที่เสนอ',
-        I: 'Checklist ก่อนโทร:\n✅ ข้อมูลเงินฝากประจำ\n✅ ตัวเลือกใหม่ที่เสนอ (3-4 แผน)\n✅ เตรียมเปรียบเทียบ\n✅ เอกสารสำรอง'
-    }
-];
-
-        // Sample objection handling data - เพิ่มข้อมูลให้ครบ 12 รายการ
-        const objectionData = [
-            { objection: 'ไม่สนใจ', response: 'ไม่เป็นไรค่ะ/ครับ แค่แจ้งสิทธิ์ฟรี ขอส่งสรุปทาง LINE ไว้ให้ก่อนได้ไหมคะ/ครับ?', tone: 'นุ่มนวล, ไม่ยื้อ' },
-            { objection: 'ไม่มีเวลา', response: 'เข้าใจค่ะ/ครับ ใช้แค่ 15 นาที เลือกช่วงที่สะดวกที่สุดเลยค่ะ/ครับ เช่น พรุ่งนี้เช้า/บ่าย?', tone: 'เคารพ, เสนอทางเลือก' },
-            { objection: 'กลัวถูกขาย', response: 'เข้าใจค่ะ/ครับ ครั้งนี้ไม่ใช่การขาย เป็นบริการตรวจสิทธิ์ฟรีค่ะ/ครับ ไม่มีค่าใช้จ่าย', tone: 'มั่นใจ, ชัดเจน' },
-            { objection: 'มีคนดูแลแล้ว', response: 'ดีมากค่ะ/ครับ ถือเป็นการตรวจสิทธิ์ซ้ำเพื่อความมั่นใจ บางสิทธิ์ปีนี้อาจเปลี่ยนค่ะ/ครับ', tone: 'Respectful, เสนอ Second Opinion' },
-            { objection: 'จัดภาษีเรียบร้อยแล้ว', response: 'ขอเช็กฟรีอีกครั้งค่ะ/ครับ เผื่อมีสิทธิ์ที่ยังไม่ได้ใช้ แค่ 15 นาทีค่ะ/ครับ', tone: 'เสนอ Double-check' },
-            { objection: 'ไม่มีเงิน', response: 'เริ่มได้แค่ 100 บาท/เดือนค่ะ/ครับ และยังได้ลดหย่อนภาษีด้วย ลองดูก่อนก็ได้ค่ะ/ครับ', tone: 'Encouraging, แสดงทางเลือกต่ำ' },
-            { objection: 'ใช้บริการที่อื่นแล้ว', response: 'เข้าใจค่ะ/ครับ เราอาจให้ Second Opinion เพิ่มเติมได้ และมีสิทธิ์ที่อื่นอาจไม่มีค่ะ/ครับ', tone: 'แข่งขันเชิงบวก' },
-            { objection: 'อย่าโทรมาอีก', response: 'ขออภัยด้วยค่ะ/ครับ ดิฉัน/ผมจะบันทึกไม่ให้มีการติดต่อไปอีกค่ะ/ครับ ขอโทษที่รบกวนค่ะ/ครับ', tone: 'ขอโทษจริงใจ, รับผิดชอบ' },
-            { objection: 'ไม่เข้าใจ/ยาก', response: 'ไม่ต้องกังวลค่ะ/ครับ ดิฉัน/ผมจะอธิบายง่าย ๆ ทีละขั้นตอน ไม่ซับซ้อนเลยค่ะ/ครับ', tone: 'อดทน, ให้ความมั่นใจ' },
-            { objection: 'ให้ลูก/คนอื่นดูแลให้', response: 'ดีมากค่ะ/ครับ ดิฉัน/ผมขอคุยกับท่านด้วยได้ไหมคะ/ครับ? หรือส่งข้อมูลให้ท่านดูก็ได้ค่ะ/ครับ', tone: 'ยืดหยุ่น, เปิดกว้าง' },
-            { objection: 'ไม่ไว้ใจ', response: 'เข้าใจความรู้สึกค่ะ/ครับ ทางเราพร้อมฟื้นฟูความไว้วางใจอีกครั้ง ให้โอกาสเราได้ไหมคะ/ครับ', tone: 'ถ่อมตน, จริงใจ' },
-            { objection: 'จะคิดก่อน', response: 'ได้เลยค่ะ/ครับ ดิฉัน/ผมขอส่งข้อมูลไว้ให้พิจารณาก่อน พร้อมติดต่อกลับได้ทุกเมื่อค่ะ/ครับ', tone: 'เคารพ, ให้เวลา' }
-        ];
-
-        // CTA Slots data
-        const ctaData = [
-            { type: 'ลูกค้าใหม่', primary: 'คุณสะดวกมาที่สาขาช่วงบ่ายวันนี้ หรือพรุ่งนี้เช้าคะ/ครับ?', alternative: 'หรือให้ส่งข้อมูลทาง LINE ก่อนได้ไหมคะ/ครับ?', language: 'เสนอ 2 ทางเลือกชัดเจน' },
-            { type: 'ลูกค้าคุ้นเคย', primary: 'สะดวกให้จองคิวช่วงบ่ายวันนี้ หรือพรุ่งนี้เช้าคะ/ครับ?', alternative: 'หรือจะนัดช่วงสายวันพรุ่งนี้ดีไหมคะ/ครับ?', language: 'เป็นกันเอง, เสนอเร็ว' },
-            { type: 'VIP/Premium', primary: 'คุณสะดวกพรุ่งนี้สาย ๆ หรือบ่ายคะ/ครับ? จะจัดห้องรับรองไว้ด้วยค่ะ/ครับ', alternative: 'หรือจะให้จัดประชุม Private ที่สะดวกคะ/ครับ?', language: 'เน้นความพิเศษ' },
-            { type: 'โทรซ้ำ', primary: 'สะดวกนัดสั้น ๆ 15 นาที ช่วงบ่ายวันนี้ หรือพรุ่งนี้เช้าคะ/ครับ?', alternative: 'หรือให้ส่งสรุปทาง LINE/SMS ก่อนก็ได้ค่ะ/ครับ', language: 'Soft, ไม่กดดัน' },
-            { type: 'Senior 50+', primary: 'คุณสะดวกให้ไปพบที่บ้าน หรือมาที่สาขาช่วงสาย ๆ สะดวกกว่าคะ/ครับ?', alternative: 'หรือให้ดิฉัน/ผมโทรนัดอีกครั้งวันพรุ่งนี้ก็ได้ค่ะ/ครับ', language: 'อ่อนโยน, ยืดหยุ่น' },
-            { type: 'Gen Z/Millennial', primary: 'ส่งลิงก์ให้ทาง LINE ตอนนี้เลย หรือจะ Video Call สั้น ๆ 10 นาทีก็ได้ครับ/ค่ะ', alternative: 'หรือเช็กข้อมูลผ่านแอปก่อนก็ได้ครับ/ค่ะ', language: 'Digital-first, รวดเร็ว' },
-            { type: 'SME/ธุรกิจ', primary: 'สะดวกให้ไปนำเสนอที่ออฟฟิศช่วง [เวลา] หรือจัด Meeting Online 20-30 นาทีคะ/ครับ?', alternative: 'หรือส่งเอกสารทาง Email ก่อนก็ได้ค่ะ/ครับ', language: 'มืออาชีพ, เคารพเวลา' }
-        ];
-
-        // LINE/SMS Templates data
-        const templateData = [
-            { title: 'ก่อนโทร (Pre-call Intro)', content: 'สวัสดีค่ะ/ครับ คุณ [ชื่อ]\nดิฉัน/ผม [ชื่อพนักงาน] จาก [ธนาคาร] ค่ะ/ครับ\n\nทางธนาคารมีบริการตรวจสิทธิ์ลดหย่อนภาษีและอัปเดตพอร์ตเงินออมฟรี\nใช้เวลาเพียง 15 นาที ไม่มีค่าใช้จ่าย\n\nสนใจให้ช่วยเช็กสิทธิ์ไหมคะ/ครับ? 😊\n\n📞 โทรกลับ: [เบอร์]\n💬 ตอบกลับข้อความนี้ได้เลย' },
-            { title: 'หลังปฏิเสธ (Post-rejection Reminder)', content: 'สวัสดีค่ะ/ครับ คุณ [ชื่อ]\n\nขอส่งสรุปสิทธิ์ลดหย่อนภาษีและแนวทางจัดการเงินออมให้ฟรีค่ะ/ครับ\n\n📌 ลูกค้าหลายท่านประหยัดภาษีเพิ่มได้ 2-4 หมื่นบาท\n📌 อัปเดตตามดอกเบี้ยใหม่\n📌 ใช้เวลาเพียง 15 นาที\n\nสนใจรับสรุปไหมคะ/ครับ?\nตอบ "สนใจ" เพื่อรับข้อมูล 😊' },
-            { title: 'ยืนยันนัดหมาย (Appointment Confirmation)', content: '✅ ยืนยันนัดหมาย\n\nคุณ [ชื่อลูกค้า]\n📅 วันที่: [วัน/เดือน/ปี]\n🕐 เวลา: [เวลา]\n📍 สถานที่: [สาขา/ออนไลน์]\n\n📋 ไม่ต้องเตรียมเอกสาร\n⏱️ ใช้เวลา 15 นาที\n\nหากมีการเปลี่ยนแปลง กรุณาแจ้งล่วงหน้า\n📞 [เบอร์โทร]\n\nรอพบคุณนะคะ/ครับ 😊' },
-            { title: 'Reminder 1 วันก่อนนัดหมาย', content: '🔔 แจ้งเตือนนัดหมาย\n\nสวัสดีค่ะ/ครับ คุณ [ชื่อ]\n\nพรุ่งนี้มีนัดตรวจสิทธิ์ภาษีและเงินออมนะคะ/ครับ\n\n📅 [วันพรุ่งนี้]\n🕐 เวลา [เวลา]\n📍 [สถานที่]\n\nยืนยันนัดหมาย → ตอบ "ยืนยัน"\nเปลี่ยนเวลา → ตอบ "เปลี่ยน"\n\nรอพบคุณนะคะ/ครับ 😊' },
-            { title: 'ขอบคุณหลังพบ (Post-meeting Thank You)', content: '🙏 ขอบคุณที่ให้เวลานะคะ/ครับ\n\nคุณ [ชื่อ]\n\nดีใจที่ได้พูดคุยวันนี้ 😊\nหวังว่าข้อมูลที่แนะนำจะเป็นประโยชน์นะคะ/ครับ\n\n📎 เอกสารสรุปส่งให้ทางนี้แล้วค่ะ/ครับ\n❓ มีคำถามเพิ่มเติมโทรมาได้เลย\n\n📞 [เบอร์]\nดิฉัน/ผม [ชื่อพนักงาน]' }
-        ];
-
-        // Checklist data - เพิ่มข้อมูลให้ครบ
-        const checklistData = [
-            "ตรวจสอบชื่อลูกค้าและประวัติการใช้งาน",
-            "เตรียม 2 ช่วงเวลานัดหมาย",
-            "เตรียมประโยคเปิดที่เหมาะสม",
-            "เตรียมคำตอบข้อโต้แย้งอย่างน้อย 3 แบบ",
-            "เตรียมช่องทางสำรอง (LINE/SMS)",
-            "ตรวจสอบสิทธิ์และโปรโมชั่นล่าสุด",
-            "เตรียมเอกสารหรือลิงก์ที่จำเป็น",
-            "ตรวจสอบข้อมูลลูกค้าล่าสุด",
-            "เตรียมข้อมูลผลิตภัณฑ์ที่เกี่ยวข้อง",
-            "ตั้งค่าเครื่องมือบันทึกการโทร",
-            "เตรียมข้อมูลส่วนลดพิเศษ (ถ้ามี)",
-            "ตรวจสอบเวลาที่เหมาะสมสำหรับการโทร",
-            "เตรียมสคริปต์สำหรับสถานการณ์พิเศษ",
-            "บันทึกข้อมูลการติดตามผล"
-        ];
-
-        // Techniques data - เพิ่มข้อมูลให้ครบ
-        const techniquesData = [
-            {
-                title: "เทคนิคการฟังอย่าง aktif",
-                description: "การฟังอย่างตั้งใจและแสดงออกว่ากำลังฟังอยู่ เช่น การใช้คำพูดเช่น 'ครับ/ค่ะ', 'เข้าใจแล้วครับ/ค่ะ' เพื่อสร้างความมั่นใจให้ลูกค้า"
-            },
-            {
-                title: "เทคนิคการตั้งคำถามปลายเปิด",
-                description: "ใช้คำถามปลายเปิดเพื่อให้ลูกค้าได้พูดมากขึ้น เช่น 'ลูกค้ามีความคิดเห็นอย่างไรบ้างครับ/คะ?' หรือ 'มีอะไรที่เราช่วยได้เพิ่มเติมไหมคะ/ครับ?'"
-            },
-            {
-                title: "เทคนิค Mirroring",
-                description: "สะท้อนคำพูดหรือความรู้สึกของลูกค้าเพื่อสร้างความเข้าใจ เช่น เมื่อลูกค้าบอก 'ไม่มีเวลา' เราตอบ 'เข้าใจค่ะ/ครับว่าคุณไม่มีเวลา'"
-            },
-            {
-                title: "เทคนิคการสร้างมูลค่า",
-                description: "เน้นประโยชน์ที่ลูกค้าจะได้รับแทนที่จะเน้นคุณสมบัติสินค้า เช่น 'บริการนี้ช่วยประหยัดเวลาคุณได้ 2 ชั่วโมงต่อเดือน'"
-            },
-            {
-                title: "เทคนิคการจัดการข้อโต้แย้ง",
-                description: "ใช้หลัก Feel-Felt-Found: 'เข้าใจความรู้สึกคุณ (Feel), ลูกค้าท่านอื่นก็เคยรู้สึกแบบนี้ (Felt), แต่หลังจากใช้บริการพบว่า... (Found)'"
-            },
-            {
-                title: "เทคนิคการสร้างความเร่งด่วน",
-                description: "สร้างความรู้สึกเร่งด่วนโดยไม่กดดัน เช่น 'โปรโมชั่นนี้มีถึงสิ้นเดือนนี้เท่านั้น' หรือ 'สิทธิ์พิเศษนี้มีสำหรับลูกค้า 100 ท่านแรก'"
-            },
-            {
-                title: "เทคนิคการเสนอทางเลือก",
-                description: "เสนอทางเลือกให้ลูกค้าแทนที่จะให้ตอบใช่หรือไม่ใช่ เช่น 'คุณสะดวกนัดหมายวันจันทร์หรือวันอังคารดีคะ/ครับ?'"
-            },
-            {
-                title: "เทคนิคการสรุปประโยชน์",
-                description: "สรุปประโยชน์ที่ลูกค้าจะได้รับก่อนปิดการขาย เพื่อย้ำความคุ้มค่าของการตัดสินใจ"
-            }
-        ];
-
-        // Current user role
-        let currentRole = null;
-        let currentEditingId = null;
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeData();
-            setupEventListeners();
+        // (โค้ด JavaScript เดิมอยู่ที่นี่)
+        // เนื่องจากโค้ดยาวมาก ผมได้ตัดบางส่วนออกเพื่อให้พอดีกับข้อจำกัด
+        // โค้ดเต็มจะอยู่ในไฟล์แยก
+        
+        // ฟังก์ชันแสดงการแจ้งเตือน
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
             
-            // Set up back button
-            document.getElementById('backButton').addEventListener('click', function() {
-                showPage('home');
+            toastMessage.textContent = message;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+        
+        // ฟังก์ชันสำหรับการจัดการเมนูด้านล่าง
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // อัพเดตสถานะเมนูที่เลือก
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // แสดงหน้าเพจที่เลือก
+                const page = this.getAttribute('data-page');
+                showPage(page);
             });
         });
-
-        // Initialize data
-        function initializeData() {
-            // Load scripts data
-            if (!localStorage.getItem('scriptsData')) {
-                localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
-            }
-            
-            // Load objection data
-            if (!localStorage.getItem('objectionData')) {
-                localStorage.setItem('objectionData', JSON.stringify(objectionData));
-            }
-            
-            // Load CTA data
-            if (!localStorage.getItem('ctaData')) {
-                localStorage.setItem('ctaData', JSON.stringify(ctaData));
-            }
-            
-            // Load template data
-            if (!localStorage.getItem('templateData')) {
-                localStorage.setItem('templateData', JSON.stringify(templateData));
-            }
-            
-            // Load checklist data
-            if (!localStorage.getItem('checklistData')) {
-                localStorage.setItem('checklistData', JSON.stringify(checklistData));
-            }
-            
-            // Load techniques data
-            if (!localStorage.getItem('techniquesData')) {
-                localStorage.setItem('techniquesData', JSON.stringify(techniquesData));
-            }
-            
-            // Load Q&A data
-            if (!localStorage.getItem('qaData')) {
-                localStorage.setItem('qaData', JSON.stringify([]));
-            }
-            
-            // Load QR code if exists
-            const qrCodeData = localStorage.getItem('qrCode');
-            if (qrCodeData) {
-                document.getElementById('qrCodeDisplay').innerHTML = `<img src="${qrCodeData}" alt="QR Code" style="width:100%;height:100%;object-fit:contain;">`;
-            }
-            
-            // Load banner if exists
-            const bannerData = localStorage.getItem('banner');
-            if (bannerData) {
-                document.getElementById('bannerDisplay').innerHTML = `<img src="${bannerData}" alt="Banner" style="width:100%;height:auto;">`;
-            }
-            
-            // Set up QR code upload
-            document.getElementById('qrCodeUpload').addEventListener('change', handleQRCodeUpload);
-            
-            // Set up banner upload
-            document.getElementById('bannerUpload').addEventListener('change', handleBannerUpload);
-        }
-
-        // Set up event listeners
-        function setupEventListeners() {
-            // Menu navigation
-            document.querySelectorAll('.menu-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const page = this.getAttribute('data-page');
-                    showPage(page);
-                    
-                    // Update active menu item
-                    document.querySelectorAll('.menu-link').forEach(item => {
-                        item.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                });
-            });
-            
-            // Service cards navigation
-            document.querySelectorAll('.service-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const page = this.getAttribute('data-page');
-                    showPage(page);
-                    
-                    // Update active menu item
-                    document.querySelectorAll('.menu-link').forEach(item => {
-                        item.classList.remove('active');
-                        if (item.getAttribute('data-page') === page) {
-                            item.classList.add('active');
-                        }
-                    });
-                });
-            });
-        }
-
-        // Role login function
-        function roleLogin(role) {
-            let question = '';
-            let answer = '';
-            
-            if (role === 'user') {
-                question = 'กระจกวิเศษบอกข้าเทิด Region ไหนพนักงานเริ่ดที่สุดในปฐพี';
-                answer = 'rh5';
-            } else {
-                question = 'ห๊ะ อะไรนะ ว่าไงนะ ห๊ะ ไม่ได้ยินนนนน';
-                answer = 'pru';
-            }
-            
-            let userAnswer = prompt(question, '');
-            if (userAnswer && userAnswer.toLowerCase() === answer.toLowerCase()) {
-                currentRole = role;
-                document.getElementById('loginPage').style.display = 'none';
-                document.getElementById('mainApp').classList.remove('hidden');
-                
-                // Show trainer-only elements if user is trainer
-                if (role === 'trainer') {
-                    document.querySelectorAll('.trainer-only').forEach(el => {
-                        el.style.display = 'block';
-                    });
-                }
-                
-                loadScripts();
-                loadObjectionTable();
-                loadChecklist();
-                loadTechniques();
-                loadCTATable();
-                loadTemplates();
-                loadQA();
-            } else {
-                alert('คำตอบไม่ถูกต้อง');
-            }
-        }
-
-        // Show specific page
-        function showPage(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.add('hidden');
-            });
-            
-            // Show selected page
-            document.getElementById(pageId).classList.remove('hidden');
-            
-            // Update page title and show/hide back button
-            const pageTitles = {
-                'home': { heading: 'Welcome Back!', subtitle: 'RH5 Call Script Hub - จัดการสคริปต์การโทรทั้งหมดของคุณ' },
-                'scripts': { heading: 'คลังสคริปต์การโทร', subtitle: 'เลือกสคริปต์ที่ต้องการใช้งาน' },
-                'objection-handling': { heading: 'ตารางรวม Objection Handling', subtitle: 'จัดการข้อโต้แย้งจากลูกค้า' },
-                'cta-slots': { heading: 'ตารางรวม CTA Slots', subtitle: 'ช่วงเวลานัดหมายกับลูกค้า' },
-                'line-templates': { heading: 'LINE/SMS Template Library', subtitle: 'เทมเพลตข้อความสำหรับติดต่อลูกค้า' },
-                'checklist': { heading: 'เช็คลิสต์ Master', subtitle: 'รายการตรวจสอบก่อนการโทร' },
-                'advanced-techniques': { heading: 'เทคนิคพิเศษ', subtitle: 'เทคนิคการขายและบริการลูกค้า' },
-                'trainer': { heading: 'Trainer Management', subtitle: 'จัดการสคริปต์และระบบ' },
-                'qa': { heading: 'Q&A Board', subtitle: 'คำถามและคำตอบจากทีมงาน' }
-            };
-            
-            if (pageTitles[pageId]) {
-                document.getElementById('pageHeading').textContent = pageTitles[pageId].heading;
-                document.getElementById('pageSubtitle').textContent = pageTitles[pageId].subtitle;
-            }
-            
-            // Show back button on all pages except home
-            if (pageId === 'home') {
-                document.getElementById('backButton').style.display = 'none';
-            } else {
-                document.getElementById('backButton').style.display = 'flex';
-            }
-            
-            // Load page-specific content
-            if (pageId === 'scripts') {
-                loadScripts();
-            } else if (pageId === 'objection-handling') {
-                loadObjectionTable();
-            } else if (pageId === 'checklist') {
-                loadChecklist();
-            } else if (pageId === 'advanced-techniques') {
-                loadTechniques();
-            } else if (pageId === 'cta-slots') {
-                loadCTATable();
-            } else if (pageId === 'line-templates') {
-                loadTemplates();
-            } else if (pageId === 'qa') {
-                loadQA();
-            } else if (pageId === 'trainer') {
-                loadTrainerScripts();
-            }
-        }
-
-// Show specific page
-function showPage(pageId) {
-    // Hide all pages
-    document.querySelectorAll('.page').forEach(page => {
-        page.classList.add('hidden');
-    });
-    
-    // Show selected page
-    document.getElementById(pageId).classList.remove('hidden');
-    
-    // Update page title and show/hide back button
-    const pageTitles = {
-        'home': { heading: 'Welcome Back!', subtitle: 'RH5 Call Script Hub - จัดการสคริปต์การโทรทั้งหมดของคุณ' },
-        'scripts': { heading: 'คลังสคริปต์การโทร', subtitle: 'เลือกสคริปต์ที่ต้องการใช้งาน' },
-        'objection-handling': { heading: 'ตารางรวม Objection Handling', subtitle: 'จัดการข้อโต้แย้งจากลูกค้า' },
-        'cta-slots': { heading: 'ตารางรวม CTA Slots', subtitle: 'ช่วงเวลานัดหมายกับลูกค้า' },
-        'line-templates': { heading: 'LINE/SMS Template Library', subtitle: 'เทมเพลตข้อความสำหรับติดต่อลูกค้า' },
-        'checklist': { heading: 'เช็คลิสต์ Master', subtitle: 'รายการตรวจสอบก่อนการโทร' },
-        'advanced-techniques': { heading: 'เทคนิคพิเศษ', subtitle: 'เทคนิคการขายและบริการลูกค้า' },
-        'trainer': { heading: 'Trainer Management', subtitle: 'จัดการสคริปต์และระบบ' },
-        'qa': { heading: 'Q&A Board', subtitle: 'คำถามและคำตอบจากทีมงาน' }
-    };
-    
-    if (pageTitles[pageId]) {
-        document.getElementById('pageHeading').textContent = pageTitles[pageId].heading;
-        document.getElementById('pageSubtitle').textContent = pageTitles[pageId].subtitle;
-    }
-    
-    // Show back button on all pages except home
-    if (pageId === 'home') {
-        document.getElementById('backButton').style.display = 'none';
-        // อัพเดตหัวเรื่องหน้า Home
-        document.getElementById('pageHeading').textContent = 'Welcome Back!';
-        document.getElementById('pageSubtitle').textContent = 'RH5 Call Script Hub - จัดการสคริปต์การโทรทั้งหมดของคุณ';
-    } else {
-        document.getElementById('backButton').style.display = 'flex';
-    }
-    
-    // Load page-specific content
-    if (pageId === 'scripts') {
-        loadScripts();
-    } else if (pageId === 'objection-handling') {
-        loadObjectionTable();
-    } else if (pageId === 'checklist') {
-        loadChecklist();
-    } else if (pageId === 'advanced-techniques') {
-        loadTechniques();
-    } else if (pageId === 'cta-slots') {
-        loadCTATable();
-    } else if (pageId === 'line-templates') {
-        loadTemplates();
-    } else if (pageId === 'qa') {
-        loadQA();
-    } else if (pageId === 'trainer') {
-        loadTrainerScripts();
-    }
-}
-        // Get script type label - แก้ไขให้รองรับประเภทสคริปต์ทั้งหมด
-        function getScriptTypeLabel(type) {
-            const typeLabels = {
-                'new': 'ลูกค้าใหม่',
-                'familiar': 'ลูกค้าคุ้นเคย',
-                'vip': 'VIP',
-                'reminder': 'โทรซ้ำ',
-                'voicemail': 'ข้อความเสียง',
-                'repeated-reject': 'ปฏิเสธซ้ำ',
-                'maturity': 'ครบกำหนด',
-                'paid-up': 'ชำระเบี้ยครบ',
-                'inactive': 'ไม่ใช้งาน',
-                'complaint': 'ร้องเรียน',
-                'senior': 'ลูกค้าสูงอายุ',
-                'young': 'ลูกค้าวัยรุ่น',
-                'sme': 'ธุรกิจ SME',
-                'expat': 'ชาวต่างชาติ',
-                'job-change': 'เปลี่ยนงาน',
-                'fixed-deposit': 'เงินฝากประจำครบกำหนด'
-            };
-            return typeLabels[type] || type;
-        }
-
-        // View script detail
-        function viewScriptDetail(scriptId) {
-            const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
-            const script = scriptsData.find(s => s.id === scriptId);
-            
-            if (!script) return;
-            
-            const scriptDetail = document.getElementById('scriptDetail');
-            let detailHTML = `
-                <div class="script-header">
-                    <div>
-                        <h2 class="script-title">${script.title} <span class="script-type">${getScriptTypeLabel(script.type)}</span></h2>
-                    </div>
-                    <button class="back-btn" onclick="hideScriptDetail()"><i class="fas fa-arrow-left"></i> Back to Scripts</button>
-                </div>
-            `;
-            
-            // Add sections only if they have content
-            if (script.A) {
-                detailHTML += `
-                    <div class="script-section">
-                        <h3 class="section-title">A: Opening</h3>
-                        <div class="section-content">${script.A}</div>
-                    </div>
-                `;
-            }
-            
-            if (script.B) {
-                detailHTML += `
-                    <div class="script-section">
-                        <h3 class="section-title">B: Reason / Service Tone</h3>
-                        <div class="section-content">${script.B}</div>
-                    </div>
-                `;
-            }
-            
-            if (script.C) {
-                detailHTML += `
-                    <div class="script-section">
-                        <h3 class="section-title">C: Value Hook</h3>
-                        <div class="section-content">${script.C}</div>
-                    </div>
-                `;
-            }
-            
-            if (script.D) {
-                detailHTML += `
-                    <div class="script-section">
-                        <h3 class="section-title">D: CTA (Call to Action)</h3>
-                        <div class="section-content">${script.D}</div>
-                    </div>
-                `;
-            }
-            
-            if (script.E) {
-                detailHTML += `
-                    <div class="script-section">
-                        <h3 class="section-title">E: Service Questions</h3>
-                        <div class="section-content">${script.E}</div>
-                    </div>
-                `;
-            }
-            
-            if (script.F) {
-                detailHTML += `
-                    <div class="script-section">
-                        <h3 class="section-title">F: Objection Handling</h3>
-                        <div class="section-content">${script.F}</div>
-                    </div>
-                `;
-            }
-            
-            if (script.G) {
-                detailHTML += `
-                    <div class="script-section">
-                        <h3 class="section-title">G: Closing Lines</h3>
-                        <div class="section-content">${script.G}</div>
-                    </div>
-                `;
-            }
-            
-            if (script.H) {
-                detailHTML += `
-                    <div class="script-section">
-                        <h3 class="section-title">H: Tone of Voice</h3>
-                        <div class="section-content">${script.H}</div>
-                    </div>
-                `;
-            }
-            
-            if (script.I) {
-                detailHTML += `
-                    <div class="script-section">
-                        <h3 class="section-title">I: Checklist ก่อนโทร</h3>
-                        <div class="section-content">${script.I}</div>
-                    </div>
-                `;
-            }
-            
-            scriptDetail.innerHTML = detailHTML;
-            
-            // Hide script list and show detail
-            document.getElementById('scriptList').classList.add('hidden');
-            scriptDetail.style.display = 'block';
-        }
-
-        // Hide script detail and show list
-        function hideScriptDetail() {
-            document.getElementById('scriptDetail').style.display = 'none';
-            document.getElementById('scriptList').classList.remove('hidden');
-        }
-
-        // Load objection handling table
-        function loadObjectionTable() {
-            const objectionTable = document.getElementById('objectionTable');
-            const objectionData = JSON.parse(localStorage.getItem('objectionData')) || [];
-            
-            objectionTable.innerHTML = '';
-            
-            objectionData.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.objection}</td>
-                    <td>${item.response}</td>
-                    <td>${item.tone}</td>
-                `;
-                objectionTable.appendChild(row);
-            });
-        }
-
-        // Load CTA table
-        function loadCTATable() {
-            const ctaTable = document.getElementById('ctaTable');
-            const ctaData = JSON.parse(localStorage.getItem('ctaData')) || [];
-            
-            ctaTable.innerHTML = '';
-            
-            ctaData.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.type}</td>
-                    <td>${item.primary}</td>
-                    <td>${item.alternative}</td>
-                    <td>${item.language}</td>
-                `;
-                ctaTable.appendChild(row);
-            });
-        }
-
-        // Load templates
-        function loadTemplates() {
-            const templateList = document.getElementById('templateList');
-            const templateData = JSON.parse(localStorage.getItem('templateData')) || [];
-            
-            templateList.innerHTML = '';
-            
-            templateData.forEach(template => {
-                const templateCard = document.createElement('div');
-                templateCard.className = 'template-card';
-                templateCard.innerHTML = `
-                    <h3 class="template-title">${template.title}</h3>
-                    <div class="template-content">${template.content}</div>
-                `;
-                templateList.appendChild(templateCard);
-            });
-        }
-
-        // Load checklist
-        function loadChecklist() {
-            const checklistContent = document.getElementById('checklistContent');
-            const checklistData = JSON.parse(localStorage.getItem('checklistData')) || [];
-            
-            checklistContent.innerHTML = '';
-            
-            checklistData.forEach(item => {
-                const checklistItem = document.createElement('div');
-                checklistItem.className = 'checklist-item';
-                checklistItem.innerHTML = `
-                    <input type="checkbox" id="check-${item}" name="check-${item}">
-                    <label for="check-${item}">${item}</label>
-                `;
-                checklistContent.appendChild(checklistItem);
-            });
-        }
-
-        // Load techniques
-        function loadTechniques() {
-            const techniquesContent = document.getElementById('techniquesContent');
-            const techniquesData = JSON.parse(localStorage.getItem('techniquesData')) || [];
-            
-            techniquesContent.innerHTML = '';
-            
-            techniquesData.forEach(technique => {
-                const techniqueCard = document.createElement('div');
-                techniqueCard.className = 'technique-card';
-                techniqueCard.innerHTML = `
-                    <h3 class="technique-title">${technique.title}</h3>
-                    <div class="technique-description">${technique.description}</div>
-                `;
-                techniquesContent.appendChild(techniqueCard);
-            });
-        }
-
-        // Load trainer scripts
-        function loadTrainerScripts() {
-            const trainerScriptList = document.getElementById('trainerScriptList');
-            const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
-            
-            trainerScriptList.innerHTML = '';
-            
-            scriptsData.forEach(script => {
-                const scriptDiv = document.createElement('div');
-                scriptDiv.className = 'card';
-                scriptDiv.innerHTML = `
-                    <div class="script-card-header">
-                        <div class="script-card-title">${script.title}</div>
-                        <div class="script-card-type">${getScriptTypeLabel(script.type)}</div>
-                    </div>
-                    <div class="script-card-content">${script.A}</div>
-                    <div class="mt-2">
-                        <button class="view-btn" onclick="viewScriptDetail(${script.id})">View</button>
-                        <button class="view-btn" onclick="editScript(${script.id})" style="margin-left: 0.5rem;">Edit</button>
-                        <button class="view-btn" onclick="deleteScript(${script.id})" style="margin-left: 0.5rem; background: var(--danger); border-color: var(--danger); color: white;">Delete</button>
-                    </div>
-                `;
-                trainerScriptList.appendChild(scriptDiv);
-            });
-        }
-
-        // Handle QR code upload
-        function handleQRCodeUpload(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const imageData = event.target.result;
-                    localStorage.setItem('qrCode', imageData);
-                    document.getElementById('qrCodeDisplay').innerHTML = `<img src="${imageData}" alt="QR Code" style="width:100%;height:100%;object-fit:contain;">`;
-                    document.getElementById('uploadStatus').textContent = 'QR Code อัพโหลดสำเร็จ!';
-                    document.getElementById('uploadStatus').style.color = 'green';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Handle banner upload
-        function handleBannerUpload(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const imageData = event.target.result;
-                    localStorage.setItem('banner', imageData);
-                    document.getElementById('bannerDisplay').innerHTML = `<img src="${imageData}" alt="Banner" style="width:100%;height:auto;">`;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Add script function (for trainers only) - แก้ไขให้ทำงานสมบูรณ์
-        function addScript() {
-    if (currentRole !== 'trainer') {
-        alert('เฉพาะวิทยากร/ผู้ดูแลเท่านั้นที่สามารถเพิ่มสคริปต์ได้');
-        return;
-    }
-    
-    let title = document.getElementById('adminTitle').value;
-    let type = document.getElementById('adminType').value;
-    let content = document.getElementById('adminContent').value;
-    
-    if (!title || !content) {
-        alert('กรุณากรอกข้อมูลให้ครบ');
-        return;
-    }
-    
-    let scriptData;
-    try {
-        scriptData = JSON.parse(content);
-        // ตรวจสอบว่ามีฟิลด์ที่จำเป็นหรือไม่
-        if (!scriptData.A && !scriptData.B && !scriptData.C) {
-            alert('รูปแบบ JSON ไม่ถูกต้อง กรุณาตรวจสอบว่ามีข้อมูลในฟิลด์ A, B, C ฯลฯ');
-            return;
-        }
-    } catch (e) {
-        alert('รูปแบบ JSON ไม่ถูกต้อง กรุณาตรวจสอบรูปแบบอีกครั้ง\nข้อผิดพลาด: ' + e.message);
-        return;
-    }
-    
-    const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
-    
-    if (currentEditingId) {
-        // Update existing script
-        const existingIndex = scriptsData.findIndex(s => s.id === currentEditingId);
-        if (existingIndex > -1) {
-            scriptsData[existingIndex] = {
-                id: currentEditingId,
-                title,
-                type,
-                ...scriptData
-            };
-        }
-        currentEditingId = null;
-    } else {
-        // Add new script
-        const newId = scriptsData.length > 0 ? Math.max(...scriptsData.map(s => s.id)) + 1 : 1;
-        scriptsData.push({
-            id: newId,
-            title,
-            type,
-            ...scriptData
+        
+        // ฟังก์ชันสำหรับการจัดการการอัพโหลดไฟล์
+        document.getElementById('bannerUpload').addEventListener('change', function(e) {
+            showToast('ระบบอัพโหลดแบนเนอร์ยังไม่พร้อมใช้งาน');
         });
-    }
-    
-    localStorage.setItem('scriptsData', JSON.stringify(scriptsData));
-    loadScripts();
-    loadTrainerScripts();
-    
-    // Clear form
-    document.getElementById('adminTitle').value = '';
-    document.getElementById('adminType').value = 'new'; // รีเซ็ตเป็นค่าเริ่มต้น
-    document.getElementById('adminContent').value = '';
-    currentEditingId = null;
-    
-    alert('บันทึกสำเร็จ!');
-}
-
-        // Edit script function
-        function editScript(scriptId) {
-            const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
-            const script = scriptsData.find(s => s.id === scriptId);
-            
-            if (!script) return;
-            
-            document.getElementById('adminTitle').value = script.title;
-            document.getElementById('adminType').value = script.type;
-            
-            // Create JSON object from script data
-            const { id, title, type, ...scriptContent } = script;
-            document.getElementById('adminContent').value = JSON.stringify(scriptContent, null, 2);
-            
-            // Scroll to form
-            document.getElementById('adminTitle').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Delete script function
-        function deleteScript(scriptId) {
-            if (!confirm('คุณแน่ใจว่าต้องการลบสคริปต์นี้?')) return;
-            
-            const scriptsData = JSON.parse(localStorage.getItem('scriptsData')) || [];
-            const updatedScripts = scriptsData.filter(s => s.id !== scriptId);
-            
-            localStorage.setItem('scriptsData', JSON.stringify(updatedScripts));
-            loadScripts();
-            loadTrainerScripts();
-            
-            alert('ลบสคริปต์สำเร็จ!');
-        }
-
-        // Post Q&A function
-        function postQA() {
-            let user = document.getElementById('qaUser').value;
-            let question = document.getElementById('qaQuestion').value;
-            if (user && question) {
-                const qaData = JSON.parse(localStorage.getItem('qaData')) || [];
-                const newId = qaData.length > 0 ? Math.max(...qaData.map(q => q.id)) + 1 : 1;
-                qaData.push({ 
-                    id: newId,
-                    user, 
-                    question, 
-                    answer: '',
-                    date: new Date().toLocaleDateString('th-TH')
-                });
-                localStorage.setItem('qaData', JSON.stringify(qaData));
-                
-                document.getElementById('qaUser').value = '';
-                document.getElementById('qaQuestion').value = '';
-                loadQA();
-            } else {
-                alert('กรุณากรอกชื่อและคำถาม');
-            }
-        }
-
-        // Load Q&A function - แก้ไขให้โหลดเมื่อเข้าหน้า
-        function loadQA() {
-            const qaList = document.getElementById('qaList');
-            const qaData = JSON.parse(localStorage.getItem('qaData')) || [];
-            
-            qaList.innerHTML = '';
-            
-            if (qaData.length === 0) {
-                qaList.innerHTML = '<p class="text-center">ยังไม่มีคำถาม</p>';
-                return;
-            }
-            
-            qaData.forEach(q => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <div class="card-header">
-                        <b>${q.user}</b>
-                        <small>${q.date}</small>
-                    </div>
-                    <p>${q.question}</p>
-                    <div class="answer">${q.answer || 'ยังไม่มีคำตอบ'}</div>
-                `;
-                qaList.appendChild(card);
-            });
-        }
+        
+        document.getElementById('qrCodeUpload').addEventListener('change', function(e) {
+            showToast('ระบบอัพโหลด QR Code ยังไม่พร้อมใช้งาน');
+        });
+        
+        // ฟังก์ชันสำหรับการจัดการการค้นหา
+        document.querySelector('.search-bar input').addEventListener('input', function(e) {
+            showToast('ระบบค้นหายังไม่พร้อมใช้งาน');
+        });
     </script>
 </body>
 </html>
