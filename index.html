@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RH5 Call Script Hub</title>
+    <title>RH5 Script Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -11,14 +11,14 @@
             --primary: #6AB7FF;
             --secondary: #4A90E2;
             --accent: #87CEEB;
-            --light: #F0F8FF;
+            --light: rgba(255, 255, 255, 0.8);
             --dark: #2C3E50;
             --success: #4CAF50;
             --warning: #FFC107;
             --danger: #F44336;
             --gray: #7E7E9C;
             --border-radius: 16px;
-            --box-shadow: 0 4px 20px rgba(106, 183, 255, 0.15);
+            --box-shadow: 0 8px 32px rgba(106, 183, 255, 0.1);
             --transition: all 0.3s ease;
         }
 
@@ -34,6 +34,7 @@
             color: #333;
             line-height: 1.6;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* Loading Screen */
@@ -102,105 +103,212 @@
         }
 
         /* Main App */
-        .container {
+        #mainApp {
             display: none;
             max-width: 1200px;
             margin: 0 auto;
             padding: 1rem;
         }
 
-        .header {
+        /* Navigation Bar */
+        .nav-bar {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 0.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--box-shadow);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .nav-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-item {
+            padding: 0.8rem 1.2rem;
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            white-space: nowrap;
+            color: var(--dark);
+            flex-shrink: 0;
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(106, 183, 255, 0.3);
+        }
+
+        .nav-item:not(.active):hover {
+            background: rgba(106, 183, 255, 0.1);
+        }
+
+        /* Admin Controls */
+        .admin-controls {
+            display: none;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .admin-controls.active {
+            display: block;
+        }
+
+        .admin-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-btn {
+            padding: 0.6rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .admin-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .admin-btn.delete {
+            background: var(--danger);
+        }
+
+        .admin-btn.delete:hover {
+            background: #d32f2f;
+        }
+
+        /* Content Area */
+        .content-area {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            min-height: 500px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .page {
+            display: none;
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Home Page */
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--box-shadow);
             margin-bottom: 1.5rem;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .quick-access {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
         }
 
-        .logo i {
+        .quick-item {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: var(--box-shadow);
+        }
+
+        .quick-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(106, 183, 255, 0.15);
+        }
+
+        .quick-item i {
             font-size: 2rem;
             color: var(--primary);
+            margin-bottom: 0.5rem;
         }
 
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--dark);
-        }
-
-        /* Navigation Tabs for Scripts */
-        .nav-tabs {
+        /* Scripts Page */
+        .script-tabs {
             display: flex;
             gap: 0.5rem;
             margin-bottom: 1.5rem;
             overflow-x: auto;
-            padding-bottom: 0.5rem;
+            scrollbar-width: none;
         }
 
-        .nav-tab {
+        .script-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .script-tab {
             padding: 0.8rem 1.5rem;
-            background: white;
+            background: rgba(255, 255, 255, 0.6);
             border: none;
             border-radius: var(--border-radius);
             cursor: pointer;
             font-weight: 500;
             transition: var(--transition);
             white-space: nowrap;
-            box-shadow: var(--box-shadow);
+            color: var(--dark);
+            flex-shrink: 0;
         }
 
-        .nav-tab.active {
+        .script-tab.active {
             background: var(--primary);
             color: white;
         }
 
-        .nav-tab:hover:not(.active) {
-            background: var(--light);
-        }
-
-        /* Content Area */
-        .content-area {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--box-shadow);
-            min-height: 500px;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Script Cards */
         .script-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
-            margin-top: 1.5rem;
         }
 
         .script-card {
-            background: var(--light);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
             border-radius: var(--border-radius);
             padding: 1.5rem;
             border-left: 4px solid var(--primary);
             transition: var(--transition);
             cursor: pointer;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
         }
 
         .script-card:hover {
             transform: translateY(-5px);
-            box-shadow: var(--box-shadow);
+            box-shadow: 0 12px 24px rgba(106, 183, 255, 0.15);
         }
 
         .script-card h3 {
@@ -209,155 +317,200 @@
             font-size: 1.1rem;
         }
 
-        .script-card p {
+        .script-content {
             color: var(--gray);
             font-size: 0.9rem;
-            margin-bottom: 0.5rem;
         }
 
-        .script-structure {
-            background: white;
-            padding: 1rem;
+        .script-bullets {
+            margin-top: 1rem;
+            padding-left: 1.2rem;
+        }
+
+        .script-bullets li {
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .full-script {
+            background: rgba(255, 255, 255, 0.6);
             border-radius: 8px;
+            padding: 1rem;
             margin-top: 1rem;
             font-size: 0.85rem;
+            display: none;
         }
 
-        /* Builder Styles */
-        .builder-container {
+        /* Objection Handling */
+        .category-tabs {
             display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            scrollbar-width: none;
         }
 
-        .node-palette {
-            width: 250px;
-            background: var(--light);
-            border-radius: var(--border-radius);
-            padding: 1rem;
+        .category-tabs::-webkit-scrollbar {
+            display: none;
         }
 
-        .node {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-            background: #f9f9f9;
-            cursor: grab;
-            border-radius: 8px;
-        }
-
-        .node h4 {
-            margin: 0 0 5px 0;
-        }
-
-        .tree-node {
-            margin-left: 20px;
-            border-left: 1px dashed #ccc;
-            padding-left: 10px;
-        }
-
-        .dragging {
-            opacity: 0.5;
-        }
-
-        .option-btn {
-            background: var(--primary);
-            color: white;
+        .category-tab {
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.6);
             border: none;
-            margin: 2px;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .workspace {
-            flex: 1;
-            background: var(--light);
             border-radius: var(--border-radius);
-            padding: 1rem;
-            min-height: 400px;
-            border: 2px dashed #ddd;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            white-space: nowrap;
+            color: var(--dark);
+            flex-shrink: 0;
         }
 
-        /* Sidebar Styles */
-        .sidebar {
-            width: 280px;
+        .category-tab.active {
             background: var(--primary);
             color: white;
-            padding: 1.5rem 1rem;
-            transition: var(--transition);
-            overflow-y: auto;
-            box-shadow: var(--box-shadow);
-            position: fixed;
-            height: 100vh;
-            left: 0;
-            top: 0;
         }
 
-        .logo-sidebar {
-            display: flex;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        .objection-list {
+            display: grid;
+            gap: 1rem;
         }
 
-        .logo-sidebar img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .logo-sidebar h1 {
-            font-size: 1.4rem;
-            font-weight: 600;
-        }
-
-        .menu {
-            list-style: none;
-        }
-
-        .menu-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .menu-link {
-            display: flex;
-            align-items: center;
-            padding: 0.8rem 1rem;
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
+        .objection-item {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
             border-radius: var(--border-radius);
-            transition: var(--transition);
-        }
-
-        .menu-link:hover, .menu-link.active {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        .menu-link i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
-
-        .menu-section {
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-            padding: 0 1rem;
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.5);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Main Content Styles */
-        .main-content {
-            margin-left: 280px;
             padding: 1.5rem;
-            overflow-y: auto;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .objection-question {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .objection-answer {
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .objection-tone {
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        /* Techniques Page */
+        .technique-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .technique-item {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .technique-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(106, 183, 255, 0.15);
+        }
+
+        .technique-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .technique-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .technique-details {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        /* Tools Page */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .tool-item {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .tool-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(106, 183, 255, 0.15);
+        }
+
+        .tool-item i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Forms */
+        .form-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
         }
 
         /* Admin Modal */
@@ -372,27 +525,37 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(5px);
         }
 
         .modal-content {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
             padding: 2rem;
             border-radius: var(--border-radius);
             width: 90%;
-            max-width: 400px;
-            text-align: center;
+            max-width: 500px;
             position: relative;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-wide {
+            max-width: 800px;
         }
 
         .modal input {
             width: 100%;
             padding: 1rem;
             margin: 1rem 0;
-            border: 2px solid var(--light);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: var(--border-radius);
             text-align: center;
             font-size: 1.2rem;
             letter-spacing: 0.2rem;
+            background: rgba(255, 255, 255, 0.7);
         }
 
         .close-btn {
@@ -424,24 +587,30 @@
             }
         }
 
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
             .script-grid {
                 grid-template-columns: 1fr;
             }
             
-            .nav-tabs {
-                flex-wrap: wrap;
+            .nav-bar {
+                padding: 0.5rem;
+            }
+            
+            .nav-item {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
             }
             
             .loading-title {
@@ -452,12 +621,16 @@
                 font-size: 1rem;
             }
             
-            .builder-container {
-                flex-direction: column;
+            .quick-access {
+                grid-template-columns: repeat(2, 1fr);
             }
             
-            .node-palette {
-                width: 100%;
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .admin-buttons {
+                flex-direction: column;
             }
         }
     </style>
@@ -478,197 +651,144 @@
     </div>
 
     <!-- Main Application -->
-    <div id="mainApp" class="container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="logo-sidebar">
-                <i class="fas fa-headset"></i>
-                <h1>RH5 Script Hub</h1>
-            </div>
-            
-            <ul class="menu">
-                <li class="menu-item">
-                    <a href="#" class="menu-link active" data-page="home">
-                        <i class="fas fa-home"></i> หน้าแรก
-                    </a>
-                </li>
-                
-                <div class="menu-section">สคริปต์การโทร</div>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" data-page="scripts">
-                        <i class="fas fa-file-alt"></i> คลังสคริปต์
-                    </a>
-                </li>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" data-page="objection-handling">
-                        <i class="fas fa-bolt"></i> จัดการข้อโต้แย้ง
-                    </a>
-                </li>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" data-page="cta-slots">
-                        <i class="fas fa-clock"></i> ช่วงเวลานัดหมาย
-                    </a>
-                </li>
-                
-                <div class="menu-section">เครื่องมือ</div>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" data-page="line-templates">
-                        <i class="fas fa-comment-alt"></i> เทมเพลตข้อความ
-                    </a>
-                </li>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" data-page="checklist">
-                        <i class="fas fa-clipboard-check"></i> เช็คลิสต์
-                    </a>
-                </li>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" data-page="advanced-techniques">
-                        <i class="fas fa-magic"></i> เทคนิคพิเศษ
-                    </a>
-                </li>
-                
-                <div class="menu-section">จัดการระบบ</div>
-                
-                <li class="menu-item">
-                    <a href="#" class="menu-link" onclick="showAdminModal()">
-                        <i class="fas fa-tools"></i> ผู้ดูแลระบบ
-                    </a>
-                </li>
-            </ul>
+    <div id="mainApp">
+        <!-- Navigation Bar -->
+        <div class="nav-bar">
+            <button class="nav-item active" data-page="home">หน้าแรก</button>
+            <button class="nav-item" data-page="scripts">คลังสคริปต์</button>
+            <button class="nav-item" data-page="objection-handling">จัดการข้อโต้แย้ง</button>
+            <button class="nav-item" data-page="line-templates">เทมเพลตข้อความ</button>
+            <button class="nav-item" data-page="techniques">เทคนิคพิเศษ</button>
+            <button class="nav-item" data-page="tools">Tools</button>
+            <button class="nav-item" onclick="showAdminModal()">
+                <i class="fas fa-cog"></i>
+            </button>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <div class="header">
-                <div class="logo">
-                    <i class="fas fa-headset"></i>
-                    <h1>RH5 Script Hub</h1>
-                </div>
+        <!-- Admin Controls -->
+        <div id="adminControls" class="admin-controls">
+            <h3>การจัดการระบบ (Admin)</h3>
+            <div class="admin-buttons">
+                <button class="admin-btn" onclick="showAddScriptModal()">เพิ่มสคริปต์</button>
+                <button class="admin-btn" onclick="showAddObjectionModal()">เพิ่มข้อโต้แย้ง</button>
+                <button class="admin-btn" onclick="showAddTemplateModal()">เพิ่มเทมเพลต</button>
+                <button class="admin-btn" onclick="showAddTechniqueModal()">เพิ่มเทคนิค</button>
+                <button class="admin-btn" onclick="showAddFileModal()">เพิ่มไฟล์</button>
+                <button class="admin-btn delete" onclick="clearAllData()">ล้างข้อมูลทั้งหมด</button>
             </div>
+        </div>
 
+        <!-- Content Area -->
+        <div class="content-area">
             <!-- Home Page -->
             <div id="home" class="page active">
-                <div class="content-area">
+                <div class="welcome-card">
                     <h2>ยินดีต้อนรับสู่ RH5 Script Hub</h2>
                     <p>ระบบจัดการสคริปต์การโทรและเทคนิคการขายแบบมืออาชีพ</p>
+                </div>
+                
+                <h3 style="margin-bottom: 1rem;">เมนูด่วน</h3>
+                <div class="quick-access">
+                    <div class="quick-item" data-page="scripts">
+                        <i class="fas fa-file-alt"></i>
+                        <h4>คลังสคริปต์</h4>
+                        <p>จัดการสคริปต์การโทรทั้งหมด</p>
+                    </div>
                     
-                    <div class="script-grid">
-                        <div class="script-card" onclick="showPage('scripts')">
-                            <h3>คลังสคริปต์</h3>
-                            <p>จัดการสคริปต์การโทรทั้งหมดของคุณ</p>
-                        </div>
-                        
-                        <div class="script-card" onclick="showPage('objection-handling')">
-                            <h3>จัดการข้อโต้แย้ง</h3>
-                            <p>เทคนิคการตอบคำถามและข้อโต้แย้งจากลูกค้า</p>
-                        </div>
-                        
-                        <div class="script-card" onclick="showPage('cta-slots')">
-                            <h3>ช่วงเวลานัดหมาย</h3>
-                            <p>จัดการช่วงเวลาและเทคนิคการนัดหมาย</p>
-                        </div>
-                        
-                        <div class="script-card" onclick="showPage('line-templates')">
-                            <h3>เทมเพลตข้อความ</h3>
-                            <p>เทมเพลตข้อความสำหรับ LINE และ SMS</p>
-                        </div>
+                    <div class="quick-item" data-page="objection-handling">
+                        <i class="fas fa-bolt"></i>
+                        <h4>จัดการข้อโต้แย้ง</h4>
+                        <p>เทคนิคการตอบคำถามลูกค้า</p>
+                    </div>
+                    
+                    <div class="quick-item" data-page="line-templates">
+                        <i class="fas fa-comment-alt"></i>
+                        <h4>เทมเพลตข้อความ</h4>
+                        <p>ข้อความสำหรับ LINE และ SMS</p>
+                    </div>
+                    
+                    <div class="quick-item" data-page="techniques">
+                        <i class="fas fa-magic"></i>
+                        <h4>เทคนิคพิเศษ</h4>
+                        <p>เทคนิคการขายขั้นสูง</p>
                     </div>
                 </div>
             </div>
 
             <!-- Scripts Page -->
             <div id="scripts" class="page">
-                <div class="content-area">
-                    <h2>คลังสคริปต์</h2>
-                    <p>จัดการสคริปต์การโทรทั้งหมดของคุณ</p>
-                    
-                    <!-- Navigation Tabs for Scripts -->
-                    <div class="nav-tabs">
-                        <button class="nav-tab active" onclick="showScriptTab('call')">Call Scripts</button>
-                        <button class="nav-tab" onclick="showScriptTab('counter')">Counter Scripts</button>
-                        <button class="nav-tab" onclick="showScriptTab('builder')">Conversation Builder</button>
+                <h2>คลังสคริปต์</h2>
+                <p>จัดการสคริปต์การโทรทั้งหมดของคุณ</p>
+                
+                <div class="script-tabs">
+                    <button class="script-tab active" data-type="call">Call Scripts</button>
+                    <button class="script-tab" data-type="counter">Counter Scripts</button>
+                </div>
+                
+                <div id="callScripts" class="script-tab-content">
+                    <div class="script-grid" id="callScriptsList">
+                        <!-- Call scripts will be loaded here -->
                     </div>
-                    
-                    <!-- Call Scripts Content -->
-                    <div id="callScriptsContent" class="tab-content active">
-                        <h3>Call Scripts</h3>
-                        <p>สคริปต์สำหรับการโทรหาลูกค้า</p>
-                        <div class="script-grid" id="callScriptsList">
-                            <!-- Call scripts will be loaded here -->
-                        </div>
-                    </div>
-                    
-                    <!-- Counter Scripts Content -->
-                    <div id="counterScriptsContent" class="tab-content">
-                        <h3>Counter Scripts</h3>
-                        <p>สคริปต์สำหรับการบริการที่เคาน์เตอร์</p>
-                        <div class="script-grid" id="counterScriptsList">
-                            <!-- Counter scripts will be loaded here -->
-                        </div>
-                    </div>
-                    
-                    <!-- Builder Content -->
-                    <div id="builderContent" class="tab-content">
-                        <h3>Conversation Builder</h3>
-                        <p>สร้างบทสนทนาแบบ Tree Structure</p>
-                        <div class="builder-container">
-                            <div class="node-palette" id="nodePalette">
-                                <!-- Node palette will be loaded here -->
-                            </div>
-                            <div class="workspace" id="workspace">
-                                <p>ลากโหนดจากด้านซ้ายมาวางที่นี่เพื่อสร้างบทสนทนา</p>
-                            </div>
-                        </div>
+                </div>
+                
+                <div id="counterScripts" class="script-tab-content" style="display: none;">
+                    <div class="script-grid" id="counterScriptsList">
+                        <!-- Counter scripts will be loaded here -->
                     </div>
                 </div>
             </div>
 
-            <!-- Other Pages (Placeholder) -->
+            <!-- Objection Handling Page -->
             <div id="objection-handling" class="page">
-                <div class="content-area">
-                    <h2>จัดการข้อโต้แย้ง</h2>
-                    <p>ระบบจัดการข้อโต้แย้งกำลังพัฒนา</p>
+                <h2>จัดการข้อโต้แย้ง</h2>
+                <p>เทคนิคการตอบคำถามและข้อโต้แย้งจากลูกค้า</p>
+                
+                <div class="category-tabs">
+                    <button class="category-tab active" data-category="health">ประกันสุขภาพ</button>
+                    <button class="category-tab" data-category="savings">ประกันสะสมทรัพย์</button>
+                    <button class="category-tab" data-category="life">ประกันตลอดชีพ</button>
+                    <button class="category-tab" data-category="pension">ประกันบำนาญ</button>
+                    <button class="category-tab" data-category="tax">ธีมลดหย่อนภาษี</button>
+                </div>
+                
+                <div class="objection-list" id="objectionList">
+                    <!-- Objections will be loaded here -->
                 </div>
             </div>
-            
-            <div id="cta-slots" class="page">
-                <div class="content-area">
-                    <h2>ช่วงเวลานัดหมาย</h2>
-                    <p>ระบบจัดการช่วงเวลานัดหมายกำลังพัฒนา</p>
-                </div>
-            </div>
-            
+
+            <!-- LINE Templates Page -->
             <div id="line-templates" class="page">
-                <div class="content-area">
-                    <h2>เทมเพลตข้อความ</h2>
-                    <p>ระบบเทมเพลตข้อความกำลังพัฒนา</p>
+                <h2>เทมเพลตข้อความ</h2>
+                <p>เทมเพลตข้อความสำหรับ LINE และ SMS</p>
+                
+                <div class="script-grid" id="templateList">
+                    <!-- Templates will be loaded here -->
                 </div>
             </div>
-            
-            <div id="checklist" class="page">
-                <div class="content-area">
-                    <h2>เช็คลิสต์</h2>
-                    <p>ระบบเช็คลิสต์กำลังพัฒนา</p>
+
+            <!-- Techniques Page -->
+            <div id="techniques" class="page">
+                <h2>เทคนิคพิเศษ</h2>
+                <p>เทคนิคการขายและบริการลูกค้าขั้นสูง</p>
+                
+                <div class="technique-list" id="techniqueList">
+                    <!-- Techniques will be loaded here -->
                 </div>
             </div>
-            
-            <div id="advanced-techniques" class="page">
-                <div class="content-area">
-                    <h2>เทคนิคพิเศษ</h2>
-                    <p>ระบบเทคนิคพิเศษกำลังพัฒนา</p>
+
+            <!-- Tools Page -->
+            <div id="tools" class="page">
+                <h2>Tools</h2>
+                <p>เครื่องมือและทรัพยากรสำหรับทีมงาน</p>
+                
+                <div class="tools-grid" id="toolsList">
+                    <!-- Tools will be loaded here -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Admin Modal -->
+    <!-- Admin Login Modal -->
     <div id="adminModal" class="modal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeAdminModal()">&times;</button>
@@ -681,148 +801,456 @@
         </div>
     </div>
 
+    <!-- Add Script Modal -->
+    <div id="addScriptModal" class="modal">
+        <div class="modal-content modal-wide">
+            <button class="close-btn" onclick="closeAddScriptModal()">&times;</button>
+            <h2>เพิ่มสคริปต์ใหม่</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="scriptType">ประเภทสคริปต์</label>
+                    <select id="scriptType">
+                        <option value="call">Call Script</option>
+                        <option value="counter">Counter Script</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="scriptTitle">ชื่อสคริปต์</label>
+                    <input type="text" id="scriptTitle" placeholder="ชื่อสคริปต์">
+                </div>
+                <div class="form-group">
+                    <label for="scriptBullets">รายการ Bullet Points (แต่ละบรรทัดเป็น 1 bullet)</label>
+                    <textarea id="scriptBullets" placeholder="แต่ละบรรทัดเป็น 1 bullet point"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="scriptFull">สคริปต์เต็ม</label>
+                    <textarea id="scriptFull" placeholder="สคริปต์เต็มรูปแบบ"></textarea>
+                </div>
+                <button class="start-btn" onclick="addNewScript()">เพิ่มสคริปต์</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Objection Modal -->
+    <div id="addObjectionModal" class="modal">
+        <div class="modal-content modal-wide">
+            <button class="close-btn" onclick="closeAddObjectionModal()">&times;</button>
+            <h2>เพิ่มข้อโต้แย้งใหม่</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="objectionCategory">หมวดหมู่</label>
+                    <select id="objectionCategory">
+                        <option value="health">ประกันสุขภาพ</option>
+                        <option value="savings">ประกันสะสมทรัพย์</option>
+                        <option value="life">ประกันตลอดชีพ</option>
+                        <option value="pension">ประกันบำนาญ</option>
+                        <option value="tax">ธีมลดหย่อนภาษี</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="objectionQuestion">ข้อโต้แย้งจากลูกค้า</label>
+                    <input type="text" id="objectionQuestion" placeholder="ข้อโต้แย้งจากลูกค้า">
+                </div>
+                <div class="form-group">
+                    <label for="objectionAnswer">คำตอบแนะนำ</label>
+                    <textarea id="objectionAnswer" placeholder="คำตอบแนะนำ"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="objectionTone">โทนเสียงแนะนำ</label>
+                    <input type="text" id="objectionTone" placeholder="โทนเสียงแนะนำ">
+                </div>
+                <button class="start-btn" onclick="addNewObjection()">เพิ่มข้อโต้แย้ง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Template Modal -->
+    <div id="addTemplateModal" class="modal">
+        <div class="modal-content modal-wide">
+            <button class="close-btn" onclick="closeAddTemplateModal()">&times;</button>
+            <h2>เพิ่มเทมเพลตข้อความใหม่</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="templateTitle">ชื่อเทมเพลต</label>
+                    <input type="text" id="templateTitle" placeholder="ชื่อเทมเพลต">
+                </div>
+                <div class="form-group">
+                    <label for="templateContent">เนื้อหาเทมเพลต</label>
+                    <textarea id="templateContent" placeholder="เนื้อหาเทมเพลต"></textarea>
+                </div>
+                <button class="start-btn" onclick="addNewTemplate()">เพิ่มเทมเพลต</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Technique Modal -->
+    <div id="addTechniqueModal" class="modal">
+        <div class="modal-content modal-wide">
+            <button class="close-btn" onclick="closeAddTechniqueModal()">&times;</button>
+            <h2>เพิ่มเทคนิคใหม่</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="techniqueTitle">ชื่อเทคนิค</label>
+                    <input type="text" id="techniqueTitle" placeholder="ชื่อเทคนิค">
+                </div>
+                <div class="form-group">
+                    <label for="techniqueDescription">รายละเอียดเทคนิค</label>
+                    <textarea id="techniqueDescription" placeholder="รายละเอียดเทคนิค"></textarea>
+                </div>
+                <button class="start-btn" onclick="addNewTechnique()">เพิ่มเทคนิค</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add File Modal -->
+    <div id="addFileModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeAddFileModal()">&times;</button>
+            <h2>เพิ่มไฟล์ใหม่</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="fileName">ชื่อไฟล์</label>
+                    <input type="text" id="fileName" placeholder="ชื่อไฟล์">
+                </div>
+                <div class="form-group">
+                    <label for="fileType">ประเภทไฟล์</label>
+                    <select id="fileType">
+                        <option value="pdf">PDF</option>
+                        <option value="image">รูปภาพ</option>
+                        <option value="excel">Excel</option>
+                        <option value="video">วิดีโอ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fileUrl">URL ไฟล์ (หรือชื่อไฟล์)</label>
+                    <input type="text" id="fileUrl" placeholder="URL ไฟล์หรือชื่อไฟล์">
+                </div>
+                <button class="start-btn" onclick="addNewFile()">เพิ่มไฟล์</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Script Data
-        const callScripts = [
+        // Default Data
+        const defaultCallScripts = [
             {
                 id: 1,
                 title: "เงินนิ่งในบัญชี / ดอกเบี้ยต่ำ",
-                structure: {
-                    OBJECTIVE: "แนะนำให้ลูกค้าโยกเงินไปบัญชีดอกเบี้ยพิเศษ",
-                    OPENER: "แสดงตัวเลขผลตอบแทนเสียโอกาส",
-                    PAIN: "เปรียบเทียบว่าถ้าไม่ทำตอนนี้จะเสียโอกาสเท่าไหร่",
-                    URGENCY: "โปรโมชันมีเวลาจำกัด"
-                },
-                objections: [
-                    { question: "ไม่สะดวกไปสาขา", answer: "ผมไปพบคุณได้ 15 นาที" }
-                ]
+                bullets: [
+                    "แนะนำให้ลูกค้าโยกเงินไปบัญชีดอกเบี้ยพิเศษ",
+                    "แสดงตัวเลขผลตอบแทนเสียโอกาส",
+                    "เปรียบเทียบว่าถ้าไม่ทำตอนนี้จะเสียโอกาสเท่าไหร่",
+                    "โปรโมชันมีเวลาจำกัด"
+                ],
+                fullScript: `สวัสดีค่ะ/ครับ คุณลูกค้า 
+
+เห็นว่ามีเงินนิ่งในบัญชี X บาท ที่ได้รับดอกเบี้ยเพียง 0.5% ต่อปี 
+ขณะที่เรามีบัญชีพิเศษที่ให้ดอกเบี้ยสูงถึง 2.5% ต่อปี
+
+ถ้าโยกเงิน X บาทไปบัญชีพิเศษ 
+จะได้ดอกเบี้ยเพิ่ม X บาท/ปี 
+หรือ X บาท/เดือน
+
+โปรโมชั่นนี้มีถึงสิ้นเดือนนี้เท่านั้น 
+สนใจให้ช่วยดำเนินการไหมคะ/ครับ?`
             },
             {
                 id: 2,
                 title: "เงินฝากประจำใกล้ครบ",
-                structure: {
-                    OBJECTIVE: "เตือนว่าดอกเบี้ยต่ำ ต้องรีบทบทวน",
-                    OPENER: "แสดงระยะเวลารอครบบัญชีประจำ",
-                    PAIN: "เปรียบเทียบผลตอบแทนที่จะเสียหาย",
-                    URGENCY: "แนะนำโปรดักที่เหมาะสมตามความเสี่ยง"
+                bullets: [
+                    "เตือนว่าดอกเบี้ยต่ำ ต้องรีบทบทวน",
+                    "แสดงระยะเวลารอครบบัญชีประจำ",
+                    "เปรียบเทียบผลตอบแทนที่จะเสียหาย",
+                    "แนะนำผลิตภัณฑ์ที่เหมาะสมตามความเสี่ยง"
+                ],
+                fullScript: `สวัสดีค่ะ/ครับ คุณลูกค้า
+
+บัญชีเงินฝากประจำของคุณจะครบกำหนดในอีก X วัน 
+ตอนนี้มีตัวเลือกใหม่ที่ให้ผลตอบแทนดีกว่าเดิม
+
+ถ้าต่ออายุบัญชีเดิมจะได้ดอกเบี้ย X% 
+แต่ถ้าเปลี่ยนเป็นผลิตภัณฑ์ใหม่จะได้ X%
+
+ช่วยเปรียบเทียบตัวเลือกให้ดูไหมคะ/ครับ?`
+            }
+        ];
+
+        const defaultCounterScripts = [
+            {
+                id: 1,
+                title: "อัพเดทที่อยู่ล่าสุด",
+                bullets: [
+                    "ขออัพเดทที่อยู่เพื่อไม่ให้เอกสารสำคัญตกหล่น",
+                    "หนังสือรับรองต่างๆ ที่ต้องใช้ลดหย่อนช่วงต้นปี",
+                    "เตรียมไว้ครบถ้วนหรือยัง"
+                ],
+                fullScript: `สวัสดีค่ะ/ครับ 
+
+ขออัพเดทที่อยู่เพื่อจัดส่งเอกสารสำคัญ 
+เช่น หนังสือรับรองดอกเบี้ย ที่ต้องใช้ลดหย่อนภาษีต้นปี
+
+ใช้เวลาเพียง 2 นาที 
+ช่วยอัพเดทให้หน่อยนะคะ/ครับ`
+            },
+            {
+                id: 2,
+                title: "คนละครึ่งพลัส",
+                bullets: [
+                    "ชวนสนทนาเกี่ยวกับโครงการคนละครึ่งพลัส",
+                    "เชื่อมโยงลงไม่ทันอดได้สิทธิ",
+                    "เสียดายที่จ่ายภาษีไป"
+                ],
+                fullScript: `สวัสดีค่ะ/ครับ
+
+ทราบไหมคะ/ครับว่าตอนนี้มีโครงการคนละครึ่งพลัส 
+ช่วยประหยัดค่าใช้จ่ายได้จริง
+
+ลงทะเบียนง่ายๆ ผ่านแอปเป๋าตัง 
+ใช้สิทธิ์ได้ทันที
+
+สนใจให้ช่วยลงทะเบียนไหมคะ/ครับ?`
+            }
+        ];
+
+        const defaultObjections = {
+            health: [
+                {
+                    id: 1,
+                    question: "สุขภาพดีอยู่แล้ว ไม่จำเป็นต้องทำประกัน",
+                    answer: "เข้าใจค่ะ/ครับ ที่คุณสุขภาพดี แต่ประกันสุขภาพคือการเตรียมพร้อมสำหรับเหตุการณ์ไม่คาดฝัน เหมือนเรามีรถยนต์ก็ต้องมีประกันภัย เผื่อเกิดเหตุฉุกเฉิน",
+                    tone: "เข้าใจความรู้สึก + เปรียบเทียบให้เห็นภาพ"
                 },
-                objections: [
-                    { question: "ยุ่งไม่มีเวลา", answer: "ใช้เวลาเพียง 10 นาที" }
-                ]
+                {
+                    id: 2,
+                    question: "ประกันสุขภาพแพงไป",
+                    answer: "จริงๆ แล้วค่ารักษาพยาบาลตอนนี้สูงมาก การจ่ายเบี้ยปีละ X บาท เทียบกับค่ารักษาหากเกิดเหตุไม่คาดฝัน X บาท ถือว่าคุ้มค่ากว่าค่ะ/ครับ",
+                    tone: "แสดงตัวเลขเปรียบเทียบ + เห็นคุณค่า"
+                }
+            ],
+            savings: [
+                {
+                    id: 1,
+                    question: "เงินไม่พอ จะเอาเงินที่ไหนมาจ่ายเบี้ย",
+                    answer: "เราเข้าใจเรื่องสภาพการเงินค่ะ/ครับ เรามีแผนประกันที่เริ่มต้นเพียง X บาท/เดือน เทียบเท่ากับค่ากาแฟวันละแก้ว แต่ได้ทั้งการออมและความคุ้มครอง",
+                    tone: "เห็นใจ + เปรียบเทียบกับรายจ่ายเล็กน้อย"
+                },
+                {
+                    id: 2,
+                    question: "ลงทุนเองน่าจะได้ผลตอบแทนดีกว่า",
+                    answer: "การลงทุนเองอาจได้ผลตอบแทนดี แต่ก็มีความเสี่ยง ในขณะที่ประกันสะสมทรัพย์ให้ทั้งผลตอบแทนที่แน่นอนและความคุ้มครองชีวิตด้วยค่ะ/ครับ",
+                    tone: "ยอมรับจุดดี + ชี้ให้เห็นความแตกต่าง"
+                }
+            ],
+            life: [
+                {
+                    id: 1,
+                    question: "อายุยังน้อย ไม่คิดถึงเรื่องเหล่านั้น",
+                    answer: "การทำประกันตอนอายุน้อยนี่แหละค่ะ/ครับที่ดีที่สุด เพราะเบี้ยประกันจะถูกกว่า และสุขภาพดีก็ผ่านการพิจารณาง่าย ไม่ต้องกังวลเรื่องการรับประกัน",
+                    tone: "ให้ข้อมูลที่เป็นประโยชน์ + มองการณ์ไกล"
+                },
+                {
+                    id: 2,
+                    question: "บริษัทมีประกันกลุ่มให้แล้ว",
+                    answer: "ดีมากค่ะ/ครับที่บริษัทมีประกันกลุ่มให้ แต่ประกันกลุ่มมักจะคุ้มครองเฉพาะช่วงที่ทำงานอยู่ และวงเงินไม่สูงนัก การมีประกันส่วนตัวเป็นการสร้างหลักประกันเพิ่มเติมให้กับตัวเองและครอบครัวค่ะ/ครับ",
+                    tone: "ชื่นชม + เสนอมูลค่าเพิ่ม"
+                }
+            ],
+            pension: [
+                {
+                    id: 1,
+                    question: "ยังไม่คิดถึงเรื่องวัยเกษียณ",
+                    answer: "เข้าใจค่ะ/ครับ แต่การวางแผนการเงินเพื่อวัยเกษียณควรเริ่มตั้งแต่ตอนนี้ ยิ่งเริ่มเร็ว ยิ่งสะสมเงินได้มาก และเบี้ยก็จ่ายน้อยกว่าค่ะ/ครับ",
+                    tone: "เข้าใจ + ให้เหตุผลเชิงบวก"
+                },
+                {
+                    id: 2,
+                    question: "มีกองทุนสำรองเลี้ยงชีพแล้ว",
+                    answer: "ดีมากค่ะ/ครับที่มีกองทุนสำรองเลี้ยงชีพ แต่ประกันบำนาญจะช่วยเสริมสร้างความมั่นใจได้มากขึ้น เพราะให้เงินบำนาญตลอดชีวิต ไม่เหมือนกองทุนที่อาจจะหมดได้",
+                    tone: "เสริมแรง + ชี้จุดแตกต่าง"
+                }
+            ],
+            tax: [
+                {
+                    id: 1,
+                    question: "เรื่องภาษียุ่งยาก ไม่เข้าใจ",
+                    answer: "ไม่ต้องกังวลค่ะ/ครับ เราจะช่วยคำนวณและอธิบายให้เข้าใจง่ายๆ แค่ทำประกัน/ลงทุนในผลิตภัณฑ์ที่เกี่ยวข้อง ก็สามารถลดหย่อนภาษีได้แล้วค่ะ/ครับ",
+                    tone: "ปลอบใจ + เสนอความช่วยเหลือ"
+                },
+                {
+                    id: 2,
+                    question: "ลดหย่อนภาษีเต็มแล้ว",
+                    answer: "ดีมากค่ะ/ครับที่จัดการภาษีได้ดี แต่บางสิทธิ์ลดหย่อนอาจจะยังใช้ไม่ครบ หรืออาจมีทางเลือกใหม่ๆ ที่ให้ทั้งประโยชน์ด้านภาษีและผลตอบแทนการลงทุนค่ะ/ครับ",
+                    tone: "ชื่นชม + เสนอทางเลือกเพิ่ม"
+                }
+            ]
+        };
+
+        const defaultTemplates = [
+            {
+                id: 1,
+                title: "ก่อนโทร (Pre-call Intro)",
+                content: `สวัสดีค่ะ/ครับ คุณลูกค้า
+
+ดิฉัน/ผม ชื่อ... จากธนาคาร...
+โทรมาเพื่อแจ้งบริการพิเศษสำหรับลูกค้า
+
+ใช้เวลาเพียง 5 นาที
+ไม่มีค่าใช้จ่ายใดๆ
+
+สนใจรับฟังข้อมูลไหมคะ/ครับ?`
+            },
+            {
+                id: 2,
+                title: "ยืนยันนัดหมาย",
+                content: `✅ ยืนยันนัดหมาย
+
+คุณลูกค้า
+📅 วันที่: ...
+🕐 เวลา: ...
+📍 สถานที่: ...
+
+ขอบคุณที่ให้โอกาสบริการค่ะ/ครับ`
             },
             {
                 id: 3,
-                title: "กองทุนติดลบ",
-                structure: {
-                    OBJECTIVE: "ชวนลูกค้าทบทวนพอร์ตลงทุน",
-                    OPENER: "แสดงความผันผวนของเศรษฐกิจ",
-                    PAIN: "แสดงโอกาสในการปรับพอร์ต",
-                    URGENCY: "ต้องตัดสินใจเร็วเพื่อไม่เสียโอกาส"
-                },
-                objections: [
-                    { question: "กลัวความเสี่ยง", answer: "เราจะปรับพอร์ตตามระดับความเสี่ยงของคุณ" }
-                ]
+                title: "Reminder 1 วันก่อนนัดหมาย",
+                content: `🔔 แจ้งเตือนนัดหมาย
+
+คุณลูกค้า
+
+พรุ่งนี้มีนัดหมายกับทางธนาคาร
+ตามวันที่และเวลาที่นัดไว้
+
+หากมีข้อเปลี่ยนแปลง
+กรุณาแจ้งล่วงหน้านะคะ/ครับ`
+            }
+        ];
+
+        const defaultTechniques = [
+            {
+                id: 1,
+                title: "เทคนิคการฟังอย่าง aktif",
+                description: "การฟังอย่างตั้งใจและแสดงออกว่ากำลังฟังอยู่ เช่น การใช้คำพูดเช่น 'ครับ/ค่ะ', 'เข้าใจแล้วครับ/ค่ะ' เพื่อสร้างความมั่นใจให้ลูกค้า และการสรุปสิ่งที่ลูกค้าพูดเพื่อยืนยันความเข้าใจ"
+            },
+            {
+                id: 2,
+                title: "เทคนิคการตั้งคำถามปลายเปิด",
+                description: "ใช้คำถามปลายเปิดเพื่อให้ลูกค้าได้พูดมากขึ้น เช่น 'ลูกค้ามีความคิดเห็นอย่างไรบ้างครับ/คะ?' หรือ 'มีอะไรที่เราช่วยได้เพิ่มเติมไหมคะ/ครับ?' เพื่อดึงข้อมูลและความต้องการที่แท้จริง"
+            },
+            {
+                id: 3,
+                title: "เทคนิค Mirroring",
+                description: "สะท้อนคำพูดหรือความรู้สึกของลูกค้าเพื่อสร้างความเข้าใจ เช่น เมื่อลูกค้าบอก 'ไม่มีเวลา' เราตอบ 'เข้าใจค่ะ/ครับว่าคุณไม่มีเวลา' เพื่อสร้างความเป็นหนึ่งเดียวและความไว้วางใจ"
             },
             {
                 id: 4,
-                title: "ประกันครบเบี้ย",
-                structure: {
-                    OBJECTIVE: "ทบทวนประกันก่อนหมดระยะ",
-                    OPENER: "แสดงสิทธิ์ลดหย่อนภาษี",
-                    PAIN: "หากไม่ต่อ จะเสียสิทธิ์ทางภาษี",
-                    URGENCY: "รีบต่อเพื่อได้เบี้ยถูก และคุ้มครองเร็ว"
-                },
-                objections: [
-                    { question: "ไม่อยากคิดเรื่องประกันตอนนี้", answer: "ใช้เวลาแค่ 5 นาที ทบทวนได้ง่าย ๆ" }
-                ]
-            },
-            {
-                id: 5,
-                title: "Tax Season",
-                structure: {
-                    OBJECTIVE: "ชวนลูกค้ามาวางแผนภาษี",
-                    OPENER: "เตือนว่าปีนี้สิ้นสุดโปรแกรม",
-                    PAIN: "หากรอแล้วพลาดสิทธิ์ จะเสียเงินภาษีเทียบเท่าเงินเดือน 1 เดือน",
-                    URGENCY: "ต้องรีบทำก่อนสิ้นปี"
-                },
-                objections: [
-                    { question: "ไม่มีเวลามา", answer: "สามารถช่วยคำนวณทางออนไลน์หรือสาขาที่สะดวกได้" }
-                ]
+                title: "เทคนิคการสร้างมูลค่า",
+                description: "เน้นประโยชน์ที่ลูกค้าจะได้รับแทนที่จะเน้นคุณสมบัติสินค้า เช่น 'บริการนี้ช่วยประหยัดเวลาคุณได้ 2 ชั่วโมงต่อเดือน' หรือ 'ช่วยลดความเสี่ยงทางการเงินได้ X%'"
             }
         ];
 
-        const counterScripts = [
+        const defaultFiles = [
             {
-                id: "counter_001",
-                title: "อัพเดทที่อยู่ล่าสุด",
-                step1_chat: [
-                    {
-                        text: "ขออัพเดทที่อยู่ เพื่อไม่ให้เอกสารสำคัญตกหล่น อย่างหนังสือรับรองต่างๆ ที่ต้องใช้ลดหย่อนช่วงต้นปี - เตรียมไว้ครบถ้วนหรือยัง",
-                        objection: [
-                            { question: "ไม่ว่างตอนนี้", answer: "ใช้เวลาเพียง 5 นาที" }
-                        ]
-                    }
-                ],
-                step2_followup: [
-                    { text: "อัปเดตข้อมูลเรียบร้อย" }
-                ]
+                id: 1,
+                name: "คู่มือการขาย",
+                type: "pdf",
+                url: "คู่มือการขาย.pdf"
             },
             {
-                id: "counter_002",
-                title: "คนละครึ่งพลัส",
-                step1_chat: [
-                    { text: "ชวนสนทนาเกี่ยวกับโครงการคนละครึ่งพลัส" }
-                ],
-                step2_followup: [
-                    { text: "เชื่อมโยงลงไม่ทันอดได้สิทธิ เสียดายที่จ่ายภาษีไป" }
-                ]
+                id: 2,
+                name: "ภาพโปรโมชั่น",
+                type: "image",
+                url: "โปรโมชั่นล่าสุด.jpg"
             },
             {
-                id: "counter_003",
-                title: "Easy e-Receipt",
-                step1_chat: [
-                    { text: "ชวนคุยเรื่องเตรียมเอกสาร" }
-                ],
-                step2_followup: [
-                    { text: "เชื่อมโยงเรื่องสิทธิลดหย่อนอื่นๆ" }
-                ]
+                id: 3,
+                name: "ตารางงาน",
+                type: "excel",
+                url: "ตารางงาน.xlsx"
             },
             {
-                id: "counter_004",
-                title: "ภาษีดอกเบี้ยเงินฝาก",
-                step1_chat: [
-                    { text: "ชวนคุยเกี่ยวกับภาษีดอกเบี้ยเงินฝาก" }
-                ],
-                step2_followup: [
-                    { text: "ช่วยคำนวณคืนภาษี" }
-                ]
-            },
-            {
-                id: "counter_005",
-                title: "สิ้นปีเตรียมวางแผนภาษี",
-                step1_chat: [
-                    { text: "เตือนลูกค้าเกี่ยวกับภาษีสิ้นปี" }
-                ],
-                step2_followup: [
-                    { text: "วางแผนให้ทันปีนี้" }
-                ]
+                id: 4,
+                name: "วิดีโอเทรนนิ่ง",
+                type: "video",
+                url: "วิดีโอเทรนนิ่ง.mp4"
             }
         ];
 
-        const builderNodes = [
-            { "nodeId":"node_001","text":"สวัสดีครับ/ค่ะ","options":[{"text":"ถามเรื่องบัญชีเงินฝาก","nextNodeId":"call_001"},{"text":"ถามเรื่องประกัน","nextNodeId":"call_004"}]},
-            { "nodeId":"call_001","text":"เงินนิ่งในบัญชี / ดอกเบี้ยต่ำ","options":[{"text":"สนใจรายละเอียด","nextNodeId":"call_001_detail"}]},
-            { "nodeId":"call_001_detail","text":"OBJECTIVE → OPENER → PAIN → URGENCY","options":[]},
-            { "nodeId":"call_002","text":"เงินฝากประจำใกล้ครบ","options":[]},
-            { "nodeId":"call_003","text":"กองทุนติดลบ","options":[]},
-            { "nodeId":"call_004","text":"ประกันครบเบี้ย","options":[]},
-            { "nodeId":"call_005","text":"Tax Season","options":[]},
-            { "nodeId":"counter_001","text":"อัพเดทที่อยู่ล่าสุด","options":[]},
-            { "nodeId":"counter_002","text":"คนละครึ่งพลัส","options":[]},
-            { "nodeId":"counter_003","text":"Easy e-Receipt","options":[]},
-            { "nodeId":"counter_004","text":"ภาษีดอกเบี้ยเงินฝาก","options":[]},
-            { "nodeId":"counter_005","text":"สิ้นปีเตรียมวางแผนภาษี","options":[]}
-        ];
+        // Data Management
+        let isAdmin = false;
+        let currentEditingId = null;
+
+        // Initialize Data
+        function initializeData() {
+            if (!localStorage.getItem('callScripts')) {
+                localStorage.setItem('callScripts', JSON.stringify(defaultCallScripts));
+            }
+            if (!localStorage.getItem('counterScripts')) {
+                localStorage.setItem('counterScripts', JSON.stringify(defaultCounterScripts));
+            }
+            if (!localStorage.getItem('objections')) {
+                localStorage.setItem('objections', JSON.stringify(defaultObjections));
+            }
+            if (!localStorage.getItem('templates')) {
+                localStorage.setItem('templates', JSON.stringify(defaultTemplates));
+            }
+            if (!localStorage.getItem('techniques')) {
+                localStorage.setItem('techniques', JSON.stringify(defaultTechniques));
+            }
+            if (!localStorage.getItem('files')) {
+                localStorage.setItem('files', JSON.stringify(defaultFiles));
+            }
+        }
+
+        // Get Data
+        function getCallScripts() {
+            return JSON.parse(localStorage.getItem('callScripts')) || [];
+        }
+
+        function getCounterScripts() {
+            return JSON.parse(localStorage.getItem('counterScripts')) || [];
+        }
+
+        function getObjections() {
+            return JSON.parse(localStorage.getItem('objections')) || {};
+        }
+
+        function getTemplates() {
+            return JSON.parse(localStorage.getItem('templates')) || [];
+        }
+
+        function getTechniques() {
+            return JSON.parse(localStorage.getItem('techniques')) || [];
+        }
+
+        function getFiles() {
+            return JSON.parse(localStorage.getItem('files')) || [];
+        }
+
+        // Save Data
+        function saveCallScripts(scripts) {
+            localStorage.setItem('callScripts', JSON.stringify(scripts));
+        }
+
+        function saveCounterScripts(scripts) {
+            localStorage.setItem('counterScripts', JSON.stringify(scripts));
+        }
+
+        function saveObjections(objections) {
+            localStorage.setItem('objections', JSON.stringify(objections));
+        }
+
+        function saveTemplates(templates) {
+            localStorage.setItem('templates', JSON.stringify(templates));
+        }
+
+        function saveTechniques(techniques) {
+            localStorage.setItem('techniques', JSON.stringify(techniques));
+        }
+
+        function saveFiles(files) {
+            localStorage.setItem('files', JSON.stringify(files));
+        }
 
         // Start Application
         function startApp() {
@@ -833,7 +1261,32 @@
             setTimeout(() => {
                 loadingScreen.style.display = 'none';
                 mainApp.style.display = 'block';
+                initializeData();
+                loadHomePage();
             }, 500);
+        }
+
+        // Navigation
+        function setupNavigation() {
+            // Nav bar items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if (item.onclick) return; // Skip items with existing click handlers
+                
+                item.addEventListener('click', function() {
+                    const pageId = this.getAttribute('data-page');
+                    if (pageId) {
+                        showPage(pageId);
+                    }
+                });
+            });
+            
+            // Quick access items
+            document.querySelectorAll('.quick-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const pageId = this.getAttribute('data-page');
+                    showPage(pageId);
+                });
+            });
         }
 
         // Show Page
@@ -843,45 +1296,72 @@
                 page.classList.remove('active');
             });
             
-            // Remove active class from all menu items
-            document.querySelectorAll('.menu-link').forEach(item => {
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
             
-            // Show selected page and add active class to menu item
+            // Show selected page and add active class to nav item
             document.getElementById(pageId).classList.add('active');
             document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
             
-            // Load content if needed
-            if (pageId === 'scripts') {
-                loadCallScripts();
+            // Load page content
+            switch(pageId) {
+                case 'home':
+                    loadHomePage();
+                    break;
+                case 'scripts':
+                    loadScriptsPage();
+                    break;
+                case 'objection-handling':
+                    loadObjectionHandlingPage();
+                    break;
+                case 'line-templates':
+                    loadTemplatesPage();
+                    break;
+                case 'techniques':
+                    loadTechniquesPage();
+                    break;
+                case 'tools':
+                    loadToolsPage();
+                    break;
             }
         }
 
-        // Show Script Tab
-        function showScriptTab(tabName) {
-            // Hide all tab contents
-            document.querySelectorAll('#scripts .tab-content').forEach(tab => {
-                tab.classList.remove('active');
+        // Load Home Page
+        function loadHomePage() {
+            // Home page is already loaded by default
+        }
+
+        // Load Scripts Page
+        function loadScriptsPage() {
+            loadCallScripts();
+            
+            // Setup script tabs
+            document.querySelectorAll('.script-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    
+                    // Update active tab
+                    document.querySelectorAll('.script-tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    document.querySelectorAll('.script-tab-content').forEach(content => {
+                        content.style.display = 'none';
+                    });
+                    
+                    if (type === 'call') {
+                        document.getElementById('callScripts').style.display = 'block';
+                        loadCallScripts();
+                    } else {
+                        document.getElementById('counterScripts').style.display = 'block';
+                        loadCounterScripts();
+                    }
+                });
             });
-            
-            // Remove active class from all tabs
-            document.querySelectorAll('#scripts .nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Show selected tab and add active class
-            document.getElementById(tabName + 'ScriptsContent').classList.add('active');
-            event.target.classList.add('active');
-            
-            // Load content if needed
-            if (tabName === 'call') {
-                loadCallScripts();
-            } else if (tabName === 'counter') {
-                loadCounterScripts();
-            } else if (tabName === 'builder') {
-                loadBuilder();
-            }
         }
 
         // Load Call Scripts
@@ -890,17 +1370,30 @@
             if (!container) return;
             
             container.innerHTML = '';
+            const scripts = getCallScripts();
             
-            callScripts.forEach(script => {
+            scripts.forEach(script => {
                 const card = document.createElement('div');
                 card.className = 'script-card';
                 card.innerHTML = `
                     <h3>${script.title}</h3>
-                    <div class="script-structure">
-                        <p><strong>OBJECTIVE:</strong> ${script.structure.OBJECTIVE}</p>
-                        <p><strong>OPENER:</strong> ${script.structure.OPENER}</p>
-                        <p><strong>PAIN:</strong> ${script.structure.PAIN}</p>
-                        <p><strong>URGENCY:</strong> ${script.structure.URGENCY}</p>
+                    <div class="script-content">
+                        <ul class="script-bullets">
+                            ${script.bullets.map(bullet => `<li>${bullet}</li>`).join('')}
+                        </ul>
+                        <div class="full-script" id="fullScript-${script.id}">
+                            <strong>สคริปต์เต็ม:</strong>
+                            <pre>${script.fullScript}</pre>
+                        </div>
+                        <button class="nav-item" onclick="toggleFullScript(${script.id})" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.8rem;">
+                            แสดงสคริปต์เต็ม
+                        </button>
+                        ${isAdmin ? `
+                        <div class="admin-buttons" style="margin-top: 1rem;">
+                            <button class="admin-btn" onclick="editScript(${script.id}, 'call')">แก้ไข</button>
+                            <button class="admin-btn delete" onclick="deleteScript(${script.id}, 'call')">ลบ</button>
+                        </div>
+                        ` : ''}
                     </div>
                 `;
                 container.appendChild(card);
@@ -913,88 +1406,221 @@
             if (!container) return;
             
             container.innerHTML = '';
+            const scripts = getCounterScripts();
             
-            counterScripts.forEach(script => {
+            scripts.forEach(script => {
                 const card = document.createElement('div');
                 card.className = 'script-card';
-                
-                let step1HTML = '';
-                if (script.step1_chat && script.step1_chat.length > 0) {
-                    step1HTML = `<p><strong>Step 1:</strong> ${script.step1_chat[0].text}</p>`;
-                    
-                    // Add objections if available
-                    if (script.step1_chat[0].objection && script.step1_chat[0].objection.length > 0) {
-                        step1HTML += `<p><strong>Objection Handling:</strong> ${script.step1_chat[0].objection[0].question} → ${script.step1_chat[0].objection[0].answer}</p>`;
-                    }
-                }
-                
-                let step2HTML = '';
-                if (script.step2_followup && script.step2_followup.length > 0) {
-                    step2HTML = `<p><strong>Step 2:</strong> ${script.step2_followup[0].text}</p>`;
-                }
-                
                 card.innerHTML = `
                     <h3>${script.title}</h3>
-                    ${step1HTML}
-                    ${step2HTML}
+                    <div class="script-content">
+                        <ul class="script-bullets">
+                            ${script.bullets.map(bullet => `<li>${bullet}</li>`).join('')}
+                        </ul>
+                        <div class="full-script" id="fullScript-counter-${script.id}">
+                            <strong>สคริปต์เต็ม:</strong>
+                            <pre>${script.fullScript}</pre>
+                        </div>
+                        <button class="nav-item" onclick="toggleFullScript('counter-${script.id}')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.8rem;">
+                            แสดงสคริปต์เต็ม
+                        </button>
+                        ${isAdmin ? `
+                        <div class="admin-buttons" style="margin-top: 1rem;">
+                            <button class="admin-btn" onclick="editScript(${script.id}, 'counter')">แก้ไข</button>
+                            <button class="admin-btn delete" onclick="deleteScript(${script.id}, 'counter')">ลบ</button>
+                        </div>
+                        ` : ''}
+                    </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        // Load Builder
-        function loadBuilder() {
-            const palette = document.getElementById('nodePalette');
-            const workspace = document.getElementById('workspace');
-            
-            if (!palette || !workspace) return;
-            
-            palette.innerHTML = '<h3>โหนดที่มีอยู่</h3>';
-            workspace.innerHTML = '<h3>พื้นที่ทำงาน</h3><p>ลากโหนดจากด้านซ้ายมาวางที่นี่เพื่อสร้างบทสนทนา</p>';
-            
-            builderNodes.forEach(node => {
-                const nodeElement = document.createElement('div');
-                nodeElement.className = 'node';
-                nodeElement.draggable = true;
-                nodeElement.id = node.nodeId;
-                nodeElement.innerHTML = `<h4>${node.nodeId}</h4><p>${node.text}</p>`;
-                
-                // Add drag events
-                nodeElement.addEventListener('dragstart', dragStart);
-                
-                palette.appendChild(nodeElement);
-            });
-            
-            // Add drop event to workspace
-            workspace.addEventListener('dragover', dragOver);
-            workspace.addEventListener('drop', dropNode);
-        }
-
-        // Drag and Drop Functions
-        let draggedNode = null;
-
-        function dragStart(e) {
-            draggedNode = e.target;
-            e.dataTransfer.setData('text/plain', e.target.id);
-        }
-
-        function dragOver(e) {
-            e.preventDefault();
-        }
-
-        function dropNode(e) {
-            e.preventDefault();
-            if (draggedNode) {
-                const clone = draggedNode.cloneNode(true);
-                clone.id = draggedNode.id + '_copy';
-                clone.style.margin = '10px';
-                clone.style.cursor = 'move';
-                
-                // Add drag events to the clone
-                clone.addEventListener('dragstart', dragStart);
-                
-                e.target.appendChild(clone);
+        // Toggle Full Script
+        function toggleFullScript(scriptId) {
+            const fullScript = document.getElementById(`fullScript-${scriptId}`);
+            if (fullScript.style.display === 'block') {
+                fullScript.style.display = 'none';
+                event.target.textContent = 'แสดงสคริปต์เต็ม';
+            } else {
+                fullScript.style.display = 'block';
+                event.target.textContent = 'ซ่อนสคริปต์เต็ม';
             }
+        }
+
+        // Load Objection Handling Page
+        function loadObjectionHandlingPage() {
+            loadObjections('health');
+            
+            // Setup category tabs
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    
+                    // Update active tab
+                    document.querySelectorAll('.category-tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Load objections for this category
+                    loadObjections(category);
+                });
+            });
+        }
+
+        // Load Objections by Category
+        function loadObjections(category) {
+            const container = document.getElementById('objectionList');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            const objections = getObjections();
+            
+            if (objections[category]) {
+                objections[category].forEach(obj => {
+                    const item = document.createElement('div');
+                    item.className = 'objection-item';
+                    item.innerHTML = `
+                        <div class="objection-question">${obj.question}</div>
+                        <div class="objection-answer">${obj.answer}</div>
+                        <div class="objection-tone">โทนเสียง: ${obj.tone}</div>
+                        ${isAdmin ? `
+                        <div class="admin-buttons" style="margin-top: 1rem;">
+                            <button class="admin-btn" onclick="editObjection(${obj.id}, '${category}')">แก้ไข</button>
+                            <button class="admin-btn delete" onclick="deleteObjection(${obj.id}, '${category}')">ลบ</button>
+                        </div>
+                        ` : ''}
+                    `;
+                    container.appendChild(item);
+                });
+            }
+        }
+
+        // Load Templates Page
+        function loadTemplatesPage() {
+            const container = document.getElementById('templateList');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            const templates = getTemplates();
+            
+            templates.forEach(template => {
+                const card = document.createElement('div');
+                card.className = 'script-card';
+                card.innerHTML = `
+                    <h3>${template.title}</h3>
+                    <div class="script-content">
+                        <pre>${template.content}</pre>
+                        ${isAdmin ? `
+                        <div class="admin-buttons" style="margin-top: 1rem;">
+                            <button class="admin-btn" onclick="editTemplate(${template.id})">แก้ไข</button>
+                            <button class="admin-btn delete" onclick="deleteTemplate(${template.id})">ลบ</button>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Load Techniques Page
+        function loadTechniquesPage() {
+            const container = document.getElementById('techniqueList');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            const techniques = getTechniques();
+            
+            techniques.forEach(tech => {
+                const item = document.createElement('div');
+                item.className = 'technique-item';
+                item.innerHTML = `
+                    <div class="technique-header">
+                        <div class="technique-title">${tech.title}</div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="technique-details">
+                        ${tech.description}
+                    </div>
+                    ${isAdmin ? `
+                    <div class="admin-buttons" style="margin-top: 1rem;">
+                        <button class="admin-btn" onclick="editTechnique(${tech.id})">แก้ไข</button>
+                        <button class="admin-btn delete" onclick="deleteTechnique(${tech.id})">ลบ</button>
+                    </div>
+                    ` : ''}
+                `;
+                
+                item.addEventListener('click', function(e) {
+                    // Only toggle details if not clicking admin buttons
+                    if (!e.target.classList.contains('admin-btn')) {
+                        const details = this.querySelector('.technique-details');
+                        const icon = this.querySelector('i');
+                        
+                        if (details.style.display === 'block') {
+                            details.style.display = 'none';
+                            icon.className = 'fas fa-chevron-down';
+                        } else {
+                            details.style.display = 'block';
+                            icon.className = 'fas fa-chevron-up';
+                        }
+                    }
+                });
+                
+                container.appendChild(item);
+            });
+        }
+
+        // Load Tools Page
+        function loadToolsPage() {
+            const container = document.getElementById('toolsList');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            const files = getFiles();
+            
+            files.forEach(file => {
+                let icon = 'fas fa-file';
+                if (file.type === 'pdf') icon = 'fas fa-file-pdf';
+                else if (file.type === 'image') icon = 'fas fa-image';
+                else if (file.type === 'excel') icon = 'fas fa-file-excel';
+                else if (file.type === 'video') icon = 'fas fa-video';
+                
+                const item = document.createElement('div');
+                item.className = 'tool-item';
+                item.innerHTML = `
+                    <i class="${icon}"></i>
+                    <h4>${file.name}</h4>
+                    <p>${file.type.toUpperCase()}</p>
+                    ${isAdmin ? `
+                    <div class="admin-buttons" style="margin-top: 1rem;">
+                        <button class="admin-btn delete" onclick="deleteFile(${file.id})">ลบ</button>
+                    </div>
+                    ` : ''}
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Admin Functions
+        function showAdminControls() {
+            const adminControls = document.getElementById('adminControls');
+            adminControls.classList.add('active');
+            isAdmin = true;
+            
+            // Reload all pages to show admin controls
+            const currentPage = document.querySelector('.page.active').id;
+            showPage(currentPage);
+        }
+
+        function hideAdminControls() {
+            const adminControls = document.getElementById('adminControls');
+            adminControls.classList.remove('active');
+            isAdmin = false;
+            
+            // Reload all pages to hide admin controls
+            const currentPage = document.querySelector('.page.active').id;
+            showPage(currentPage);
         }
 
         // Admin Modal Functions
@@ -1010,35 +1636,384 @@
         function checkAdminPasscode() {
             const passcode = document.getElementById('adminPasscode').value;
             if (passcode === '2025') {
-                alert('เข้าสู่ระบบแอดมินสำเร็จ!');
+                showAdminControls();
                 closeAdminModal();
-                // Here you would typically show admin features
+                alert('เข้าสู่ระบบแอดมินสำเร็จ!');
             } else {
                 alert('รหัสผ่านไม่ถูกต้อง');
                 document.getElementById('adminPasscode').value = '';
             }
         }
 
+        // Add Script Functions
+        function showAddScriptModal() {
+            document.getElementById('addScriptModal').style.display = 'flex';
+            currentEditingId = null;
+            document.getElementById('scriptTitle').value = '';
+            document.getElementById('scriptBullets').value = '';
+            document.getElementById('scriptFull').value = '';
+        }
+
+        function closeAddScriptModal() {
+            document.getElementById('addScriptModal').style.display = 'none';
+        }
+
+        function addNewScript() {
+            const type = document.getElementById('scriptType').value;
+            const title = document.getElementById('scriptTitle').value;
+            const bullets = document.getElementById('scriptBullets').value.split('\n').filter(b => b.trim() !== '');
+            const fullScript = document.getElementById('scriptFull').value;
+            
+            if (!title || bullets.length === 0 || !fullScript) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+            
+            let scripts;
+            if (type === 'call') {
+                scripts = getCallScripts();
+            } else {
+                scripts = getCounterScripts();
+            }
+            
+            const newId = scripts.length > 0 ? Math.max(...scripts.map(s => s.id)) + 1 : 1;
+            
+            const newScript = {
+                id: newId,
+                title,
+                bullets,
+                fullScript
+            };
+            
+            scripts.push(newScript);
+            
+            if (type === 'call') {
+                saveCallScripts(scripts);
+            } else {
+                saveCounterScripts(scripts);
+            }
+            
+            closeAddScriptModal();
+            loadScriptsPage();
+            alert('เพิ่มสคริปต์สำเร็จ!');
+        }
+
+        function editScript(id, type) {
+            let scripts;
+            if (type === 'call') {
+                scripts = getCallScripts();
+            } else {
+                scripts = getCounterScripts();
+            }
+            
+            const script = scripts.find(s => s.id === id);
+            if (!script) return;
+            
+            document.getElementById('scriptType').value = type;
+            document.getElementById('scriptTitle').value = script.title;
+            document.getElementById('scriptBullets').value = script.bullets.join('\n');
+            document.getElementById('scriptFull').value = script.fullScript;
+            
+            currentEditingId = id;
+            document.getElementById('addScriptModal').style.display = 'flex';
+        }
+
+        function deleteScript(id, type) {
+            if (!confirm('คุณแน่ใจว่าต้องการลบสคริปต์นี้?')) return;
+            
+            let scripts;
+            if (type === 'call') {
+                scripts = getCallScripts();
+                scripts = scripts.filter(s => s.id !== id);
+                saveCallScripts(scripts);
+            } else {
+                scripts = getCounterScripts();
+                scripts = scripts.filter(s => s.id !== id);
+                saveCounterScripts(scripts);
+            }
+            
+            loadScriptsPage();
+            alert('ลบสคริปต์สำเร็จ!');
+        }
+
+        // Add Objection Functions
+        function showAddObjectionModal() {
+            document.getElementById('addObjectionModal').style.display = 'flex';
+            currentEditingId = null;
+            document.getElementById('objectionQuestion').value = '';
+            document.getElementById('objectionAnswer').value = '';
+            document.getElementById('objectionTone').value = '';
+        }
+
+        function closeAddObjectionModal() {
+            document.getElementById('addObjectionModal').style.display = 'none';
+        }
+
+        function addNewObjection() {
+            const category = document.getElementById('objectionCategory').value;
+            const question = document.getElementById('objectionQuestion').value;
+            const answer = document.getElementById('objectionAnswer').value;
+            const tone = document.getElementById('objectionTone').value;
+            
+            if (!question || !answer || !tone) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+            
+            const objections = getObjections();
+            if (!objections[category]) {
+                objections[category] = [];
+            }
+            
+            const newId = objections[category].length > 0 ? Math.max(...objections[category].map(o => o.id)) + 1 : 1;
+            
+            const newObjection = {
+                id: newId,
+                question,
+                answer,
+                tone
+            };
+            
+            objections[category].push(newObjection);
+            saveObjections(objections);
+            
+            closeAddObjectionModal();
+            loadObjectionHandlingPage();
+            alert('เพิ่มข้อโต้แย้งสำเร็จ!');
+        }
+
+        function editObjection(id, category) {
+            const objections = getObjections();
+            const objection = objections[category].find(o => o.id === id);
+            if (!objection) return;
+            
+            document.getElementById('objectionCategory').value = category;
+            document.getElementById('objectionQuestion').value = objection.question;
+            document.getElementById('objectionAnswer').value = objection.answer;
+            document.getElementById('objectionTone').value = objection.tone;
+            
+            currentEditingId = id;
+            document.getElementById('addObjectionModal').style.display = 'flex';
+        }
+
+        function deleteObjection(id, category) {
+            if (!confirm('คุณแน่ใจว่าต้องการลบข้อโต้แย้งนี้?')) return;
+            
+            const objections = getObjections();
+            objections[category] = objections[category].filter(o => o.id !== id);
+            saveObjections(objections);
+            
+            loadObjectionHandlingPage();
+            alert('ลบข้อโต้แย้งสำเร็จ!');
+        }
+
+        // Add Template Functions
+        function showAddTemplateModal() {
+            document.getElementById('addTemplateModal').style.display = 'flex';
+            currentEditingId = null;
+            document.getElementById('templateTitle').value = '';
+            document.getElementById('templateContent').value = '';
+        }
+
+        function closeAddTemplateModal() {
+            document.getElementById('addTemplateModal').style.display = 'none';
+        }
+
+        function addNewTemplate() {
+            const title = document.getElementById('templateTitle').value;
+            const content = document.getElementById('templateContent').value;
+            
+            if (!title || !content) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+            
+            const templates = getTemplates();
+            const newId = templates.length > 0 ? Math.max(...templates.map(t => t.id)) + 1 : 1;
+            
+            const newTemplate = {
+                id: newId,
+                title,
+                content
+            };
+            
+            templates.push(newTemplate);
+            saveTemplates(templates);
+            
+            closeAddTemplateModal();
+            loadTemplatesPage();
+            alert('เพิ่มเทมเพลตสำเร็จ!');
+        }
+
+        function editTemplate(id) {
+            const templates = getTemplates();
+            const template = templates.find(t => t.id === id);
+            if (!template) return;
+            
+            document.getElementById('templateTitle').value = template.title;
+            document.getElementById('templateContent').value = template.content;
+            
+            currentEditingId = id;
+            document.getElementById('addTemplateModal').style.display = 'flex';
+        }
+
+        function deleteTemplate(id) {
+            if (!confirm('คุณแน่ใจว่าต้องการลบเทมเพลตนี้?')) return;
+            
+            const templates = getTemplates();
+            const updatedTemplates = templates.filter(t => t.id !== id);
+            saveTemplates(updatedTemplates);
+            
+            loadTemplatesPage();
+            alert('ลบเทมเพลตสำเร็จ!');
+        }
+
+        // Add Technique Functions
+        function showAddTechniqueModal() {
+            document.getElementById('addTechniqueModal').style.display = 'flex';
+            currentEditingId = null;
+            document.getElementById('techniqueTitle').value = '';
+            document.getElementById('techniqueDescription').value = '';
+        }
+
+        function closeAddTechniqueModal() {
+            document.getElementById('addTechniqueModal').style.display = 'none';
+        }
+
+        function addNewTechnique() {
+            const title = document.getElementById('techniqueTitle').value;
+            const description = document.getElementById('techniqueDescription').value;
+            
+            if (!title || !description) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+            
+            const techniques = getTechniques();
+            const newId = techniques.length > 0 ? Math.max(...techniques.map(t => t.id)) + 1 : 1;
+            
+            const newTechnique = {
+                id: newId,
+                title,
+                description
+            };
+            
+            techniques.push(newTechnique);
+            saveTechniques(techniques);
+            
+            closeAddTechniqueModal();
+            loadTechniquesPage();
+            alert('เพิ่มเทคนิคสำเร็จ!');
+        }
+
+        function editTechnique(id) {
+            const techniques = getTechniques();
+            const technique = techniques.find(t => t.id === id);
+            if (!technique) return;
+            
+            document.getElementById('techniqueTitle').value = technique.title;
+            document.getElementById('techniqueDescription').value = technique.description;
+            
+            currentEditingId = id;
+            document.getElementById('addTechniqueModal').style.display = 'flex';
+        }
+
+        function deleteTechnique(id) {
+            if (!confirm('คุณแน่ใจว่าต้องการลบเทคนิคนี้?')) return;
+            
+            const techniques = getTechniques();
+            const updatedTechniques = techniques.filter(t => t.id !== id);
+            saveTechniques(updatedTechniques);
+            
+            loadTechniquesPage();
+            alert('ลบเทคนิคสำเร็จ!');
+        }
+
+        // Add File Functions
+        function showAddFileModal() {
+            document.getElementById('addFileModal').style.display = 'flex';
+            currentEditingId = null;
+            document.getElementById('fileName').value = '';
+            document.getElementById('fileUrl').value = '';
+        }
+
+        function closeAddFileModal() {
+            document.getElementById('addFileModal').style.display = 'none';
+        }
+
+        function addNewFile() {
+            const name = document.getElementById('fileName').value;
+            const type = document.getElementById('fileType').value;
+            const url = document.getElementById('fileUrl').value;
+            
+            if (!name || !url) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+            
+            const files = getFiles();
+            const newId = files.length > 0 ? Math.max(...files.map(f => f.id)) + 1 : 1;
+            
+            const newFile = {
+                id: newId,
+                name,
+                type,
+                url
+            };
+            
+            files.push(newFile);
+            saveFiles(files);
+            
+            closeAddFileModal();
+            loadToolsPage();
+            alert('เพิ่มไฟล์สำเร็จ!');
+        }
+
+        function deleteFile(id) {
+            if (!confirm('คุณแน่ใจว่าต้องการลบไฟล์นี้?')) return;
+            
+            const files = getFiles();
+            const updatedFiles = files.filter(f => f.id !== id);
+            saveFiles(updatedFiles);
+            
+            loadToolsPage();
+            alert('ลบไฟล์สำเร็จ!');
+        }
+
+        // Clear All Data
+        function clearAllData() {
+            if (!confirm('คุณแน่ใจว่าต้องการล้างข้อมูลทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้!')) return;
+            
+            localStorage.removeItem('callScripts');
+            localStorage.removeItem('counterScripts');
+            localStorage.removeItem('objections');
+            localStorage.removeItem('templates');
+            localStorage.removeItem('techniques');
+            localStorage.removeItem('files');
+            
+            initializeData();
+            
+            // Reload current page
+            const currentPage = document.querySelector('.page.active').id;
+            showPage(currentPage);
+            
+            alert('ล้างข้อมูลทั้งหมดสำเร็จ! ระบบได้โหลดข้อมูลเริ่มต้นใหม่');
+        }
+
         // Close modal when clicking outside
         window.addEventListener('click', function(event) {
-            const modal = document.getElementById('adminModal');
-            if (event.target === modal) {
-                closeAdminModal();
-            }
+            const modals = ['adminModal', 'addScriptModal', 'addObjectionModal', 'addTemplateModal', 'addTechniqueModal', 'addFileModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
         });
 
-        // Menu item click handlers
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Add click event to menu items
-            document.querySelectorAll('.menu-link').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const pageId = this.getAttribute('data-page');
-                    if (pageId) {
-                        showPage(pageId);
-                    }
-                });
-            });
+            setupNavigation();
             
             // Auto start after 5 seconds if user doesn't click
             setTimeout(() => {
