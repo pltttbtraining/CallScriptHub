@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RH5 Script Hub</title>
+    <title>RH5 Call Script Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -34,7 +34,6 @@
             color: #333;
             line-height: 1.6;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
         /* Loading Screen */
@@ -103,7 +102,7 @@
         }
 
         /* Main App */
-        #mainApp {
+        .container {
             display: none;
             max-width: 1200px;
             margin: 0 auto;
@@ -135,7 +134,7 @@
             color: var(--dark);
         }
 
-        /* Navigation */
+        /* Navigation Tabs for Scripts */
         .nav-tabs {
             display: flex;
             gap: 0.5rem;
@@ -281,6 +280,86 @@
             border: 2px dashed #ddd;
         }
 
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem 1rem;
+            transition: var(--transition);
+            overflow-y: auto;
+            box-shadow: var(--box-shadow);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+        }
+
+        .logo-sidebar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-sidebar img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .logo-sidebar h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .menu-link:hover, .menu-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .menu-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-section {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            padding: 0 1rem;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 280px;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
         /* Admin Modal */
         .modal {
             display: none;
@@ -347,6 +426,16 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
             .script-grid {
                 grid-template-columns: 1fr;
             }
@@ -389,51 +478,191 @@
     </div>
 
     <!-- Main Application -->
-    <div id="mainApp">
-        <!-- Header -->
-        <div class="header">
-            <div class="logo">
+    <div id="mainApp" class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-sidebar">
                 <i class="fas fa-headset"></i>
                 <h1>RH5 Script Hub</h1>
             </div>
+            
+            <ul class="menu">
+                <li class="menu-item">
+                    <a href="#" class="menu-link active" data-page="home">
+                        <i class="fas fa-home"></i> หน้าแรก
+                    </a>
+                </li>
+                
+                <div class="menu-section">สคริปต์การโทร</div>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="scripts">
+                        <i class="fas fa-file-alt"></i> คลังสคริปต์
+                    </a>
+                </li>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="objection-handling">
+                        <i class="fas fa-bolt"></i> จัดการข้อโต้แย้ง
+                    </a>
+                </li>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="cta-slots">
+                        <i class="fas fa-clock"></i> ช่วงเวลานัดหมาย
+                    </a>
+                </li>
+                
+                <div class="menu-section">เครื่องมือ</div>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="line-templates">
+                        <i class="fas fa-comment-alt"></i> เทมเพลตข้อความ
+                    </a>
+                </li>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="checklist">
+                        <i class="fas fa-clipboard-check"></i> เช็คลิสต์
+                    </a>
+                </li>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-page="advanced-techniques">
+                        <i class="fas fa-magic"></i> เทคนิคพิเศษ
+                    </a>
+                </li>
+                
+                <div class="menu-section">จัดการระบบ</div>
+                
+                <li class="menu-item">
+                    <a href="#" class="menu-link" onclick="showAdminModal()">
+                        <i class="fas fa-tools"></i> ผู้ดูแลระบบ
+                    </a>
+                </li>
+            </ul>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="nav-tabs">
-            <button class="nav-tab active" onclick="showTab('call')">Call Scripts</button>
-            <button class="nav-tab" onclick="showTab('counter')">Counter Scripts</button>
-            <button class="nav-tab" onclick="showTab('builder')">Conversation Builder</button>
-            <button class="nav-tab" onclick="showAdminModal()">Admin Panel</button>
-        </div>
-
-        <!-- Content Area -->
-        <div class="content-area">
-            <div id="callContent" class="tab-content active">
-                <h2>Call Scripts</h2>
-                <p>สคริปต์สำหรับการโทรหาลูกค้า</p>
-                <div class="script-grid" id="callScriptsList">
-                    <!-- Call scripts will be loaded here -->
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-headset"></i>
+                    <h1>RH5 Script Hub</h1>
                 </div>
             </div>
 
-            <div id="counterContent" class="tab-content">
-                <h2>Counter Scripts</h2>
-                <p>สคริปต์สำหรับการบริการที่เคาน์เตอร์</p>
-                <div class="script-grid" id="counterScriptsList">
-                    <!-- Counter scripts will be loaded here -->
+            <!-- Home Page -->
+            <div id="home" class="page active">
+                <div class="content-area">
+                    <h2>ยินดีต้อนรับสู่ RH5 Script Hub</h2>
+                    <p>ระบบจัดการสคริปต์การโทรและเทคนิคการขายแบบมืออาชีพ</p>
+                    
+                    <div class="script-grid">
+                        <div class="script-card" onclick="showPage('scripts')">
+                            <h3>คลังสคริปต์</h3>
+                            <p>จัดการสคริปต์การโทรทั้งหมดของคุณ</p>
+                        </div>
+                        
+                        <div class="script-card" onclick="showPage('objection-handling')">
+                            <h3>จัดการข้อโต้แย้ง</h3>
+                            <p>เทคนิคการตอบคำถามและข้อโต้แย้งจากลูกค้า</p>
+                        </div>
+                        
+                        <div class="script-card" onclick="showPage('cta-slots')">
+                            <h3>ช่วงเวลานัดหมาย</h3>
+                            <p>จัดการช่วงเวลาและเทคนิคการนัดหมาย</p>
+                        </div>
+                        
+                        <div class="script-card" onclick="showPage('line-templates')">
+                            <h3>เทมเพลตข้อความ</h3>
+                            <p>เทมเพลตข้อความสำหรับ LINE และ SMS</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div id="builderContent" class="tab-content">
-                <h2>Conversation Builder</h2>
-                <p>สร้างบทสนทนาแบบ Tree Structure</p>
-                <div class="builder-container">
-                    <div class="node-palette" id="nodePalette">
-                        <!-- Node palette will be loaded here -->
+            <!-- Scripts Page -->
+            <div id="scripts" class="page">
+                <div class="content-area">
+                    <h2>คลังสคริปต์</h2>
+                    <p>จัดการสคริปต์การโทรทั้งหมดของคุณ</p>
+                    
+                    <!-- Navigation Tabs for Scripts -->
+                    <div class="nav-tabs">
+                        <button class="nav-tab active" onclick="showScriptTab('call')">Call Scripts</button>
+                        <button class="nav-tab" onclick="showScriptTab('counter')">Counter Scripts</button>
+                        <button class="nav-tab" onclick="showScriptTab('builder')">Conversation Builder</button>
                     </div>
-                    <div class="workspace" id="workspace">
-                        <p>ลากโหนดจากด้านซ้ายมาวางที่นี่เพื่อสร้างบทสนทนา</p>
+                    
+                    <!-- Call Scripts Content -->
+                    <div id="callScriptsContent" class="tab-content active">
+                        <h3>Call Scripts</h3>
+                        <p>สคริปต์สำหรับการโทรหาลูกค้า</p>
+                        <div class="script-grid" id="callScriptsList">
+                            <!-- Call scripts will be loaded here -->
+                        </div>
                     </div>
+                    
+                    <!-- Counter Scripts Content -->
+                    <div id="counterScriptsContent" class="tab-content">
+                        <h3>Counter Scripts</h3>
+                        <p>สคริปต์สำหรับการบริการที่เคาน์เตอร์</p>
+                        <div class="script-grid" id="counterScriptsList">
+                            <!-- Counter scripts will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Builder Content -->
+                    <div id="builderContent" class="tab-content">
+                        <h3>Conversation Builder</h3>
+                        <p>สร้างบทสนทนาแบบ Tree Structure</p>
+                        <div class="builder-container">
+                            <div class="node-palette" id="nodePalette">
+                                <!-- Node palette will be loaded here -->
+                            </div>
+                            <div class="workspace" id="workspace">
+                                <p>ลากโหนดจากด้านซ้ายมาวางที่นี่เพื่อสร้างบทสนทนา</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Pages (Placeholder) -->
+            <div id="objection-handling" class="page">
+                <div class="content-area">
+                    <h2>จัดการข้อโต้แย้ง</h2>
+                    <p>ระบบจัดการข้อโต้แย้งกำลังพัฒนา</p>
+                </div>
+            </div>
+            
+            <div id="cta-slots" class="page">
+                <div class="content-area">
+                    <h2>ช่วงเวลานัดหมาย</h2>
+                    <p>ระบบจัดการช่วงเวลานัดหมายกำลังพัฒนา</p>
+                </div>
+            </div>
+            
+            <div id="line-templates" class="page">
+                <div class="content-area">
+                    <h2>เทมเพลตข้อความ</h2>
+                    <p>ระบบเทมเพลตข้อความกำลังพัฒนา</p>
+                </div>
+            </div>
+            
+            <div id="checklist" class="page">
+                <div class="content-area">
+                    <h2>เช็คลิสต์</h2>
+                    <p>ระบบเช็คลิสต์กำลังพัฒนา</p>
+                </div>
+            </div>
+            
+            <div id="advanced-techniques" class="page">
+                <div class="content-area">
+                    <h2>เทคนิคพิเศษ</h2>
+                    <p>ระบบเทคนิคพิเศษกำลังพัฒนา</p>
                 </div>
             </div>
         </div>
@@ -604,24 +833,45 @@
             setTimeout(() => {
                 loadingScreen.style.display = 'none';
                 mainApp.style.display = 'block';
-                loadCallScripts();
             }, 500);
         }
 
-        // Show Tab Content
-        function showTab(tabName) {
+        // Show Page
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active class from all menu items
+            document.querySelectorAll('.menu-link').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected page and add active class to menu item
+            document.getElementById(pageId).classList.add('active');
+            document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+            
+            // Load content if needed
+            if (pageId === 'scripts') {
+                loadCallScripts();
+            }
+        }
+
+        // Show Script Tab
+        function showScriptTab(tabName) {
             // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(tab => {
+            document.querySelectorAll('#scripts .tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
             
             // Remove active class from all tabs
-            document.querySelectorAll('.nav-tab').forEach(tab => {
+            document.querySelectorAll('#scripts .nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
             // Show selected tab and add active class
-            document.getElementById(tabName + 'Content').classList.add('active');
+            document.getElementById(tabName + 'ScriptsContent').classList.add('active');
             event.target.classList.add('active');
             
             // Load content if needed
@@ -637,6 +887,8 @@
         // Load Call Scripts
         function loadCallScripts() {
             const container = document.getElementById('callScriptsList');
+            if (!container) return;
+            
             container.innerHTML = '';
             
             callScripts.forEach(script => {
@@ -658,6 +910,8 @@
         // Load Counter Scripts
         function loadCounterScripts() {
             const container = document.getElementById('counterScriptsList');
+            if (!container) return;
+            
             container.innerHTML = '';
             
             counterScripts.forEach(script => {
@@ -692,6 +946,8 @@
         function loadBuilder() {
             const palette = document.getElementById('nodePalette');
             const workspace = document.getElementById('workspace');
+            
+            if (!palette || !workspace) return;
             
             palette.innerHTML = '<h3>โหนดที่มีอยู่</h3>';
             workspace.innerHTML = '<h3>พื้นที่ทำงาน</h3><p>ลากโหนดจากด้านซ้ายมาวางที่นี่เพื่อสร้างบทสนทนา</p>';
@@ -771,8 +1027,19 @@
             }
         });
 
-        // Initialize
+        // Menu item click handlers
         document.addEventListener('DOMContentLoaded', function() {
+            // Add click event to menu items
+            document.querySelectorAll('.menu-link').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pageId = this.getAttribute('data-page');
+                    if (pageId) {
+                        showPage(pageId);
+                    }
+                });
+            });
+            
             // Auto start after 5 seconds if user doesn't click
             setTimeout(() => {
                 if (document.getElementById('loadingScreen').style.display !== 'none') {
