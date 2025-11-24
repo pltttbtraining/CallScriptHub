@@ -443,6 +443,9 @@
             margin-bottom: 0.5rem;
             color: var(--dark);
             cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .objection-answer {
@@ -726,6 +729,161 @@
             border-radius: 8px;
         }
 
+        /* Script Designer Styles */
+        .script-designer {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 1.5rem;
+            height: 600px;
+        }
+
+        .script-components {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            overflow-y: auto;
+        }
+
+        .script-preview {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .component-category {
+            margin-bottom: 1.5rem;
+        }
+
+        .component-category h4 {
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            border-bottom: 1px solid var(--primary);
+            padding-bottom: 0.5rem;
+        }
+
+        .component-item {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            cursor: grab;
+            transition: var(--transition);
+            border: 1px dashed var(--primary);
+        }
+
+        .component-item:hover {
+            background: rgba(179, 224, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .script-structure {
+            flex-grow: 1;
+            min-height: 400px;
+            border: 2px dashed var(--primary);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .structure-section {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .section-content {
+            color: var(--gray);
+        }
+
+        .empty-section {
+            text-align: center;
+            color: var(--gray);
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        .phrase-options {
+            display: none;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .phrase-option {
+            padding: 0.5rem;
+            margin-bottom: 0.3rem;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .phrase-option:hover {
+            background: rgba(179, 224, 255, 0.3);
+        }
+
+        .designer-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .custom-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 4px;
+            margin-top: 0.5rem;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .template-item {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .template-item:hover {
+            background: rgba(179, 224, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
         /* Animations */
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -797,6 +955,11 @@
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+            
+            .script-designer {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
         }
     </style>
 </head>
@@ -821,6 +984,7 @@
         <div class="nav-bar">
             <button class="nav-item active" data-page="home">หน้าแรก</button>
             <button class="nav-item" data-page="scripts">คลังสคริปต์</button>
+            <button class="nav-item" data-page="script-designer">ออกแบบสคริปต์</button>
             <button class="nav-item" data-page="objection-handling">จัดการข้อโต้แย้ง</button>
             <button class="nav-item" data-page="conversation-builder">Conversation Builder</button>
             <button class="nav-item" data-page="techniques">เทคนิคพิเศษ</button>
@@ -838,6 +1002,7 @@
                 <button class="admin-btn" onclick="showAddObjectionModal()">เพิ่มข้อโต้แย้ง</button>
                 <button class="admin-btn" onclick="showAddConversationModal()">เพิ่ม Conversation</button>
                 <button class="admin-btn" onclick="showAddTechniqueModal()">เพิ่มเทคนิค</button>
+                <button class="admin-btn" onclick="showAddComponentModal()">เพิ่ม Component</button>
                 <button class="btn-logout" onclick="logoutAdmin()">ออกจากระบบแอดมิน</button>
                 <button class="admin-btn delete" onclick="clearAllData()">ล้างข้อมูลทั้งหมด</button>
             </div>
@@ -864,6 +1029,12 @@
                         <p>จัดการสคริปต์การโทรทั้งหมด</p>
                     </div>
                     
+                    <div class="quick-item" data-page="script-designer">
+                        <i class="fas fa-edit"></i>
+                        <h4>ออกแบบสคริปต์</h4>
+                        <p>สร้างสคริปต์แบบ Customize</p>
+                    </div>
+                    
                     <div class="quick-item" data-page="objection-handling">
                         <i class="fas fa-bolt"></i>
                         <h4>จัดการข้อโต้แย้ง</h4>
@@ -874,12 +1045,6 @@
                         <i class="fas fa-comments"></i>
                         <h4>Conversation Builder</h4>
                         <p>สร้างบทสนทนาแบบไดนามิก</p>
-                    </div>
-                    
-                    <div class="quick-item" data-page="techniques">
-                        <i class="fas fa-magic"></i>
-                        <h4>เทคนิคพิเศษ</h4>
-                        <p>เทคนิคการขายขั้นสูง</p>
                     </div>
                 </div>
             </div>
@@ -903,6 +1068,80 @@
                 <div id="counterScripts" class="script-tab-content" style="display: none;">
                     <div class="script-grid" id="counterScriptsList">
                         <!-- Counter scripts will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Script Designer Page -->
+            <div id="script-designer" class="page">
+                <h2>ออกแบบสคริปต์</h2>
+                <p>สร้างสคริปต์แบบ Customize โดยเลือกจาก Component สำเร็จรูป</p>
+                
+                <div class="script-tabs">
+                    <button class="script-tab active" data-template="custom">ออกแบบเอง</button>
+                    <button class="script-tab" data-template="quick">เทมเพลตสำเร็จรูป</button>
+                </div>
+                
+                <div id="customDesigner" class="script-designer">
+                    <div class="script-components">
+                        <h3>ส่วนประกอบสคริปต์</h3>
+                        
+                        <div class="component-category">
+                            <h4>การเริ่มต้นบทสนทนา</h4>
+                            <div id="openingComponents">
+                                <!-- Opening components will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div class="component-category">
+                            <h4>การระบุปัญหา</h4>
+                            <div id="painPointComponents">
+                                <!-- Pain point components will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div class="component-category">
+                            <h4>การนำเสนอโซลูชัน</h4>
+                            <div id="solutionComponents">
+                                <!-- Solution components will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div class="component-category">
+                            <h4>การปิดการขาย</h4>
+                            <div id="closingComponents">
+                                <!-- Closing components will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div class="component-category">
+                            <h4>ประโยคพิเศษ</h4>
+                            <div id="specialComponents">
+                                <!-- Special components will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="script-preview">
+                        <h3>สคริปต์ของคุณ</h3>
+                        <div class="script-structure" id="scriptStructure">
+                            <div class="empty-section">ลากส่วนประกอบมาวางที่นี่เพื่อสร้างสคริปต์</div>
+                        </div>
+                        
+                        <div class="designer-actions">
+                            <button class="admin-btn" onclick="clearScriptDesign()">ล้างทั้งหมด</button>
+                            <button class="admin-btn" onclick="saveDesignedScript()">บันทึกสคริปต์</button>
+                            <button class="start-btn" onclick="exportScript()">ส่งออกสคริปต์</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="templateDesigner" style="display: none;">
+                    <h3>เทมเพลตสคริปต์สำเร็จรูป</h3>
+                    <p>เลือกเทมเพลตแล้วปรับแต่งตามต้องการ</p>
+                    
+                    <div class="template-grid" id="templateList">
+                        <!-- Templates will be loaded here -->
                     </div>
                 </div>
             </div>
@@ -1092,6 +1331,39 @@
         </div>
     </div>
 
+    <!-- Add Component Modal -->
+    <div id="addComponentModal" class="modal">
+        <div class="modal-content modal-wide">
+            <button class="close-btn" onclick="closeAddComponentModal()">&times;</button>
+            <h2>เพิ่ม Component ใหม่</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="componentCategory">หมวดหมู่</label>
+                    <select id="componentCategory">
+                        <option value="opening">การเริ่มต้นบทสนทนา</option>
+                        <option value="painPoint">การระบุปัญหา</option>
+                        <option value="solution">การนำเสนอโซลูชัน</option>
+                        <option value="closing">การปิดการขาย</option>
+                        <option value="special">ประโยคพิเศษ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="componentTitle">ชื่อ Component</label>
+                    <input type="text" id="componentTitle" placeholder="ชื่อ Component">
+                </div>
+                <div class="form-group">
+                    <label for="componentContent">เนื้อหา</label>
+                    <textarea id="componentContent" placeholder="เนื้อหา Component"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="componentVariations">ตัวเลือกย่อย (แต่ละบรรทัดเป็น 1 ตัวเลือก)</label>
+                    <textarea id="componentVariations" placeholder="ตัวเลือกย่อย (ถ้ามี)"></textarea>
+                </div>
+                <button class="start-btn" onclick="addNewComponent()">เพิ่ม Component</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Default Data
         const defaultCallScripts = [
@@ -1142,6 +1414,78 @@
 	•	กองทุนรวมหุ้น: ความเสี่ยงสูง ผลตอบแทน 7-10%+
 
 สามารถเลือกลงทุนตามระดับความเสี่ยงที่คุณสะดวกใจ และมีผู้จัดการกองทุนคอยดูแลให้ครับ/คะ`
+            },
+            {
+                id: 3,
+                title: "กองทุนติดลบจากความผันผวนของเศรษฐกิจ",
+                bullets: [
+                    "OBJECTIVE: เสนอการปรับพอร์ตการลงทุนเพื่อลดความเสี่ยงและฟื้นตัวจากภาวะติดลบ",
+                    "OPENER: สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันเห็นว่าพอร์ตการลงทุนกองทุนของคุณได้รับผลกระทบจากความผันผวนของเศรษฐกิจ อยากเสนอแนวทางการปรับพอร์ตใหม่ให้เหมาะสมยิ่งขึ้นครับ/ค่ะ",
+                    "PAIN: การที่พอร์ตการลงทุนติดลบเป็นเวลานานอาจทำให้สูญเสียโอกาสในการลงทุนอื่นๆ และส่งผลต่อเป้าหมายทางการเงินในระยะยาว",
+                    "URGENCY: การปรับพอร์ตในช่วงนี้จะช่วยลดความเสี่ยงและเตรียมพร้อมสำหรับการฟื้นตัวของตลาด ซึ่งจะช่วยให้พอร์ตของคุณกลับมาเติบโตได้เร็วกว่า"
+                ],
+                fullScript: `แนวทางที่ 3: กองทุนติดลบจากความผันผวน
+	•	"ในช่วงเศรษฐกิจผันผวน การลงทุนหลายประเภทได้รับผลกระทบ"
+	•	"เรามีบริการปรับพอร์ตการลงทุนฟรี โดยผู้เชี่ยวชาญ"
+	•	"จะช่วยวิเคราะห์และแนะนำการปรับสัดส่วนการลงทุนที่เหมาะสม"
+
+ขั้นตอนการปรับพอร์ต:
+	1. วิเคราะห์พอร์ตปัจจุบันและระดับความเสี่ยง
+	2. ประเมินเป้าหมายการลงทุนและระยะเวลา
+	3. แนะนำการปรับสัดส่วนพอร์ตให้เหมาะสม
+	4. ติดตามผลและปรับเปลี่ยนตามสถานการณ์
+
+บริการนี้ไม่มีค่าใช้จ่ายเพิ่มเติม และช่วยลดความเสี่ยงจากการลงทุนในสินทรัพย์เดียว`
+            },
+            {
+                id: 4,
+                title: "ลูกค้าประกันจ่ายเบี้ยครบ ทบทวนผลิตภัณฑ์",
+                bullets: [
+                    "OBJECTIVE: เสนอการทบทวนแผนประกันและผลิตภัณฑ์เสริมเพื่อความคุ้มครองที่สมบูรณ์",
+                    "OPENER: สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันเห็นว่าคุณได้จ่ายเบี้ยประกันชีวิตครบตามสัญญาแล้ว อยากเชิญชวนให้ทบทวนแผนประกันเพื่อตรวจสอบความคุ้มครองที่ยังขาดและโอกาสในการใช้สิทธิลดหย่อนภาษีครับ/ค่ะ",
+                    "PAIN: ความต้องการประกันชีวิตเปลี่ยนแปลงตามช่วงวัยและสถานการณ์ การไม่ทบทวนแผนประกันอย่างสม่ำเสมออาจทำให้มีความคุ้มครองไม่เพียงพอหรือซ้ำซ้อน",
+                    "URGENCY: การทำประกันในช่วงอายุน้อยกว่าเบี้ยจะถูกกว่าและได้รับความคุ้มครองเร็วขึ้น รวมถึงสามารถใช้สิทธิลดหย่อนภาษีในปีนี้ได้ทันเวลา"
+                ],
+                fullScript: `แนวทางที่ 4: ลูกค้าประกันจ่ายเบี้ยครบ
+	•	"ขอแสดงความยินดีที่คุณได้จ่ายเบี้ยประกันครบตามสัญญา"
+	•	"นี่เป็นเวลาที่ดีในการทบทวนความคุ้มครองและแผนการเงิน"
+	•	"เรามีผลิตภัณฑ์เสริมที่ช่วยเพิ่มความคุ้มครองและสิทธิลดหย่อนภาษี"
+
+ข้อเสนอพิเศษ:
+	•	ประกันสุขภาพเพิ่มเติม: เบี้ยเริ่มต้น 5,000 บาท/ปี
+	•	ประกันโรคร้ายแรง: ความคุ้มครองสูงสุด 1,000,000 บาท
+	•	ประกันอุบัติเหตุ: ความคุ้มครอง 24 ชม. ทั่วโลก
+
+ทำตอนนี้ได้รับสิทธิ์:
+	•	เบี้ยประกันถูกกว่าอายุเพิ่มขึ้น
+	•	คุ้มครองเร็วขึ้น ไม่ต้องรอระยะเวลารอคอย
+	•	ใช้สิทธิลดหย่อนภาษีได้ในปีนี้`
+            },
+            {
+                id: 5,
+                title: "ลูกค้าทั่วไปช่วง Tax Season",
+                bullets: [
+                    "OBJECTIVE: เชิญชวนใช้บริการคำนวณภาษีและวางแผนการลงทุนเพื่อลดหย่อนภาษี",
+                    "OPENER: สวัสดีครับ/คะ คุณลูกค้า ช่วงสิ้นปีนี้เป็นเวลาที่เหมาะสำหรับการวางแผนภาษี ผม/ดิฉันอยากเชิญชวนคุณมาใช้บริการคำนวณภาษีและวางแผนการลดหย่อนภาษีโดยไม่เสียค่าใช้จ่ายครับ/ค่ะ",
+                    "PAIN: การไม่วางแผนภาษีล่วงหน้าอาจทำให้ต้องเสียภาษีในอัตราที่สูงขึ้นและพลาดโอกาสในการใช้สิทธิลดหย่อนภาษีต่างๆ ซึ่งหมายถึงการจ่ายเงินมากเกินจำเป็น",
+                    "URGENCY: ต้องรีบตัดสินใจในช่วงนี้เพราะจะสิ้นปีแล้ว และโปรโมชั่นต่างๆ สำหรับผลิตภัณฑ์ลดหย่อนภาษีมีข้อเสนอที่ดีที่สุดในช่วงนี้"
+                ],
+                fullScript: `แนวทางที่ 5: Tax Season
+	•	"ช่วงสิ้นปีนี้เป็นเวลาสำคัญสำหรับการวางแผนภาษี"
+	•	"ธนาคารมีบริการคำนวณภาษีและวางแผนลดหย่อนโดยไม่เสียค่าใช้จ่าย"
+	•	"โปรโมชั่นพิเศษมีเฉพาะช่วงสิ้นปีนี้เท่านั้น"
+
+บริการฟรีสำหรับลูกค้า:
+	•	คำนวณภาษีโดยประมาณล่วงหน้า
+	•	วิเคราะห์สิทธิลดหย่อนภาษีที่ใช้ได้
+	•	แนะนำผลิตภัณฑ์ลดหย่อนภาษีที่เหมาะสม
+
+โปรโมชั่นพิเศษ:
+	•	สมัครประกันชีวิต: ได้รับของสมนาคุณมูลค่า 1,000 บาท
+	•	ลงทุนกองทุน RMF: ได้ส่วนลดค่าธรรมเนียม 50%
+	•	ซื้อสินทรัพย์ดิจิทัล: ได้รับคู่มือการลดหย่อนภาษี
+
+ต้องรีบตัดสินใจเพราะโปรโมชั่นมีจำกัดและสิ้นปีกำลังจะถึง!`
             }
         ];
 
@@ -1189,7 +1533,77 @@ STEP2:
 • เงินคืน 5% เมื่อใช้บัตรเครดิตธนาคาร
 • อัตราดอกเบี้ยพิเศษสำหรับสินเชื่อส่วนบุคคล
 
-ลงทะเบียนง่ายๆ ผ่านแอปพลิชันธนาคาร ใช้เวลาเพียง 2 นาที`
+ลงทะเบียนง่ายๆ ผ่านแอปพลิเคชันธนาคาร ใช้เวลาเพียง 2 นาที`
+            },
+            {
+                id: 3,
+                title: "แนะนำเตรียมเอกสารลดหย่อนภาษีของ Easy e-Receipt",
+                bullets: [
+                    "STEP1: อธิบายความสะดวก: 'สวัสดีครับ/คะ คุณลูกค้า ด้วยนวัตกรรมใหม่ Easy e-Receipt จะช่วยให้คุณเก็บเอกสารลดหย่อนภาษีได้อย่างเป็นระบบและไม่ต้องกังวลว่าจะสูญหาย'",
+                    "STEP2: สร้างแรงจูงใจ: 'เริ่มใช้บริการตั้งแต่ต้นปี จะได้บันทึกใบเสร็จทั้งหมดโดยอัตโนมัติ และเมื่อถึงเวลายื่นภาษี ระบบจะสรุปข้อมูลให้คุณอย่างครบถ้วน พร้อมคำแนะนำการลดหย่อนภาษี'"
+                ],
+                fullScript: `Counter Conversation 3: Easy e-Receipt
+
+STEP1:
+"สวัสดีครับ/คะ คุณลูกค้า ด้วยนวัตกรรมใหม่ Easy e-Receipt จะช่วยให้คุณเก็บเอกสารลดหย่อนภาษีได้อย่างเป็นระบบและไม่ต้องกังวลว่าจะสูญหาย"
+
+STEP2:
+"เริ่มใช้บริการตั้งแต่ต้นปี จะได้บันทึกใบเสร็จทั้งหมดโดยอัตโนมัติ และเมื่อถึงเวลายื่นภาษี ระบบจะสรุปข้อมูลให้คุณอย่างครบถ้วน พร้อมคำแนะนำการลดหย่อนภาษี"
+
+คุณสมบัติเด่นของ Easy e-Receipt:
+• บันทึกใบเสร็จอัตโนมัติผ่านแอปพลิเคชัน
+• จัดหมวดหมู่ค่าใช้จ่ายสำหรับลดหย่อนภาษี
+• แจ้งเตือนเมื่อใกล้ถึงวงเงินลดหย่อน
+• สรุปรายงานภาษีอัตโนมัติ
+• ปลอดภัยด้วยระบบ Cloud Storage
+
+เริ่มใช้ฟรีตลอดปี และช่วยลดเวลายื่นภาษีได้ถึง 70%`
+            },
+            {
+                id: 4,
+                title: "ชวนคุยเรื่องภาษีดอกเบี้ยเงินฝาก",
+                bullets: [
+                    "STEP1: ระบุปัญหา: 'สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันอยากแชร์ข้อมูลสำคัญเกี่ยวกับภาษีดอกเบี้ยเงินฝากที่คุณอาจสามารถขอคืนได้หากมีเงื่อนไขที่เหมาะสม'",
+                    "STEP2: เสนอทางแก้: 'เรามีบริการตรวจสอบและยื่นขอคืนภาษีดอกเบี้ยเงินฝากให้ โดยทีมงานจะวิเคราะห์ว่าคุณมีสิทธิ์ได้รับเงินคืนหรือไม่ และดำเนินการให้โดยไม่เสียค่าใช้จ่าย'"
+                ],
+                fullScript: `Counter Conversation 4: ภาษีดอกเบี้ยเงินฝาก
+
+STEP1:
+"สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันอยากแชร์ข้อมูลสำคัญเกี่ยวกับภาษีดอกเบี้ยเงินฝากที่คุณอาจสามารถขอคืนได้หากมีเงื่อนไขที่เหมาะสม"
+
+STEP2:
+"เรามีบริการตรวจสอบและยื่นขอคืนภาษีดอกเบี้ยเงินฝากให้ โดยทีมงานจะวิเคราะห์ว่าคุณมีสิทธิ์ได้รับเงินคืนหรือไม่ และดำเนินการให้โดยไม่เสียค่าใช้จ่าย"
+
+เงื่อนไขที่อาจได้รับคืนภาษีดอกเบี้ย:
+• รายได้ต่อปีต่ำกว่า 150,000 บาท
+• มีค่าใช้จ่ายลดหย่อนอื่นๆ ที่สามารถนำมาหักได้
+• เป็นผู้สูงอายุ (60 ปีขึ้นไป)
+• มีบุคคลในครอบครัวที่อยู่ในความอุปการะ
+
+บริการนี้ฟรีสำหรับลูกค้าธนาคาร และใช้เวลาเพียง 10-15 วันทำการ`
+            },
+            {
+                id: 5,
+                title: "ชวนคุยเรื่องการวางแผนภาษีสิ้นปี",
+                bullets: [
+                    "STEP1: สร้างความตระหนัก: 'สวัสดีครับ/คะ คุณลูกค้า ช่วงสิ้นปีนี้เป็นเวลาสำหรับการวางแผนภาษี ผม/ดิฉันเห็นว่าลูกค้าหลายคนเริ่มสอบถามเกี่ยวกับเรื่องนี้แล้ว คุณมีการเตรียมตัวหรือยังครับ/คะ'",
+                    "STEP2: แสดงมูลค่าที่เสียไป: 'หากยังไม่มีการวางแผน อาจทำให้เสียโอกาสในการลดหย่อนภาษี ซึ่งภาษีปีหนึ่งมีมูลค่าประมาณเท่ากับเงินเดือน 1 เดือนเลยทีเดียว'"
+                ],
+                fullScript: `Counter Conversation 5: วางแผนภาษีสิ้นปี
+
+STEP1:
+"สวัสดีครับ/คะ คุณลูกค้า ช่วงสิ้นปีนี้เป็นเวลาสำหรับการวางแผนภาษี ผม/ดิฉันเห็นว่าลูกค้าหลายคนเริ่มสอบถามเกี่ยวกับเรื่องนี้แล้ว คุณมีการเตรียมตัวหรือยังครับ/คะ"
+
+STEP2:
+"หากยังไม่มีการวางแผน อาจทำให้เสียโอกาสในการลดหย่อนภาษี ซึ่งภาษีปีหนึ่งมีมูลค่าประมาณเท่ากับเงินเดือน 1 เดือนเลยทีเดียว"
+
+บริการวางแผนภาษีฟรีจากธนาคาร:
+• วิเคราะห์สถานการณ์ทางการเงินปัจจุบัน
+• คำนวณภาษีโดยประมาณที่ต้องจ่าย
+• แนะนำช่องทางลดหย่อนภาษีที่เหมาะสม
+• ประเมินผลิตภัณฑ์การลงทุนสำหรับลดหย่อน
+
+รีบตัดสินใจตอนนี้เพราะโปรโมชั่นสิ้นปีมีจำกัด และช่วยประหยัดเงินได้จริง!`
             }
         ];
 
@@ -1206,6 +1620,24 @@ STEP2:
                     question: "ไม่มีความรู้ในการลงทุน",
                     answer: "ไม่ต้องกังวลครับ/คะ เรามีทีมผู้เชี่ยวชาญที่พร้อมให้คำแนะนำและดูแลพอร์ตการลงทุนให้คุณอย่างใกล้ชิด รวมถึงมีบริการติดตามผลอย่างสม่ำเสมอ",
                     tone: "ปลอบใจ + เสนอความช่วยเหลือ"
+                },
+                {
+                    id: 3,
+                    question: "รอให้ตลาดฟื้นตัวก่อน",
+                    answer: "การรอให้ตลาดฟื้นตัวโดยไม่ทำอะไรอาจทำให้เสียโอกาสในการซื้อสินทรัพย์คุณภาพในราคาต่ำ ซึ่งจะช่วยเพิ่มศักยภาพในการทำกำไรเมื่อตลาดฟื้นตัว",
+                    tone: "ให้ข้อมูลที่เป็นประโยชน์ + มองการณ์ไกล"
+                },
+                {
+                    id: 4,
+                    question: "ไม่มีเงินพอจะลงทุน",
+                    answer: "เข้าใจดีครับ/คะ เรามีแผนการลงทุนที่เริ่มต้นเพียง 1,000 บาทเท่านั้น ซึ่งถือว่าคุ้มค่ามากเมื่อเทียบกับโอกาสในการสร้างผลตอบแทนที่สูงกว่า",
+                    tone: "เข้าใจความรู้สึก + เปรียบเทียบให้เห็นภาพ"
+                },
+                {
+                    id: 5,
+                    question: "ต้องการปรึกษาครอบครัวก่อน",
+                    answer: "เป็นการตัดสินใจที่ดีครับ/คะ ที่จะปรึกษาครอบครัว ขออนุญาตส่งข้อมูลรายละเอียดผลิตภัณฑ์ให้พิจารณาร่วมกัน และถ้ามีข้อสงสัยเพิ่มเติม ติดต่อกลับมาได้ตลอดเวลานะครับ/คะ",
+                    tone: "เห็นด้วย + เสนอความช่วยเหลือ"
                 }
             ],
             counter: [
@@ -1220,6 +1652,24 @@ STEP2:
                     question: "ข้อมูลเดิมยังใช้ได้อยู่",
                     answer: "การอัพเดทข้อมูลให้เป็นปัจจุบันจะช่วยให้เราส่งเอกสารสำคัญ เช่น หนังสือรับรองดอกเบี้ยสำหรับใช้สิทธิลดหย่อนภาษี ได้อย่างถูกต้องและทันเวลา",
                     tone: "อธิบายประโยชน์ + สร้างความเข้าใจ"
+                },
+                {
+                    id: 3,
+                    question: "มีโปรแกรมคล้ายๆ กันแล้ว",
+                    answer: "โครงการคนละครึ่งพลัสนี้พิเศษกว่าตรงที่รัฐบาลและธนาคารร่วมสนับสนุน ทำให้ได้ส่วนลดสูงกว่าและมีร้านค้าร่วมโครงการมากกว่า",
+                    tone: "ชี้จุดแตกต่าง + เสนอมูลค่าเพิ่ม"
+                },
+                {
+                    id: 4,
+                    question: "ไม่มั่นใจเรื่องความปลอดภัยของข้อมูล",
+                    answer: "ข้อมูลของคุณจะถูกเก็บรักษาอย่างปลอดภัยด้วยระบบการเข้ารหัสข้อมูลระดับสูง และปฏิบัติตามกฎหมายคุ้มครองข้อมูลส่วนบุคคลอย่างเคร่งครัด",
+                    tone: "สร้างความมั่นใจ + อธิบายมาตรการ"
+                },
+                {
+                    id: 5,
+                    question: "ไม่ค่อยใช้บริการธนาคารบ่อย",
+                    answer: "การอัพเดทข้อมูลเพียงครั้งเดียวจะช่วยให้คุณได้รับบริการที่ดียิ่งขึ้นในอนาคต และยังสามารถรับสิทธิประโยชน์พิเศษต่างๆ จากธนาคารได้อีกด้วย",
+                    tone: "อธิบายประโยชน์ระยะยาว + สร้างแรงจูงใจ"
                 }
             ],
             general: [
@@ -1234,6 +1684,24 @@ STEP2:
                     question: "ยังไม่แน่ใจเกี่ยวกับผลตอบแทน",
                     answer: "ผลตอบแทนของผลิตภัณฑ์นี้มีการการันตีอย่างชัดเจน โดยจะได้รับคืนปีละ 4% ในปีที่ 1-9 และเมื่อครบ 10 ปีจะได้รับ 404% ของเงินเบี้ยประกัน ซึ่งเป็นอัตราที่สูงกว่าการฝากเงินทั่วไป",
                     tone: "ให้ข้อมูลที่เป็นประโยชน์ + มองการณ์ไกล"
+                },
+                {
+                    id: 3,
+                    question: "ต้องการปรึกษาครอบครัวก่อน",
+                    answer: "เป็นการตัดสินใจที่ดีครับ/คะ ที่จะปรึกษาครอบครัว ขออนุญาตส่งข้อมูลรายละเอียดผลิตภัณฑ์ให้พิจารณาร่วมกัน และถ้ามีข้อสงสัยเพิ่มเติม ติดต่อกลับมาได้ตลอดเวลานะครับ/คะ",
+                    tone: "เห็นด้วย + เสนอความช่วยเหลือ"
+                },
+                {
+                    id: 4,
+                    question: "อายุยังน้อย ไม่จำเป็นต้องทำประกัน",
+                    answer: "การทำประกันตอนอายุน้อยกว่าเบี้ยจะถูกกว่าและได้รับความคุ้มครองเร็วขึ้น รวมถึงสามารถสะสมเงินก้อนได้ตั้งแต่เนิ่นๆ สำหรับใช้ในอนาคต",
+                    tone: "ให้ข้อมูลที่เป็นประโยชน์ + มองการณ์ไกล"
+                },
+                {
+                    id: 5,
+                    question: "มีประกันจากที่ทำงานอยู่แล้ว",
+                    answer: "ประกันจากที่ทำงานเป็นสิ่งที่ดี แต่การมีประกันส่วนตัวเพิ่มเติมจะช่วยเสริมความคุ้มครองให้สมบูรณ์ยิ่งขึ้น โดยเฉพาะเมื่อเปลี่ยนงานหรือเกษียณ",
+                    tone: "เสริมจุดแข็ง + อธิบายประโยชน์เพิ่มเติม"
                 }
             ]
         };
@@ -1397,6 +1865,107 @@ STEP2:
             }
         ];
 
+        // Script Components Data
+        const defaultScriptComponents = {
+            opening: [
+                {
+                    id: 1,
+                    title: "ทักทายลูกค้า",
+                    content: "สวัสดีครับ/คะ คุณ{ชื่อลูกค้า} ผม/ดิฉัน{ชื่อพนักงาน} จาก{ชื่อบริษัท} วันนี้โทรมาเพื่อ{วัตถุประสงค์}ครับ/ค่ะ",
+                    variations: [
+                        "ขออัพเดทข้อมูลเพื่อบริการที่ดีขึ้น",
+                        "แจ้งโปรโมชั่นพิเศษ",
+                        "ตรวจสอบความพึงพอใจในการใช้บริการ"
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "เปิดบทสนทนาแบบเป็นกันเอง",
+                    content: "สวัสดีครับ/คะ คุณ{ชื่อลูกค้า} ไม่ทราบว่าตอนนี้สะดวกคุยไหมครับ/คะ?",
+                    variations: []
+                }
+            ],
+            painPoint: [
+                {
+                    id: 1,
+                    title: "ปัญหาเงินนิ่ง",
+                    content: "ผม/ดิฉันเห็นว่าบัญชีเงินฝากของคุณมียอดคงเหลือค่อนข้างสูง ซึ่งดอกเบี้ยเงินฝากในปัจจุบันต่ำมาก ทำให้เงินฝากเติบโตช้าและอาจไม่ชนะอัตราเงินเฟ้อ",
+                    variations: []
+                },
+                {
+                    id: 2,
+                    title: "ปัญหาเงินฝากประจำใกล้ครบ",
+                    content: "เห็นว่าบัญชีเงินฝากประจำของคุณกำลังจะครบกำหนดในอีก {X} วัน การต่ออายุอัตโนมัติอาจทำให้พลาดโอกาสลงทุนที่ให้ผลตอบแทนดีกว่า",
+                    variations: []
+                }
+            ],
+            solution: [
+                {
+                    id: 1,
+                    title: "เสนอผลิตภัณฑ์ลงทุน",
+                    content: "เรามีผลิตภัณฑ์การลงทุนที่เหมาะสมกับคุณ ซึ่งให้ผลตอบแทน{X}% ต่อปี สูงกว่าดอกเบี้ยเงินฝากทั่วไป",
+                    variations: [
+                        "2-3% สำหรับกองทุนรวมตราสารหนี้",
+                        "4-6% สำหรับกองทุนรวมผสม",
+                        "7-10% สำหรับกองทุนรวมหุ้น"
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "เสนอประกันชีวิต",
+                    content: "เรามีแผนประกันชีวิตที่ช่วยลดหย่อนภาษีได้สูงสุด {X} บาท และยังได้รับความคุ้มครองชีวิตอีกด้วย",
+                    variations: [
+                        "100,000 บาท พร้อมเงินคืน 4% ต่อปี",
+                        "500,000 บาท พร้อมโบนัสพิเศษ"
+                    ]
+                }
+            ],
+            closing: [
+                {
+                    id: 1,
+                    title: "ปิดการขายแบบนุ่มนวล",
+                    content: "ไม่ทราบว่าคุณ{ชื่อลูกค้า} สนใจทราบรายละเอียดเพิ่มเติมไหมครับ/คะ?",
+                    variations: []
+                },
+                {
+                    id: 2,
+                    title: "ปิดการขายแบบเร่งด่วน",
+                    content: "โปรโมชั่นนี้มีจำกัดเพียง {X} รายแรกเท่านั้น คุณ{ชื่อลูกค้า} สนใจลงทะเบียนเลยไหมครับ/คะ?",
+                    variations: []
+                }
+            ],
+            special: [
+                {
+                    id: 1,
+                    title: "ประโยคสร้างความมั่นใจ",
+                    content: "ลูกค้าหลายท่านที่ใช้บริการนี้มีความพึงพอใจสูงและได้รับผลตอบแทนตามที่คาดหวัง",
+                    variations: []
+                },
+                {
+                    id: 2,
+                    title: "ประโยคกระตุ้นการตัดสินใจ",
+                    content: "ยิ่งเริ่มต้นเร็ว ยิ่งได้รับผลตอบแทนที่มากขึ้นในระยะยาว",
+                    variations: []
+                }
+            ]
+        };
+
+        // Default Templates
+        const defaultTemplates = [
+            {
+                id: 1,
+                title: "เทมเพลตขายประกันชีวิต",
+                description: "สำหรับการเสนอขายประกันชีวิตแบบครบวงจร",
+                components: [1, 1, 2, 1] // opening[1], painPoint[1], solution[2], closing[1]
+            },
+            {
+                id: 2,
+                title: "เทมเพลตเสนอการลงทุน",
+                description: "สำหรับการเสนอขายผลิตภัณฑ์การลงทุน",
+                components: [2, 2, 1, 2] // opening[2], painPoint[2], solution[1], closing[2]
+            }
+        ];
+
         // Data Management
         let isAdmin = false;
         let currentEditingId = null;
@@ -1418,8 +1987,17 @@ STEP2:
             if (!localStorage.getItem('techniques')) {
                 localStorage.setItem('techniques', JSON.stringify(defaultTechniques));
             }
+            if (!localStorage.getItem('scriptComponents')) {
+                localStorage.setItem('scriptComponents', JSON.stringify(defaultScriptComponents));
+            }
+            if (!localStorage.getItem('templates')) {
+                localStorage.setItem('templates', JSON.stringify(defaultTemplates));
+            }
             if (!localStorage.getItem('uploadedFiles')) {
                 localStorage.setItem('uploadedFiles', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('designedScripts')) {
+                localStorage.setItem('designedScripts', JSON.stringify([]));
             }
         }
 
@@ -1442,6 +2020,14 @@ STEP2:
 
         function getTechniques() {
             return JSON.parse(localStorage.getItem('techniques')) || [];
+        }
+
+        function getScriptComponents() {
+            return JSON.parse(localStorage.getItem('scriptComponents')) || defaultScriptComponents;
+        }
+
+        function getTemplates() {
+            return JSON.parse(localStorage.getItem('templates')) || defaultTemplates;
         }
 
         function getUploadedFiles() {
@@ -1467,6 +2053,14 @@ STEP2:
 
         function saveTechniques(techniques) {
             localStorage.setItem('techniques', JSON.stringify(techniques));
+        }
+
+        function saveScriptComponents(components) {
+            localStorage.setItem('scriptComponents', JSON.stringify(components));
+        }
+
+        function saveTemplates(templates) {
+            localStorage.setItem('templates', JSON.stringify(templates));
         }
 
         function saveUploadedFiles(files) {
@@ -1535,6 +2129,9 @@ STEP2:
                 case 'scripts':
                     loadScriptsPage();
                     break;
+                case 'script-designer':
+                    loadScriptDesignerPage();
+                    break;
                 case 'objection-handling':
                     loadObjectionHandlingPage();
                     break;
@@ -1589,8 +2186,9 @@ STEP2:
                 const techniques = getTechniques();
                 
                 quickItems[0].querySelector('p').textContent = `จัดการสคริปต์การโทรทั้งหมด (${callScripts.length + counterScripts.length} สคริปต์)`;
-                quickItems[1].querySelector('p').textContent = `เทคนิคการตอบคำถามลูกค้า (${Object.values(objections).flat().length} ข้อโต้แย้ง)`;
-                quickItems[3].querySelector('p').textContent = `เทคนิคการขายขั้นสูง (${techniques.length} เทคนิค)`;
+                quickItems[1].querySelector('p').textContent = `สร้างสคริปต์แบบ Customize`;
+                quickItems[2].querySelector('p').textContent = `เทคนิคการตอบคำถามลูกค้า (${Object.values(objections).flat().length} ข้อโต้แย้ง)`;
+                quickItems[3].querySelector('p').textContent = `สร้างบทสนทนาแบบไดนามิก`;
             }
         }
 
@@ -1733,6 +2331,388 @@ STEP2:
             }
         }
 
+        // Load Script Designer Page
+        function loadScriptDesignerPage() {
+            loadScriptComponents();
+            loadTemplates();
+            
+            // Setup script tabs
+            document.querySelectorAll('.script-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const templateType = this.getAttribute('data-template');
+                    
+                    // Update active tab
+                    document.querySelectorAll('.script-tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    if (templateType === 'custom') {
+                        document.getElementById('customDesigner').style.display = 'grid';
+                        document.getElementById('templateDesigner').style.display = 'none';
+                    } else {
+                        document.getElementById('customDesigner').style.display = 'none';
+                        document.getElementById('templateDesigner').style.display = 'block';
+                    }
+                });
+            });
+            
+            // Initialize drag and drop
+            initializeDragAndDrop();
+        }
+
+        // Load Script Components
+        function loadScriptComponents() {
+            const components = getScriptComponents();
+            
+            // Load opening components
+            const openingContainer = document.getElementById('openingComponents');
+            openingContainer.innerHTML = '';
+            components.opening.forEach(component => {
+                const item = createComponentItem(component, 'opening');
+                openingContainer.appendChild(item);
+            });
+            
+            // Load pain point components
+            const painPointContainer = document.getElementById('painPointComponents');
+            painPointContainer.innerHTML = '';
+            components.painPoint.forEach(component => {
+                const item = createComponentItem(component, 'painPoint');
+                painPointContainer.appendChild(item);
+            });
+            
+            // Load solution components
+            const solutionContainer = document.getElementById('solutionComponents');
+            solutionContainer.innerHTML = '';
+            components.solution.forEach(component => {
+                const item = createComponentItem(component, 'solution');
+                solutionContainer.appendChild(item);
+            });
+            
+            // Load closing components
+            const closingContainer = document.getElementById('closingComponents');
+            closingContainer.innerHTML = '';
+            components.closing.forEach(component => {
+                const item = createComponentItem(component, 'closing');
+                closingContainer.appendChild(item);
+            });
+            
+            // Load special components
+            const specialContainer = document.getElementById('specialComponents');
+            specialContainer.innerHTML = '';
+            components.special.forEach(component => {
+                const item = createComponentItem(component, 'special');
+                specialContainer.appendChild(item);
+            });
+        }
+
+        // Create Component Item
+        function createComponentItem(component, category) {
+            const item = document.createElement('div');
+            item.className = 'component-item';
+            item.draggable = true;
+            item.setAttribute('data-id', component.id);
+            item.setAttribute('data-category', category);
+            
+            item.innerHTML = `
+                <strong>${component.title}</strong>
+                <div class="component-content">${component.content}</div>
+            `;
+            
+            // Add drag event
+            item.addEventListener('dragstart', handleDragStart);
+            
+            // Add click event to show variations if available
+            if (component.variations && component.variations.length > 0) {
+                item.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('component-item')) {
+                        toggleVariations(this, component);
+                    }
+                });
+            }
+            
+            return item;
+        }
+
+        // Toggle Variations
+        function toggleVariations(element, component) {
+            const existingOptions = element.querySelector('.phrase-options');
+            
+            if (existingOptions) {
+                existingOptions.remove();
+            } else {
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'phrase-options';
+                
+                component.variations.forEach(variation => {
+                    const option = document.createElement('div');
+                    option.className = 'phrase-option';
+                    option.textContent = variation;
+                    option.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        addComponentToScript(component, component.category, variation);
+                    });
+                    optionsDiv.appendChild(option);
+                });
+                
+                // Add custom input
+                const customInput = document.createElement('input');
+                customInput.type = 'text';
+                customInput.placeholder = 'พิมพ์ข้อความที่ต้องการ...';
+                customInput.className = 'custom-input';
+                customInput.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+                customInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        addComponentToScript(component, component.category, this.value);
+                        this.value = '';
+                        optionsDiv.remove();
+                    }
+                });
+                
+                optionsDiv.appendChild(customInput);
+                element.appendChild(optionsDiv);
+            }
+        }
+
+        // Drag and Drop Functions
+        function initializeDragAndDrop() {
+            const scriptStructure = document.getElementById('scriptStructure');
+            
+            scriptStructure.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.backgroundColor = 'rgba(179, 224, 255, 0.2)';
+            });
+            
+            scriptStructure.addEventListener('dragleave', function() {
+                this.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+            });
+            
+            scriptStructure.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+                
+                const componentId = e.dataTransfer.getData('text/plain');
+                const category = e.dataTransfer.getData('category');
+                
+                if (componentId && category) {
+                    const components = getScriptComponents();
+                    const component = components[category].find(c => c.id == componentId);
+                    
+                    if (component) {
+                        addComponentToScript(component, category);
+                    }
+                }
+            });
+        }
+
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', this.getAttribute('data-id'));
+            e.dataTransfer.setData('category', this.getAttribute('data-category'));
+        }
+
+        // Add Component to Script
+        function addComponentToScript(component, category, customText = null) {
+            const scriptStructure = document.getElementById('scriptStructure');
+            
+            // Remove empty message if exists
+            const emptySection = scriptStructure.querySelector('.empty-section');
+            if (emptySection) {
+                emptySection.remove();
+            }
+            
+            const section = document.createElement('div');
+            section.className = 'structure-section';
+            section.setAttribute('data-id', component.id);
+            section.setAttribute('data-category', category);
+            
+            const content = customText || component.content;
+            
+            section.innerHTML = `
+                <div class="section-header">
+                    <div class="section-title">${component.title}</div>
+                    <button class="admin-btn delete" onclick="removeComponent(this)">ลบ</button>
+                </div>
+                <div class="section-content">${content}</div>
+                ${customText ? `<div class="custom-text-note">(ปรับแต่งแล้ว)</div>` : ''}
+            `;
+            
+            scriptStructure.appendChild(section);
+        }
+
+        // Remove Component
+        function removeComponent(button) {
+            const section = button.closest('.structure-section');
+            section.remove();
+            
+            // Show empty message if no components left
+            const scriptStructure = document.getElementById('scriptStructure');
+            if (scriptStructure.children.length === 0) {
+                scriptStructure.innerHTML = '<div class="empty-section">ลากส่วนประกอบมาวางที่นี่เพื่อสร้างสคริปต์</div>';
+            }
+        }
+
+        // Clear Script Design
+        function clearScriptDesign() {
+            if (confirm('คุณแน่ใจว่าต้องการล้างสคริปต์ทั้งหมด?')) {
+                const scriptStructure = document.getElementById('scriptStructure');
+                scriptStructure.innerHTML = '<div class="empty-section">ลากส่วนประกอบมาวางที่นี่เพื่อสร้างสคริปต์</div>';
+            }
+        }
+
+        // Save Designed Script
+        function saveDesignedScript() {
+            const scriptStructure = document.getElementById('scriptStructure');
+            const sections = scriptStructure.querySelectorAll('.structure-section');
+            
+            if (sections.length === 0) {
+                alert('กรุณาเพิ่มส่วนประกอบในสคริปต์ก่อนบันทึก');
+                return;
+            }
+            
+            const title = prompt('กรุณาใส่ชื่อสคริปต์:');
+            if (!title) return;
+            
+            const scriptType = prompt('เลือกประเภทสคริปต์ (call หรือ counter):', 'call');
+            if (!scriptType) return;
+            
+            // Build script content
+            let fullScript = '';
+            const bullets = [];
+            
+            sections.forEach(section => {
+                const content = section.querySelector('.section-content').textContent;
+                fullScript += content + '\n\n';
+                bullets.push(content.substring(0, 100) + '...');
+            });
+            
+            // Save to appropriate storage
+            let scripts;
+            if (scriptType === 'call') {
+                scripts = getCallScripts();
+            } else {
+                scripts = getCounterScripts();
+            }
+            
+            const newId = scripts.length > 0 ? Math.max(...scripts.map(s => s.id)) + 1 : 1;
+            
+            const newScript = {
+                id: newId,
+                title: title,
+                bullets: bullets,
+                fullScript: fullScript
+            };
+            
+            scripts.push(newScript);
+            
+            if (scriptType === 'call') {
+                saveCallScripts(scripts);
+            } else {
+                saveCounterScripts(scripts);
+            }
+            
+            alert('บันทึกสคริปต์สำเร็จ!');
+            showPage('scripts');
+        }
+
+        // Export Script
+        function exportScript() {
+            const scriptStructure = document.getElementById('scriptStructure');
+            const sections = scriptStructure.querySelectorAll('.structure-section');
+            
+            if (sections.length === 0) {
+                alert('ไม่มีสคริปต์ที่จะส่งออก');
+                return;
+            }
+            
+            let scriptText = '';
+            
+            sections.forEach(section => {
+                const title = section.querySelector('.section-title').textContent;
+                const content = section.querySelector('.section-content').textContent;
+                scriptText += `[${title}]\n${content}\n\n`;
+            });
+            
+            // Create download link
+            const blob = new Blob([scriptText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'สคริปต์ที่ออกแบบ.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('ส่งออกสคริปต์เรียบร้อยแล้ว!');
+        }
+
+        // Load Templates
+        function loadTemplates() {
+            const container = document.getElementById('templateList');
+            container.innerHTML = '';
+            
+            const templates = getTemplates();
+            const components = getScriptComponents();
+            
+            templates.forEach(template => {
+                const item = document.createElement('div');
+                item.className = 'template-item';
+                
+                let templatePreview = '';
+                template.components.forEach(compIndex => {
+                    // Find component in each category
+                    for (const category in components) {
+                        const component = components[category].find(c => c.id === compIndex);
+                        if (component) {
+                            templatePreview += `• ${component.title}\n`;
+                            break;
+                        }
+                    }
+                });
+                
+                item.innerHTML = `
+                    <h4>${template.title}</h4>
+                    <p>${template.description}</p>
+                    <pre>${templatePreview}</pre>
+                    <button class="admin-btn" onclick="loadTemplate(${template.id})">ใช้เทมเพลตนี้</button>
+                `;
+                
+                container.appendChild(item);
+            });
+        }
+
+        // Load Template
+        function loadTemplate(templateId) {
+            const templates = getTemplates();
+            const components = getScriptComponents();
+            
+            const template = templates.find(t => t.id === templateId);
+            if (!template) return;
+            
+            // Clear current script
+            clearScriptDesign();
+            
+            // Add components from template
+            template.components.forEach(compIndex => {
+                // Find component in each category
+                for (const category in components) {
+                    const component = components[category].find(c => c.id === compIndex);
+                    if (component) {
+                        addComponentToScript(component, category);
+                        break;
+                    }
+                }
+            });
+            
+            // Switch to custom designer
+            document.querySelector('[data-template="custom"]').click();
+            
+            alert(`โหลดเทมเพลต "${template.title}" สำเร็จ!`);
+        }
+
         // Load Objection Handling Page
         function loadObjectionHandlingPage() {
             loadObjections('call');
@@ -1767,7 +2747,10 @@ STEP2:
                     const item = document.createElement('div');
                     item.className = 'objection-item';
                     item.innerHTML = `
-                        <div class="objection-question" onclick="toggleAnswer(this)">${obj.question}</div>
+                        <div class="objection-question" onclick="toggleAnswer(this)">
+                            ${obj.question}
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
                         <div class="objection-answer">${obj.answer}</div>
                         <div class="objection-tone">โทนเสียง: ${obj.tone}</div>
                         ${isAdmin ? `
@@ -1787,10 +2770,14 @@ STEP2:
         // Toggle Answer Visibility
         function toggleAnswer(element) {
             const answer = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            
             if (answer.style.display === 'block') {
                 answer.style.display = 'none';
+                icon.className = 'fas fa-chevron-down';
             } else {
                 answer.style.display = 'block';
+                icon.className = 'fas fa-chevron-up';
             }
         }
 
@@ -2366,6 +3353,50 @@ STEP2:
             alert('ลบเทคนิคสำเร็จ!');
         }
 
+        // Add Component Functions
+        function showAddComponentModal() {
+            document.getElementById('addComponentModal').style.display = 'flex';
+            currentEditingId = null;
+            document.getElementById('componentTitle').value = '';
+            document.getElementById('componentContent').value = '';
+            document.getElementById('componentVariations').value = '';
+        }
+
+        function closeAddComponentModal() {
+            document.getElementById('addComponentModal').style.display = 'none';
+        }
+
+        function addNewComponent() {
+            const category = document.getElementById('componentCategory').value;
+            const title = document.getElementById('componentTitle').value;
+            const content = document.getElementById('componentContent').value;
+            const variationsText = document.getElementById('componentVariations').value;
+            
+            if (!title || !content) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+            
+            const variations = variationsText.split('\n').filter(v => v.trim() !== '');
+            
+            const components = getScriptComponents();
+            const newId = components[category].length > 0 ? Math.max(...components[category].map(c => c.id)) + 1 : 1;
+            
+            const newComponent = {
+                id: newId,
+                title,
+                content,
+                variations
+            };
+            
+            components[category].push(newComponent);
+            saveScriptComponents(components);
+            
+            closeAddComponentModal();
+            loadScriptDesignerPage();
+            alert('เพิ่ม Component สำเร็จ!');
+        }
+
         // Clear All Data
         function clearAllData() {
             if (!confirm('คุณแน่ใจว่าต้องการล้างข้อมูลทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้!')) return;
@@ -2375,7 +3406,10 @@ STEP2:
             localStorage.removeItem('objections');
             localStorage.removeItem('conversations');
             localStorage.removeItem('techniques');
+            localStorage.removeItem('scriptComponents');
+            localStorage.removeItem('templates');
             localStorage.removeItem('uploadedFiles');
+            localStorage.removeItem('designedScripts');
             
             initializeData();
             
@@ -2388,7 +3422,7 @@ STEP2:
 
         // Close modal when clicking outside
         window.addEventListener('click', function(event) {
-            const modals = ['adminModal', 'addScriptModal', 'addObjectionModal', 'addConversationModal', 'addTechniqueModal'];
+            const modals = ['adminModal', 'addScriptModal', 'addObjectionModal', 'addConversationModal', 'addTechniqueModal', 'addComponentModal'];
             modals.forEach(modalId => {
                 const modal = document.getElementById(modalId);
                 if (event.target === modal) {
