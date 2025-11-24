@@ -246,6 +246,35 @@
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--dark);
+            font-weight: 500;
+        }
+
         .quick-access {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -764,6 +793,10 @@
             .conversation-builder {
                 grid-template-columns: 1fr;
             }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
@@ -804,6 +837,7 @@
                 <button class="admin-btn" onclick="showAddScriptModal()">เพิ่มสคริปต์</button>
                 <button class="admin-btn" onclick="showAddObjectionModal()">เพิ่มข้อโต้แย้ง</button>
                 <button class="admin-btn" onclick="showAddConversationModal()">เพิ่ม Conversation</button>
+                <button class="admin-btn" onclick="showAddTechniqueModal()">เพิ่มเทคนิค</button>
                 <button class="btn-logout" onclick="logoutAdmin()">ออกจากระบบแอดมิน</button>
                 <button class="admin-btn delete" onclick="clearAllData()">ล้างข้อมูลทั้งหมด</button>
             </div>
@@ -816,6 +850,10 @@
                 <div class="welcome-card">
                     <h2>ยินดีต้อนรับสู่ RH5 Script Hub</h2>
                     <p>ระบบจัดการสคริปต์การโทรและเทคนิคการขายแบบมืออาชีพ</p>
+                </div>
+                
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Statistics will be loaded here -->
                 </div>
                 
                 <h3 style="margin-bottom: 1rem;">เมนูด่วน</h3>
@@ -921,6 +959,10 @@
                 <h2>Tools</h2>
                 <p>เครื่องมือและทรัพยากรสำหรับทีมงาน</p>
                 
+                <div class="tools-grid" id="toolsList">
+                    <!-- Tools will be loaded here -->
+                </div>
+                
                 <div class="upload-section">
                     <h3>อัพโหลดไฟล์</h3>
                     <input type="file" class="file-input" id="fileUpload" multiple>
@@ -929,10 +971,6 @@
                     <div class="file-list" id="fileList">
                         <!-- Uploaded files will be listed here -->
                     </div>
-                </div>
-                
-                <div class="tools-grid" id="toolsList">
-                    <!-- Tools will be loaded here -->
                 </div>
             </div>
         </div>
@@ -1031,6 +1069,29 @@
         </div>
     </div>
 
+    <!-- Add Technique Modal -->
+    <div id="addTechniqueModal" class="modal">
+        <div class="modal-content modal-wide">
+            <button class="close-btn" onclick="closeAddTechniqueModal()">&times;</button>
+            <h2>เพิ่มเทคนิคใหม่</h2>
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="techniqueTitle">ชื่อเทคนิค</label>
+                    <input type="text" id="techniqueTitle" placeholder="ชื่อเทคนิค">
+                </div>
+                <div class="form-group">
+                    <label for="techniqueDescription">คำอธิบาย</label>
+                    <textarea id="techniqueDescription" placeholder="คำอธิบายเทคนิค"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="techniqueSteps">ขั้นตอน (แต่ละบรรทัดเป็น 1 ขั้นตอน)</label>
+                    <textarea id="techniqueSteps" placeholder="แต่ละบรรทัดเป็น 1 ขั้นตอน"></textarea>
+                </div>
+                <button class="start-btn" onclick="addNewTechnique()">เพิ่มเทคนิค</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Default Data
         const defaultCallScripts = [
@@ -1081,78 +1142,6 @@
 	•	กองทุนรวมหุ้น: ความเสี่ยงสูง ผลตอบแทน 7-10%+
 
 สามารถเลือกลงทุนตามระดับความเสี่ยงที่คุณสะดวกใจ และมีผู้จัดการกองทุนคอยดูแลให้ครับ/คะ`
-            },
-            {
-                id: 3,
-                title: "กองทุนติดลบจากความผันผวนของเศรษฐกิจ",
-                bullets: [
-                    "OBJECTIVE: เสนอการปรับพอร์ตการลงทุนเพื่อลดความเสี่ยงและฟื้นตัวจากภาวะติดลบ",
-                    "OPENER: สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันเห็นว่าพอร์ตการลงทุนกองทุนของคุณได้รับผลกระทบจากความผันผวนของเศรษฐกิจ อยากเสนอแนวทางการปรับพอร์ตใหม่ให้เหมาะสมยิ่งขึ้นครับ/ค่ะ",
-                    "PAIN: การที่พอร์ตการลงทุนติดลบเป็นเวลานานอาจทำให้สูญเสียโอกาสในการลงทุนอื่นๆ และส่งผลต่อเป้าหมายทางการเงินในระยะยาว",
-                    "URGENCY: การปรับพอร์ตในช่วงนี้จะช่วยลดความเสี่ยงและเตรียมพร้อมสำหรับการฟื้นตัวของตลาด ซึ่งจะช่วยให้พอร์ตของคุณกลับมาเติบโตได้เร็วกว่า"
-                ],
-                fullScript: `แนวทางที่ 3: กองทุนติดลบจากความผันผวน
-	•	"ในช่วงเศรษฐกิจผันผวน การลงทุนหลายประเภทได้รับผลกระทบ"
-	•	"เรามีบริการปรับพอร์ตการลงทุนฟรี โดยผู้เชี่ยวชาญ"
-	•	"จะช่วยวิเคราะห์และแนะนำการปรับสัดส่วนการลงทุนที่เหมาะสม"
-
-ขั้นตอนการปรับพอร์ต:
-	1. วิเคราะห์พอร์ตปัจจุบันและระดับความเสี่ยง
-	2. ประเมินเป้าหมายการลงทุนและระยะเวลา
-	3. แนะนำการปรับสัดส่วนพอร์ตให้เหมาะสม
-	4. ติดตามผลและปรับเปลี่ยนตามสถานการณ์
-
-บริการนี้ไม่มีค่าใช้จ่ายเพิ่มเติม และช่วยลดความเสี่ยงจากการลงทุนในสินทรัพย์เดียว`
-            },
-            {
-                id: 4,
-                title: "ลูกค้าประกันจ่ายเบี้ยครบ ทบทวนผลิตภัณฑ์",
-                bullets: [
-                    "OBJECTIVE: เสนอการทบทวนแผนประกันและผลิตภัณฑ์เสริมเพื่อความคุ้มครองที่สมบูรณ์",
-                    "OPENER: สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันเห็นว่าคุณได้จ่ายเบี้ยประกันชีวิตครบตามสัญญาแล้ว อยากเชิญชวนให้ทบทวนแผนประกันเพื่อตรวจสอบความคุ้มครองที่ยังขาดและโอกาสในการใช้สิทธิลดหย่อนภาษีครับ/ค่ะ",
-                    "PAIN: ความต้องการประกันชีวิตเปลี่ยนแปลงตามช่วงวัยและสถานการณ์ การไม่ทบทวนแผนประกันอย่างสม่ำเสมออาจทำให้มีความคุ้มครองไม่เพียงพอหรือซ้ำซ้อน",
-                    "URGENCY: การทำประกันในช่วงอายุน้อยกว่าเบี้ยจะถูกกว่าและได้รับความคุ้มครองเร็วขึ้น รวมถึงสามารถใช้สิทธิลดหย่อนภาษีในปีนี้ได้ทันเวลา"
-                ],
-                fullScript: `แนวทางที่ 4: ลูกค้าประกันจ่ายเบี้ยครบ
-	•	"ขอแสดงความยินดีที่คุณได้จ่ายเบี้ยประกันครบตามสัญญา"
-	•	"นี่เป็นเวลาที่ดีในการทบทวนความคุ้มครองและแผนการเงิน"
-	•	"เรามีผลิตภัณฑ์เสริมที่ช่วยเพิ่มความคุ้มครองและสิทธิลดหย่อนภาษี"
-
-ข้อเสนอพิเศษ:
-	•	ประกันสุขภาพเพิ่มเติม: เบี้ยเริ่มต้น 5,000 บาท/ปี
-	•	ประกันโรคร้ายแรง: ความคุ้มครองสูงสุด 1,000,000 บาท
-	•	ประกันอุบัติเหตุ: ความคุ้มครอง 24 ชม. ทั่วโลก
-
-ทำตอนนี้ได้รับสิทธิ์:
-	•	เบี้ยประกันถูกกว่าอายุเพิ่มขึ้น
-	•	คุ้มครองเร็วขึ้น ไม่ต้องรอระยะเวลารอคอย
-	•	ใช้สิทธิลดหย่อนภาษีได้ในปีนี้`
-            },
-            {
-                id: 5,
-                title: "ลูกค้าทั่วไปช่วง Tax Season",
-                bullets: [
-                    "OBJECTIVE: เชิญชวนใช้บริการคำนวณภาษีและวางแผนการลงทุนเพื่อลดหย่อนภาษี",
-                    "OPENER: สวัสดีครับ/คะ คุณลูกค้า ช่วงสิ้นปีนี้เป็นเวลาที่เหมาะสำหรับการวางแผนภาษี ผม/ดิฉันอยากเชิญชวนคุณมาใช้บริการคำนวณภาษีและวางแผนการลดหย่อนภาษีโดยไม่เสียค่าใช้จ่ายครับ/ค่ะ",
-                    "PAIN: การไม่วางแผนภาษีล่วงหน้าอาจทำให้ต้องเสียภาษีในอัตราที่สูงขึ้นและพลาดโอกาสในการใช้สิทธิลดหย่อนภาษีต่างๆ ซึ่งหมายถึงการจ่ายเงินมากเกินจำเป็น",
-                    "URGENCY: ต้องรีบตัดสินใจในช่วงนี้เพราะจะสิ้นปีแล้ว และโปรโมชั่นต่างๆ สำหรับผลิตภัณฑ์ลดหย่อนภาษีมีข้อเสนอที่ดีที่สุดในช่วงนี้"
-                ],
-                fullScript: `แนวทางที่ 5: Tax Season
-	•	"ช่วงสิ้นปีนี้เป็นเวลาสำคัญสำหรับการวางแผนภาษี"
-	•	"ธนาคารมีบริการคำนวณภาษีและวางแผนลดหย่อนโดยไม่เสียค่าใช้จ่าย"
-	•	"โปรโมชั่นพิเศษมีเฉพาะช่วงสิ้นปีนี้เท่านั้น"
-
-บริการฟรีสำหรับลูกค้า:
-	•	คำนวณภาษีโดยประมาณล่วงหน้า
-	•	วิเคราะห์สิทธิลดหย่อนภาษีที่ใช้ได้
-	•	แนะนำผลิตภัณฑ์ลดหย่อนภาษีที่เหมาะสม
-
-โปรโมชั่นพิเศษ:
-	•	สมัครประกันชีวิต: ได้รับของสมนาคุณมูลค่า 1,000 บาท
-	•	ลงทุนกองทุน RMF: ได้ส่วนลดค่าธรรมเนียม 50%
-	•	ซื้อสินทรัพย์ดิจิทัล: ได้รับคู่มือการลดหย่อนภาษี
-
-ต้องรีบตัดสินใจเพราะโปรโมชั่นมีจำกัดและสิ้นปีกำลังจะถึง!`
             }
         ];
 
@@ -1200,77 +1189,7 @@ STEP2:
 • เงินคืน 5% เมื่อใช้บัตรเครดิตธนาคาร
 • อัตราดอกเบี้ยพิเศษสำหรับสินเชื่อส่วนบุคคล
 
-ลงทะเบียนง่ายๆ ผ่านแอปพลิเคชันธนาคาร ใช้เวลาเพียง 2 นาที`
-            },
-            {
-                id: 3,
-                title: "แนะนำเตรียมเอกสารลดหย่อนภาษีของ Easy e-Receipt",
-                bullets: [
-                    "STEP1: อธิบายความสะดวก: 'สวัสดีครับ/คะ คุณลูกค้า ด้วยนวัตกรรมใหม่ Easy e-Receipt จะช่วยให้คุณเก็บเอกสารลดหย่อนภาษีได้อย่างเป็นระบบและไม่ต้องกังวลว่าจะสูญหาย'",
-                    "STEP2: สร้างแรงจูงใจ: 'เริ่มใช้บริการตั้งแต่ต้นปี จะได้บันทึกใบเสร็จทั้งหมดโดยอัตโนมัติ และเมื่อถึงเวลายื่นภาษี ระบบจะสรุปข้อมูลให้คุณอย่างครบถ้วน พร้อมคำแนะนำการลดหย่อนภาษี'"
-                ],
-                fullScript: `Counter Conversation 3: Easy e-Receipt
-
-STEP1:
-"สวัสดีครับ/คะ คุณลูกค้า ด้วยนวัตกรรมใหม่ Easy e-Receipt จะช่วยให้คุณเก็บเอกสารลดหย่อนภาษีได้อย่างเป็นระบบและไม่ต้องกังวลว่าจะสูญหาย"
-
-STEP2:
-"เริ่มใช้บริการตั้งแต่ต้นปี จะได้บันทึกใบเสร็จทั้งหมดโดยอัตโนมัติ และเมื่อถึงเวลายื่นภาษี ระบบจะสรุปข้อมูลให้คุณอย่างครบถ้วน พร้อมคำแนะนำการลดหย่อนภาษี"
-
-คุณสมบัติเด่นของ Easy e-Receipt:
-• บันทึกใบเสร็จอัตโนมัติผ่านแอปพลิเคชัน
-• จัดหมวดหมู่ค่าใช้จ่ายสำหรับลดหย่อนภาษี
-• แจ้งเตือนเมื่อใกล้ถึงวงเงินลดหย่อน
-• สรุปรายงานภาษีอัตโนมัติ
-• ปลอดภัยด้วยระบบ Cloud Storage
-
-เริ่มใช้ฟรีตลอดปี และช่วยลดเวลายื่นภาษีได้ถึง 70%`
-            },
-            {
-                id: 4,
-                title: "ชวนคุยเรื่องภาษีดอกเบี้ยเงินฝาก",
-                bullets: [
-                    "STEP1: ระบุปัญหา: 'สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันอยากแชร์ข้อมูลสำคัญเกี่ยวกับภาษีดอกเบี้ยเงินฝากที่คุณอาจสามารถขอคืนได้หากมีเงื่อนไขที่เหมาะสม'",
-                    "STEP2: เสนอทางแก้: 'เรามีบริการตรวจสอบและยื่นขอคืนภาษีดอกเบี้ยเงินฝากให้ โดยทีมงานจะวิเคราะห์ว่าคุณมีสิทธิ์ได้รับเงินคืนหรือไม่ และดำเนินการให้โดยไม่เสียค่าใช้จ่าย'"
-                ],
-                fullScript: `Counter Conversation 4: ภาษีดอกเบี้ยเงินฝาก
-
-STEP1:
-"สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันอยากแชร์ข้อมูลสำคัญเกี่ยวกับภาษีดอกเบี้ยเงินฝากที่คุณอาจสามารถขอคืนได้หากมีเงื่อนไขที่เหมาะสม"
-
-STEP2:
-"เรามีบริการตรวจสอบและยื่นขอคืนภาษีดอกเบี้ยเงินฝากให้ โดยทีมงานจะวิเคราะห์ว่าคุณมีสิทธิ์ได้รับเงินคืนหรือไม่ และดำเนินการให้โดยไม่เสียค่าใช้จ่าย"
-
-เงื่อนไขที่อาจได้รับคืนภาษีดอกเบี้ย:
-• รายได้ต่อปีต่ำกว่า 150,000 บาท
-• มีค่าใช้จ่ายลดหย่อนอื่นๆ ที่สามารถนำมาหักได้
-• เป็นผู้สูงอายุ (60 ปีขึ้นไป)
-• มีบุคคลในครอบครัวที่อยู่ในความอุปการะ
-
-บริการนี้ฟรีสำหรับลูกค้าธนาคาร และใช้เวลาเพียง 10-15 วันทำการ`
-            },
-            {
-                id: 5,
-                title: "ชวนคุยเรื่องการวางแผนภาษีสิ้นปี",
-                bullets: [
-                    "STEP1: สร้างความตระหนัก: 'สวัสดีครับ/คะ คุณลูกค้า ช่วงสิ้นปีนี้เป็นเวลาสำหรับการวางแผนภาษี ผม/ดิฉันเห็นว่าลูกค้าหลายคนเริ่มสอบถามเกี่ยวกับเรื่องนี้แล้ว คุณมีการเตรียมตัวหรือยังครับ/คะ'",
-                    "STEP2: แสดงมูลค่าที่เสียไป: 'หากยังไม่มีการวางแผน อาจทำให้เสียโอกาสในการลดหย่อนภาษี ซึ่งภาษีปีหนึ่งมีมูลค่าประมาณเท่ากับเงินเดือน 1 เดือนเลยทีเดียว'"
-                ],
-                fullScript: `Counter Conversation 5: วางแผนภาษีสิ้นปี
-
-STEP1:
-"สวัสดีครับ/คะ คุณลูกค้า ช่วงสิ้นปีนี้เป็นเวลาสำหรับการวางแผนภาษี ผม/ดิฉันเห็นว่าลูกค้าหลายคนเริ่มสอบถามเกี่ยวกับเรื่องนี้แล้ว คุณมีการเตรียมตัวหรือยังครับ/คะ"
-
-STEP2:
-"หากยังไม่มีการวางแผน อาจทำให้เสียโอกาสในการลดหย่อนภาษี ซึ่งภาษีปีหนึ่งมีมูลค่าประมาณเท่ากับเงินเดือน 1 เดือนเลยทีเดียว"
-
-บริการวางแผนภาษีฟรีจากธนาคาร:
-• วิเคราะห์สถานการณ์ทางการเงินปัจจุบัน
-• คำนวณภาษีโดยประมาณที่ต้องจ่าย
-• แนะนำช่องทางลดหย่อนภาษีที่เหมาะสม
-• ประเมินผลิตภัณฑ์การลงทุนสำหรับลดหย่อน
-
-รีบตัดสินใจตอนนี้เพราะโปรโมชั่นสิ้นปีมีจำกัด และช่วยประหยัดเงินได้จริง!`
+ลงทะเบียนง่ายๆ ผ่านแอปพลิชันธนาคาร ใช้เวลาเพียง 2 นาที`
             }
         ];
 
@@ -1287,12 +1206,6 @@ STEP2:
                     question: "ไม่มีความรู้ในการลงทุน",
                     answer: "ไม่ต้องกังวลครับ/คะ เรามีทีมผู้เชี่ยวชาญที่พร้อมให้คำแนะนำและดูแลพอร์ตการลงทุนให้คุณอย่างใกล้ชิด รวมถึงมีบริการติดตามผลอย่างสม่ำเสมอ",
                     tone: "ปลอบใจ + เสนอความช่วยเหลือ"
-                },
-                {
-                    id: 3,
-                    question: "รอให้ตลาดฟื้นตัวก่อน",
-                    answer: "การรอให้ตลาดฟื้นตัวโดยไม่ทำอะไรอาจทำให้เสียโอกาสในการซื้อสินทรัพย์คุณภาพในราคาต่ำ ซึ่งจะช่วยเพิ่มศักยภาพในการทำกำไรเมื่อตลาดฟื้นตัว",
-                    tone: "ให้ข้อมูลที่เป็นประโยชน์ + มองการณ์ไกล"
                 }
             ],
             counter: [
@@ -1307,12 +1220,6 @@ STEP2:
                     question: "ข้อมูลเดิมยังใช้ได้อยู่",
                     answer: "การอัพเดทข้อมูลให้เป็นปัจจุบันจะช่วยให้เราส่งเอกสารสำคัญ เช่น หนังสือรับรองดอกเบี้ยสำหรับใช้สิทธิลดหย่อนภาษี ได้อย่างถูกต้องและทันเวลา",
                     tone: "อธิบายประโยชน์ + สร้างความเข้าใจ"
-                },
-                {
-                    id: 3,
-                    question: "มีโปรแกรมคล้ายๆ กันแล้ว",
-                    answer: "โครงการคนละครึ่งพลัสนี้พิเศษกว่าตรงที่รัฐบาลและธนาคารร่วมสนับสนุน ทำให้ได้ส่วนลดสูงกว่าและมีร้านค้าร่วมโครงการมากกว่า",
-                    tone: "ชี้จุดแตกต่าง + เสนอมูลค่าเพิ่ม"
                 }
             ],
             general: [
@@ -1327,12 +1234,6 @@ STEP2:
                     question: "ยังไม่แน่ใจเกี่ยวกับผลตอบแทน",
                     answer: "ผลตอบแทนของผลิตภัณฑ์นี้มีการการันตีอย่างชัดเจน โดยจะได้รับคืนปีละ 4% ในปีที่ 1-9 และเมื่อครบ 10 ปีจะได้รับ 404% ของเงินเบี้ยประกัน ซึ่งเป็นอัตราที่สูงกว่าการฝากเงินทั่วไป",
                     tone: "ให้ข้อมูลที่เป็นประโยชน์ + มองการณ์ไกล"
-                },
-                {
-                    id: 3,
-                    question: "ต้องการปรึกษาครอบครัวก่อน",
-                    answer: "เป็นการตัดสินใจที่ดีครับ/คะ ที่จะปรึกษาครอบครัว ขออนุญาตส่งข้อมูลรายละเอียดผลิตภัณฑ์ให้พิจารณาร่วมกัน และถ้ามีข้อสงสัยเพิ่มเติม ติดต่อกลับมาได้ตลอดเวลานะครับ/คะ",
-                    tone: "เห็นด้วย + เสนอความช่วยเหลือ"
                 }
             ]
         };
@@ -1459,6 +1360,43 @@ STEP2:
             }
         ];
 
+        // Techniques Data
+        const defaultTechniques = [
+            {
+                id: 1,
+                title: "เทคนิคการฟังอย่าง aktif",
+                description: "การฟังอย่างตั้งใจและแสดงออกว่ากำลังฟังอยู่ เช่น การใช้คำพูดเช่น 'ครับ/ค่ะ', 'เข้าใจแล้วครับ/ค่ะ' เพื่อสร้างความมั่นใจให้ลูกค้า และการสรุปสิ่งที่ลูกค้าพูดเพื่อยืนยันความเข้าใจ",
+                steps: [
+                    "ตั้งใจฟังโดยไม่ขัดจังหวะ",
+                    "ใช้ภาษากายแสดงว่ากำลังฟัง",
+                    "สรุปสิ่งที่ลูกค้าพูดเพื่อยืนยันความเข้าใจ",
+                    "ถามคำถามเพื่อความชัดเจน"
+                ]
+            },
+            {
+                id: 2,
+                title: "เทคนิคการตั้งคำถามปลายเปิด",
+                description: "ใช้คำถามปลายเปิดเพื่อให้ลูกค้าได้พูดมากขึ้น เช่น 'ลูกค้ามีความคิดเห็นอย่างไรบ้างครับ/คะ?' หรือ 'มีอะไรที่เราช่วยได้เพิ่มเติมไหมคะ/ครับ?' เพื่อดึงข้อมูลและความต้องการที่แท้จริง",
+                steps: [
+                    "ใช้คำถามที่ขึ้นต้นด้วย 'อะไร', 'อย่างไร', 'เพราะอะไร'",
+                    "หลีกเลี่ยงคำถามที่ตอบว่าใช่หรือไม่ใช่",
+                    "ให้เวลาลูกค้าคิดก่อนตอบ",
+                    "ต่อยอดจากคำตอบของลูกค้า"
+                ]
+            },
+            {
+                id: 3,
+                title: "เทคนิค Mirroring",
+                description: "สะท้อนคำพูดหรือความรู้สึกของลูกค้าเพื่อสร้างความเข้าใจ เช่น เมื่อลูกค้าบอก 'ไม่มีเวลา' เราตอบ 'เข้าใจค่ะ/ครับว่าคุณไม่มีเวลา' เพื่อสร้างความเป็นหนึ่งเดียวและความไว้วางใจ",
+                steps: [
+                    "ฟังคำพูดสำคัญของลูกค้า",
+                    "สะท้อนคำพูดเหล่านั้นกลับ",
+                    "แสดงความเข้าใจในความรู้สึก",
+                    "ใช้เพื่อสร้างความไว้วางใจ"
+                ]
+            }
+        ];
+
         // Data Management
         let isAdmin = false;
         let currentEditingId = null;
@@ -1476,6 +1414,9 @@ STEP2:
             }
             if (!localStorage.getItem('conversations')) {
                 localStorage.setItem('conversations', JSON.stringify(defaultConversations));
+            }
+            if (!localStorage.getItem('techniques')) {
+                localStorage.setItem('techniques', JSON.stringify(defaultTechniques));
             }
             if (!localStorage.getItem('uploadedFiles')) {
                 localStorage.setItem('uploadedFiles', JSON.stringify([]));
@@ -1499,6 +1440,10 @@ STEP2:
             return JSON.parse(localStorage.getItem('conversations')) || [];
         }
 
+        function getTechniques() {
+            return JSON.parse(localStorage.getItem('techniques')) || [];
+        }
+
         function getUploadedFiles() {
             return JSON.parse(localStorage.getItem('uploadedFiles')) || [];
         }
@@ -1520,6 +1465,10 @@ STEP2:
             localStorage.setItem('conversations', JSON.stringify(conversations));
         }
 
+        function saveTechniques(techniques) {
+            localStorage.setItem('techniques', JSON.stringify(techniques));
+        }
+
         function saveUploadedFiles(files) {
             localStorage.setItem('uploadedFiles', JSON.stringify(files));
         }
@@ -1534,6 +1483,7 @@ STEP2:
                 loadingScreen.style.display = 'none';
                 mainApp.style.display = 'block';
                 initializeData();
+                setupNavigation();
                 loadHomePage();
             }, 500);
         }
@@ -1602,7 +1552,46 @@ STEP2:
 
         // Load Home Page
         function loadHomePage() {
-            // Home page is already loaded by default
+            // Load statistics
+            const statsGrid = document.getElementById('statsGrid');
+            if (statsGrid) {
+                const callScripts = getCallScripts();
+                const counterScripts = getCounterScripts();
+                const objections = getObjections();
+                const techniques = getTechniques();
+                
+                statsGrid.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-value">${callScripts.length}</div>
+                        <div class="stat-label">Call Scripts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${counterScripts.length}</div>
+                        <div class="stat-label">Counter Scripts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${Object.values(objections).flat().length}</div>
+                        <div class="stat-label">ข้อโต้แย้ง</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${techniques.length}</div>
+                        <div class="stat-label">เทคนิค</div>
+                    </div>
+                `;
+            }
+            
+            // Update quick access items with counts
+            const quickItems = document.querySelectorAll('.quick-item');
+            if (quickItems.length >= 4) {
+                const callScripts = getCallScripts();
+                const counterScripts = getCounterScripts();
+                const objections = getObjections();
+                const techniques = getTechniques();
+                
+                quickItems[0].querySelector('p').textContent = `จัดการสคริปต์การโทรทั้งหมด (${callScripts.length + counterScripts.length} สคริปต์)`;
+                quickItems[1].querySelector('p').textContent = `เทคนิคการตอบคำถามลูกค้า (${Object.values(objections).flat().length} ข้อโต้แย้ง)`;
+                quickItems[3].querySelector('p').textContent = `เทคนิคการขายขั้นสูง (${techniques.length} เทคนิค)`;
+            }
         }
 
         // Load Scripts Page
@@ -1893,40 +1882,44 @@ STEP2:
             const container = document.getElementById('techniqueList');
             if (!container) return;
             
-            container.innerHTML = `
-                <div class="technique-item">
+            container.innerHTML = '';
+            const techniques = getTechniques();
+            
+            if (techniques.length === 0) {
+                container.innerHTML = '<p>ยังไม่มีเทคนิค</p>';
+                return;
+            }
+            
+            techniques.forEach(technique => {
+                const item = document.createElement('div');
+                item.className = 'technique-item';
+                item.innerHTML = `
                     <div class="technique-header">
-                        <div class="technique-title">เทคนิคการฟังอย่าง aktif</div>
+                        <div class="technique-title">${technique.title}</div>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="technique-details">
-                        การฟังอย่างตั้งใจและแสดงออกว่ากำลังฟังอยู่ เช่น การใช้คำพูดเช่น 'ครับ/ค่ะ', 'เข้าใจแล้วครับ/ค่ะ' เพื่อสร้างความมั่นใจให้ลูกค้า และการสรุปสิ่งที่ลูกค้าพูดเพื่อยืนยันความเข้าใจ
+                        <p>${technique.description}</p>
+                        ${technique.steps ? `
+                        <h4>ขั้นตอน:</h4>
+                        <ol>
+                            ${technique.steps.map(step => `<li>${step}</li>`).join('')}
+                        </ol>
+                        ` : ''}
+                        ${isAdmin ? `
+                        <div class="admin-buttons" style="margin-top: 1rem;">
+                            <button class="admin-btn" onclick="editTechnique(${technique.id})">แก้ไข</button>
+                            <button class="admin-btn delete" onclick="deleteTechnique(${technique.id})">ลบ</button>
+                        </div>
+                        ` : ''}
                     </div>
-                </div>
-                <div class="technique-item">
-                    <div class="technique-header">
-                        <div class="technique-title">เทคนิคการตั้งคำถามปลายเปิด</div>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="technique-details">
-                        ใช้คำถามปลายเปิดเพื่อให้ลูกค้าได้พูดมากขึ้น เช่น 'ลูกค้ามีความคิดเห็นอย่างไรบ้างครับ/คะ?' หรือ 'มีอะไรที่เราช่วยได้เพิ่มเติมไหมคะ/ครับ?' เพื่อดึงข้อมูลและความต้องการที่แท้จริง
-                    </div>
-                </div>
-                <div class="technique-item">
-                    <div class="technique-header">
-                        <div class="technique-title">เทคนิค Mirroring</div>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="technique-details">
-                        สะท้อนคำพูดหรือความรู้สึกของลูกค้าเพื่อสร้างความเข้าใจ เช่น เมื่อลูกค้าบอก 'ไม่มีเวลา' เราตอบ 'เข้าใจค่ะ/ครับว่าคุณไม่มีเวลา' เพื่อสร้างความเป็นหนึ่งเดียวและความไว้วางใจ
-                    </div>
-                </div>
-            `;
+                `;
+                container.appendChild(item);
+            });
             
             // Add toggle functionality
             document.querySelectorAll('.technique-item').forEach(item => {
                 item.addEventListener('click', function(e) {
-                    // Only toggle details if not clicking admin buttons
                     if (!e.target.classList.contains('admin-btn')) {
                         const details = this.querySelector('.technique-details');
                         const icon = this.querySelector('i');
@@ -2308,6 +2301,71 @@ STEP2:
             alert('เพิ่มบทสนทนาใหม่สำเร็จ!');
         }
 
+        // Add Technique Functions
+        function showAddTechniqueModal() {
+            document.getElementById('addTechniqueModal').style.display = 'flex';
+            currentEditingId = null;
+            document.getElementById('techniqueTitle').value = '';
+            document.getElementById('techniqueDescription').value = '';
+            document.getElementById('techniqueSteps').value = '';
+        }
+
+        function closeAddTechniqueModal() {
+            document.getElementById('addTechniqueModal').style.display = 'none';
+        }
+
+        function addNewTechnique() {
+            const title = document.getElementById('techniqueTitle').value;
+            const description = document.getElementById('techniqueDescription').value;
+            const steps = document.getElementById('techniqueSteps').value.split('\n').filter(s => s.trim() !== '');
+            
+            if (!title || !description) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+            
+            const techniques = getTechniques();
+            const newId = techniques.length > 0 ? Math.max(...techniques.map(t => t.id)) + 1 : 1;
+            
+            const newTechnique = {
+                id: newId,
+                title,
+                description,
+                steps
+            };
+            
+            techniques.push(newTechnique);
+            saveTechniques(techniques);
+            
+            closeAddTechniqueModal();
+            loadTechniquesPage();
+            alert('เพิ่มเทคนิคใหม่สำเร็จ!');
+        }
+
+        function editTechnique(id) {
+            const techniques = getTechniques();
+            const technique = techniques.find(t => t.id === id);
+            if (!technique) return;
+            
+            document.getElementById('techniqueTitle').value = technique.title;
+            document.getElementById('techniqueDescription').value = technique.description;
+            document.getElementById('techniqueSteps').value = technique.steps ? technique.steps.join('\n') : '';
+            
+            currentEditingId = id;
+            document.getElementById('addTechniqueModal').style.display = 'flex';
+        }
+
+        function deleteTechnique(id) {
+            if (!confirm('คุณแน่ใจว่าต้องการลบเทคนิคนี้?')) return;
+            
+            const techniques = getTechniques();
+            const updatedTechniques = techniques.filter(t => t.id !== id);
+            saveTechniques(updatedTechniques);
+            
+            loadTechniquesPage();
+            alert('ลบเทคนิคสำเร็จ!');
+        }
+
         // Clear All Data
         function clearAllData() {
             if (!confirm('คุณแน่ใจว่าต้องการล้างข้อมูลทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้!')) return;
@@ -2316,6 +2374,7 @@ STEP2:
             localStorage.removeItem('counterScripts');
             localStorage.removeItem('objections');
             localStorage.removeItem('conversations');
+            localStorage.removeItem('techniques');
             localStorage.removeItem('uploadedFiles');
             
             initializeData();
@@ -2329,7 +2388,7 @@ STEP2:
 
         // Close modal when clicking outside
         window.addEventListener('click', function(event) {
-            const modals = ['adminModal', 'addScriptModal', 'addObjectionModal', 'addConversationModal'];
+            const modals = ['adminModal', 'addScriptModal', 'addObjectionModal', 'addConversationModal', 'addTechniqueModal'];
             modals.forEach(modalId => {
                 const modal = document.getElementById(modalId);
                 if (event.target === modal) {
@@ -2340,8 +2399,6 @@ STEP2:
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            setupNavigation();
-            
             // Auto start after 5 seconds if user doesn't click
             setTimeout(() => {
                 if (document.getElementById('loadingScreen').style.display !== 'none') {
