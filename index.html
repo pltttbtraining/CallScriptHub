@@ -1767,6 +1767,20 @@ STEP2:
             localStorage.setItem('uploadedFiles', JSON.stringify(files));
         }
 
+        // Check Admin Status
+        function checkAdminStatus() {
+            const adminStatus = localStorage.getItem('isAdmin');
+            isAdmin = adminStatus === 'true';
+            
+            // แสดงหรือซ่อน Admin Controls ตามสถานะ
+            const adminControls = document.getElementById('adminControls');
+            if (isAdmin && adminControls) {
+                adminControls.classList.add('active');
+            } else if (adminControls) {
+                adminControls.classList.remove('active');
+            }
+        }
+
         // Start Application
         function startApp() {
             const loadingScreen = document.getElementById('loadingScreen');
@@ -1777,6 +1791,7 @@ STEP2:
                 loadingScreen.style.display = 'none';
                 mainApp.style.display = 'block';
                 initializeData();
+                checkAdminStatus(); // ตรวจสอบสถานะแอดมิน
                 setupNavigation();
                 loadHomePage();
             }, 500);
@@ -1937,6 +1952,15 @@ STEP2:
             scripts.forEach(script => {
                 const card = document.createElement('div');
                 card.className = 'script-card';
+                
+                // ใช้ checkAdminStatus() เพื่อตรวจสอบสถานะปัจจุบัน
+                const adminButtons = isAdmin ? `
+                <div class="admin-buttons" style="margin-top: 1rem;">
+                    <button class="admin-btn" onclick="editScript(${script.id}, 'call')">แก้ไข</button>
+                    <button class="admin-btn delete" onclick="deleteScript(${script.id}, 'call')">ลบ</button>
+                </div>
+                ` : '';
+                
                 card.innerHTML = `
                     <h3>${script.title}</h3>
                     <div class="script-content">
@@ -1950,12 +1974,7 @@ STEP2:
                         <button class="nav-item" onclick="toggleFullScript(${script.id})" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.8rem;">
                             แสดงสคริปต์เต็ม
                         </button>
-                        ${isAdmin ? `
-                        <div class="admin-buttons" style="margin-top: 1rem;">
-                            <button class="admin-btn" onclick="editScript(${script.id}, 'call')">แก้ไข</button>
-                            <button class="admin-btn delete" onclick="deleteScript(${script.id}, 'call')">ลบ</button>
-                        </div>
-                        ` : ''}
+                        ${adminButtons}
                     </div>
                 `;
                 container.appendChild(card);
@@ -1978,6 +1997,15 @@ STEP2:
             scripts.forEach(script => {
                 const card = document.createElement('div');
                 card.className = 'script-card';
+                
+                // ใช้ checkAdminStatus() เพื่อตรวจสอบสถานะปัจจุบัน
+                const adminButtons = isAdmin ? `
+                <div class="admin-buttons" style="margin-top: 1rem;">
+                    <button class="admin-btn" onclick="editScript(${script.id}, 'counter')">แก้ไข</button>
+                    <button class="admin-btn delete" onclick="deleteScript(${script.id}, 'counter')">ลบ</button>
+                </div>
+                ` : '';
+                
                 card.innerHTML = `
                     <h3>${script.title}</h3>
                     <div class="script-content">
@@ -1991,12 +2019,7 @@ STEP2:
                         <button class="nav-item" onclick="toggleFullScript('counter-${script.id}')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.8rem;">
                             แสดงสคริปต์เต็ม
                         </button>
-                        ${isAdmin ? `
-                        <div class="admin-buttons" style="margin-top: 1rem;">
-                            <button class="admin-btn" onclick="editScript(${script.id}, 'counter')">แก้ไข</button>
-                            <button class="admin-btn delete" onclick="deleteScript(${script.id}, 'counter')">ลบ</button>
-                        </div>
-                        ` : ''}
+                        ${adminButtons}
                     </div>
                 `;
                 container.appendChild(card);
@@ -2062,6 +2085,15 @@ STEP2:
                 objections[category].forEach(obj => {
                     const item = document.createElement('div');
                     item.className = 'objection-item';
+                    
+                    // ใช้ checkAdminStatus() เพื่อตรวจสอบสถานะปัจจุบัน
+                    const adminButtons = isAdmin ? `
+                    <div class="admin-buttons" style="margin-top: 1rem;">
+                        <button class="admin-btn" onclick="editObjection(${obj.id}, '${category}')">แก้ไข</button>
+                        <button class="admin-btn delete" onclick="deleteObjection(${obj.id}, '${category}')">ลบ</button>
+                    </div>
+                    ` : '';
+                    
                     item.innerHTML = `
                         <div class="objection-question" onclick="toggleAnswer(this)">
                             ${obj.question}
@@ -2069,12 +2101,7 @@ STEP2:
                         </div>
                         <div class="objection-answer">${obj.answer}</div>
                         <div class="objection-tone">โทนเสียง: ${obj.tone}</div>
-                        ${isAdmin ? `
-                        <div class="admin-buttons" style="margin-top: 1rem;">
-                            <button class="admin-btn" onclick="editObjection(${obj.id}, '${category}')">แก้ไข</button>
-                            <button class="admin-btn delete" onclick="deleteObjection(${obj.id}, '${category}')">ลบ</button>
-                        </div>
-                        ` : ''}
+                        ${adminButtons}
                     `;
                     container.appendChild(item);
                 });
@@ -2562,6 +2589,7 @@ STEP2:
             const adminControls = document.getElementById('adminControls');
             adminControls.classList.add('active');
             isAdmin = true;
+            localStorage.setItem('isAdmin', 'true');
             
             // Load uploaded files when showing admin controls
             loadUploadedFiles();
@@ -2575,6 +2603,7 @@ STEP2:
             const adminControls = document.getElementById('adminControls');
             adminControls.classList.remove('active');
             isAdmin = false;
+            localStorage.setItem('isAdmin', 'false');
             
             // Reload all pages to hide admin controls
             const currentPage = document.querySelector('.page.active').id;
@@ -2781,8 +2810,10 @@ STEP2:
             localStorage.removeItem('counterScripts');
             localStorage.removeItem('objections');
             localStorage.removeItem('uploadedFiles');
+            localStorage.removeItem('isAdmin');
             
             initializeData();
+            checkAdminStatus();
             
             // Reload current page
             const currentPage = document.querySelector('.page.active').id;
