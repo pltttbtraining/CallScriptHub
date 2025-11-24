@@ -775,14 +775,20 @@
             border-radius: 8px;
             padding: 0.8rem;
             margin-bottom: 0.5rem;
-            cursor: grab;
+            cursor: pointer;
             transition: var(--transition);
-            border: 1px dashed var(--primary);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
         .component-item:hover {
             background: rgba(179, 224, 255, 0.3);
             transform: translateY(-2px);
+        }
+
+        .component-item.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
 
         .script-structure {
@@ -994,7 +1000,7 @@
             </button>
         </div>
 
-        <!-- Admin Controls -->
+        <!-- Admin Controls - เพิ่มส่วนอัพโหลดไฟล์ -->
         <div id="adminControls" class="admin-controls">
             <h3>การจัดการระบบ (Admin)</h3>
             <div class="admin-buttons">
@@ -1005,6 +1011,17 @@
                 <button class="admin-btn" onclick="showAddComponentModal()">เพิ่ม Component</button>
                 <button class="btn-logout" onclick="logoutAdmin()">ออกจากระบบแอดมิน</button>
                 <button class="admin-btn delete" onclick="clearAllData()">ล้างข้อมูลทั้งหมด</button>
+            </div>
+            
+            <!-- ย้ายส่วนอัพโหลดไฟล์มาที่นี่ -->
+            <div class="upload-section">
+                <h3>อัพโหลดไฟล์</h3>
+                <input type="file" class="file-input" id="fileUpload" multiple>
+                <button class="admin-btn" onclick="uploadFiles()">อัพโหลดไฟล์</button>
+                
+                <div class="file-list" id="fileList">
+                    <!-- Uploaded files will be listed here -->
+                </div>
             </div>
         </div>
 
@@ -1125,7 +1142,7 @@
                     <div class="script-preview">
                         <h3>สคริปต์ของคุณ</h3>
                         <div class="script-structure" id="scriptStructure">
-                            <div class="empty-section">ลากส่วนประกอบมาวางที่นี่เพื่อสร้างสคริปต์</div>
+                            <div class="empty-section">เลือกส่วนประกอบจากด้านซ้ายเพื่อสร้างสคริปต์</div>
                         </div>
                         
                         <div class="designer-actions">
@@ -1193,23 +1210,13 @@
                 </div>
             </div>
 
-            <!-- Tools Page -->
+            <!-- Tools Page - เอาการอัพโหลดไฟล์ออก -->
             <div id="tools" class="page">
                 <h2>Tools</h2>
                 <p>เครื่องมือและทรัพยากรสำหรับทีมงาน</p>
                 
                 <div class="tools-grid" id="toolsList">
                     <!-- Tools will be loaded here -->
-                </div>
-                
-                <div class="upload-section">
-                    <h3>อัพโหลดไฟล์</h3>
-                    <input type="file" class="file-input" id="fileUpload" multiple>
-                    <button class="admin-btn" onclick="uploadFiles()">อัพโหลดไฟล์</button>
-                    
-                    <div class="file-list" id="fileList">
-                        <!-- Uploaded files will be listed here -->
-                    </div>
                 </div>
             </div>
         </div>
@@ -1706,266 +1713,6 @@ STEP2:
             ]
         };
 
-        // Conversation Builder Data
-        const defaultConversations = [
-            {
-                id: 1,
-                title: "อัปเดตข้อมูลที่อยู่",
-                nodes: [
-                    {
-                        id: "node1",
-                        content: "สวัสดีครับ/คะ คุณลูกค้า วันนี้โทรมาเพื่อขออัพเดทข้อมูลที่อยู่ให้เป็นปัจจุบันครับ/คะ เพื่อให้แน่ใจว่าสามารถส่งเอกสารสำคัญได้อย่างถูกต้อง",
-                        options: [
-                            {
-                                text: "ลูกค้ายินดีให้ข้อมูล",
-                                next: "node2"
-                            },
-                            {
-                                text: "ลูกค้าสงสัยว่าทำไมต้องอัพเดท",
-                                next: "node3"
-                            },
-                            {
-                                text: "ลูกค้าไม่สะดวกตอนนี้",
-                                next: "node4"
-                            }
-                        ]
-                    },
-                    {
-                        id: "node2",
-                        content: "ขอบคุณมากครับ/คะ สำหรับความร่วมมือ การอัพเดทข้อมูลจะช่วยให้เราส่งเอกสารสำคัญได้อย่างถูกต้อง",
-                        options: [
-                            {
-                                text: "แนะนำผลิตภัณฑ์ลดหย่อนภาษี",
-                                next: "node5"
-                            },
-                            {
-                                text: "สอบถามความสนใจอื่นๆ",
-                                next: "node6"
-                            }
-                        ]
-                    },
-                    {
-                        id: "node3",
-                        content: "การอัพเดทข้อมูลที่อยู่เป็นประจำช่วยให้แน่ใจว่าเราสามารถส่งเอกสารสำคัญ เช่น หนังสือรับรองดอกเบี้ยสำหรับใช้สิทธิลดหย่อนภาษี ได้อย่างถูกต้องและทันเวลา",
-                        options: [
-                            {
-                                text: "ลูกค้าเข้าใจและให้ข้อมูล",
-                                next: "node2"
-                            },
-                            {
-                                text: "ลูกค้ายังสงสัยเกี่ยวกับประโยชน์",
-                                next: "node7"
-                            }
-                        ]
-                    },
-                    {
-                        id: "node4",
-                        content: "เข้าใจครับ/คะ สามารถอัพเดทข้อมูลผ่านช่องทางอื่นได้ เช่น แอปพลิเคชันธนาคาร หรือสาขาใกล้บ้าน เมื่อสะดวกครับ/คะ",
-                        options: [
-                            {
-                                text: "นัดหมายเวลาที่สะดวก",
-                                next: "node8"
-                            },
-                            {
-                                text: "ส่งลิงก์อัพเดทผ่าน SMS",
-                                next: "node9"
-                            }
-                        ]
-                    },
-                    {
-                        id: "node5",
-                        content: "นอกจากนี้ ผม/ดิฉันอยากแชร์ว่าตอนนี้เรามีผลิตภัณฑ์ลดหย่อนภาษีที่น่าสนใจ สามารถลดหย่อนได้สูงสุด 100,000 บาท และมีโปรโมชั่นพิเศษในช่วงสิ้นปีนี้",
-                        options: [
-                            {
-                                text: "ลูกค้าสนใจทราบรายละเอียด",
-                                next: "node10"
-                            },
-                            {
-                                text: "ลูกค้าไม่สนใจตอนนี้",
-                                next: "node11"
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 2,
-                title: "แนะนำโครงการคนละครึ่งพลัส",
-                nodes: [
-                    {
-                        id: "node1",
-                        content: "สวัสดีครับ/คะ คุณลูกค้า วันนี้มีข่าวดีเกี่ยวกับโครงการคนละครึ่งพลัสที่จะช่วยให้คุณประหยัดค่าใช้จ่ายในชีวิตประจำวัน",
-                        options: [
-                            {
-                                text: "ลูกค้าสนใจฟังต่อ",
-                                next: "node2"
-                            },
-                            {
-                                text: "ลูกค้าสอบถามรายละเอียด",
-                                next: "node3"
-                            },
-                            {
-                                text: "ลูกค้าไม่สนใจ",
-                                next: "node4"
-                            }
-                        ]
-                    },
-                    {
-                        id: "node2",
-                        content: "โครงการนี้ช่วยให้คุณประหยัดค่าซื้อของในชีวิตประจำวันได้สูงสุด 150 บาทต่อวัน โดยรัฐบาลและธนาคารร่วมสนับสนุน",
-                        options: [
-                            {
-                                text: "ลูกค้าสอบถามวิธีการเข้าร่วม",
-                                next: "node5"
-                            },
-                            {
-                                text: "ลูกค้าสอบถามเงื่อนไข",
-                                next: "node6"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ];
-
-        // Techniques Data
-        const defaultTechniques = [
-            {
-                id: 1,
-                title: "เทคนิคการฟังอย่าง aktif",
-                description: "การฟังอย่างตั้งใจและแสดงออกว่ากำลังฟังอยู่ เช่น การใช้คำพูดเช่น 'ครับ/ค่ะ', 'เข้าใจแล้วครับ/ค่ะ' เพื่อสร้างความมั่นใจให้ลูกค้า และการสรุปสิ่งที่ลูกค้าพูดเพื่อยืนยันความเข้าใจ",
-                steps: [
-                    "ตั้งใจฟังโดยไม่ขัดจังหวะ",
-                    "ใช้ภาษากายแสดงว่ากำลังฟัง",
-                    "สรุปสิ่งที่ลูกค้าพูดเพื่อยืนยันความเข้าใจ",
-                    "ถามคำถามเพื่อความชัดเจน"
-                ]
-            },
-            {
-                id: 2,
-                title: "เทคนิคการตั้งคำถามปลายเปิด",
-                description: "ใช้คำถามปลายเปิดเพื่อให้ลูกค้าได้พูดมากขึ้น เช่น 'ลูกค้ามีความคิดเห็นอย่างไรบ้างครับ/คะ?' หรือ 'มีอะไรที่เราช่วยได้เพิ่มเติมไหมคะ/ครับ?' เพื่อดึงข้อมูลและความต้องการที่แท้จริง",
-                steps: [
-                    "ใช้คำถามที่ขึ้นต้นด้วย 'อะไร', 'อย่างไร', 'เพราะอะไร'",
-                    "หลีกเลี่ยงคำถามที่ตอบว่าใช่หรือไม่ใช่",
-                    "ให้เวลาลูกค้าคิดก่อนตอบ",
-                    "ต่อยอดจากคำตอบของลูกค้า"
-                ]
-            },
-            {
-                id: 3,
-                title: "เทคนิค Mirroring",
-                description: "สะท้อนคำพูดหรือความรู้สึกของลูกค้าเพื่อสร้างความเข้าใจ เช่น เมื่อลูกค้าบอก 'ไม่มีเวลา' เราตอบ 'เข้าใจค่ะ/ครับว่าคุณไม่มีเวลา' เพื่อสร้างความเป็นหนึ่งเดียวและความไว้วางใจ",
-                steps: [
-                    "ฟังคำพูดสำคัญของลูกค้า",
-                    "สะท้อนคำพูดเหล่านั้นกลับ",
-                    "แสดงความเข้าใจในความรู้สึก",
-                    "ใช้เพื่อสร้างความไว้วางใจ"
-                ]
-            }
-        ];
-
-        // Script Components Data
-        const defaultScriptComponents = {
-            opening: [
-                {
-                    id: 1,
-                    title: "ทักทายลูกค้า",
-                    content: "สวัสดีครับ/คะ คุณ{ชื่อลูกค้า} ผม/ดิฉัน{ชื่อพนักงาน} จาก{ชื่อบริษัท} วันนี้โทรมาเพื่อ{วัตถุประสงค์}ครับ/ค่ะ",
-                    variations: [
-                        "ขออัพเดทข้อมูลเพื่อบริการที่ดีขึ้น",
-                        "แจ้งโปรโมชั่นพิเศษ",
-                        "ตรวจสอบความพึงพอใจในการใช้บริการ"
-                    ]
-                },
-                {
-                    id: 2,
-                    title: "เปิดบทสนทนาแบบเป็นกันเอง",
-                    content: "สวัสดีครับ/คะ คุณ{ชื่อลูกค้า} ไม่ทราบว่าตอนนี้สะดวกคุยไหมครับ/คะ?",
-                    variations: []
-                }
-            ],
-            painPoint: [
-                {
-                    id: 1,
-                    title: "ปัญหาเงินนิ่ง",
-                    content: "ผม/ดิฉันเห็นว่าบัญชีเงินฝากของคุณมียอดคงเหลือค่อนข้างสูง ซึ่งดอกเบี้ยเงินฝากในปัจจุบันต่ำมาก ทำให้เงินฝากเติบโตช้าและอาจไม่ชนะอัตราเงินเฟ้อ",
-                    variations: []
-                },
-                {
-                    id: 2,
-                    title: "ปัญหาเงินฝากประจำใกล้ครบ",
-                    content: "เห็นว่าบัญชีเงินฝากประจำของคุณกำลังจะครบกำหนดในอีก {X} วัน การต่ออายุอัตโนมัติอาจทำให้พลาดโอกาสลงทุนที่ให้ผลตอบแทนดีกว่า",
-                    variations: []
-                }
-            ],
-            solution: [
-                {
-                    id: 1,
-                    title: "เสนอผลิตภัณฑ์ลงทุน",
-                    content: "เรามีผลิตภัณฑ์การลงทุนที่เหมาะสมกับคุณ ซึ่งให้ผลตอบแทน{X}% ต่อปี สูงกว่าดอกเบี้ยเงินฝากทั่วไป",
-                    variations: [
-                        "2-3% สำหรับกองทุนรวมตราสารหนี้",
-                        "4-6% สำหรับกองทุนรวมผสม",
-                        "7-10% สำหรับกองทุนรวมหุ้น"
-                    ]
-                },
-                {
-                    id: 2,
-                    title: "เสนอประกันชีวิต",
-                    content: "เรามีแผนประกันชีวิตที่ช่วยลดหย่อนภาษีได้สูงสุด {X} บาท และยังได้รับความคุ้มครองชีวิตอีกด้วย",
-                    variations: [
-                        "100,000 บาท พร้อมเงินคืน 4% ต่อปี",
-                        "500,000 บาท พร้อมโบนัสพิเศษ"
-                    ]
-                }
-            ],
-            closing: [
-                {
-                    id: 1,
-                    title: "ปิดการขายแบบนุ่มนวล",
-                    content: "ไม่ทราบว่าคุณ{ชื่อลูกค้า} สนใจทราบรายละเอียดเพิ่มเติมไหมครับ/คะ?",
-                    variations: []
-                },
-                {
-                    id: 2,
-                    title: "ปิดการขายแบบเร่งด่วน",
-                    content: "โปรโมชั่นนี้มีจำกัดเพียง {X} รายแรกเท่านั้น คุณ{ชื่อลูกค้า} สนใจลงทะเบียนเลยไหมครับ/คะ?",
-                    variations: []
-                }
-            ],
-            special: [
-                {
-                    id: 1,
-                    title: "ประโยคสร้างความมั่นใจ",
-                    content: "ลูกค้าหลายท่านที่ใช้บริการนี้มีความพึงพอใจสูงและได้รับผลตอบแทนตามที่คาดหวัง",
-                    variations: []
-                },
-                {
-                    id: 2,
-                    title: "ประโยคกระตุ้นการตัดสินใจ",
-                    content: "ยิ่งเริ่มต้นเร็ว ยิ่งได้รับผลตอบแทนที่มากขึ้นในระยะยาว",
-                    variations: []
-                }
-            ]
-        };
-
-        // Default Templates
-        const defaultTemplates = [
-            {
-                id: 1,
-                title: "เทมเพลตขายประกันชีวิต",
-                description: "สำหรับการเสนอขายประกันชีวิตแบบครบวงจร",
-                components: [1, 1, 2, 1] // opening[1], painPoint[1], solution[2], closing[1]
-            },
-            {
-                id: 2,
-                title: "เทมเพลตเสนอการลงทุน",
-                description: "สำหรับการเสนอขายผลิตภัณฑ์การลงทุน",
-                components: [2, 2, 1, 2] // opening[2], painPoint[2], solution[1], closing[2]
-            }
-        ];
-
         // Data Management
         let isAdmin = false;
         let currentEditingId = null;
@@ -1981,23 +1728,8 @@ STEP2:
             if (!localStorage.getItem('objections')) {
                 localStorage.setItem('objections', JSON.stringify(defaultObjections));
             }
-            if (!localStorage.getItem('conversations')) {
-                localStorage.setItem('conversations', JSON.stringify(defaultConversations));
-            }
-            if (!localStorage.getItem('techniques')) {
-                localStorage.setItem('techniques', JSON.stringify(defaultTechniques));
-            }
-            if (!localStorage.getItem('scriptComponents')) {
-                localStorage.setItem('scriptComponents', JSON.stringify(defaultScriptComponents));
-            }
-            if (!localStorage.getItem('templates')) {
-                localStorage.setItem('templates', JSON.stringify(defaultTemplates));
-            }
             if (!localStorage.getItem('uploadedFiles')) {
                 localStorage.setItem('uploadedFiles', JSON.stringify([]));
-            }
-            if (!localStorage.getItem('designedScripts')) {
-                localStorage.setItem('designedScripts', JSON.stringify([]));
             }
         }
 
@@ -2012,22 +1744,6 @@ STEP2:
 
         function getObjections() {
             return JSON.parse(localStorage.getItem('objections')) || {};
-        }
-
-        function getConversations() {
-            return JSON.parse(localStorage.getItem('conversations')) || [];
-        }
-
-        function getTechniques() {
-            return JSON.parse(localStorage.getItem('techniques')) || [];
-        }
-
-        function getScriptComponents() {
-            return JSON.parse(localStorage.getItem('scriptComponents')) || defaultScriptComponents;
-        }
-
-        function getTemplates() {
-            return JSON.parse(localStorage.getItem('templates')) || defaultTemplates;
         }
 
         function getUploadedFiles() {
@@ -2045,22 +1761,6 @@ STEP2:
 
         function saveObjections(objections) {
             localStorage.setItem('objections', JSON.stringify(objections));
-        }
-
-        function saveConversations(conversations) {
-            localStorage.setItem('conversations', JSON.stringify(conversations));
-        }
-
-        function saveTechniques(techniques) {
-            localStorage.setItem('techniques', JSON.stringify(techniques));
-        }
-
-        function saveScriptComponents(components) {
-            localStorage.setItem('scriptComponents', JSON.stringify(components));
-        }
-
-        function saveTemplates(templates) {
-            localStorage.setItem('templates', JSON.stringify(templates));
         }
 
         function saveUploadedFiles(files) {
@@ -2155,7 +1855,6 @@ STEP2:
                 const callScripts = getCallScripts();
                 const counterScripts = getCounterScripts();
                 const objections = getObjections();
-                const techniques = getTechniques();
                 
                 statsGrid.innerHTML = `
                     <div class="stat-card">
@@ -2171,7 +1870,7 @@ STEP2:
                         <div class="stat-label">ข้อโต้แย้ง</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value">${techniques.length}</div>
+                        <div class="stat-value">5</div>
                         <div class="stat-label">เทคนิค</div>
                     </div>
                 `;
@@ -2183,7 +1882,6 @@ STEP2:
                 const callScripts = getCallScripts();
                 const counterScripts = getCounterScripts();
                 const objections = getObjections();
-                const techniques = getTechniques();
                 
                 quickItems[0].querySelector('p').textContent = `จัดการสคริปต์การโทรทั้งหมด (${callScripts.length + counterScripts.length} สคริปต์)`;
                 quickItems[1].querySelector('p').textContent = `สร้างสคริปต์แบบ Customize`;
@@ -2331,10 +2029,78 @@ STEP2:
             }
         }
 
+        // Load Objection Handling Page
+        function loadObjectionHandlingPage() {
+            loadObjections('call');
+            
+            // Setup category tabs
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    
+                    // Update active tab
+                    document.querySelectorAll('.category-tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Load objections for this category
+                    loadObjections(category);
+                });
+            });
+        }
+
+        // Load Objections by Category
+        function loadObjections(category) {
+            const container = document.getElementById('objectionList');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            const objections = getObjections();
+            
+            if (objections[category] && objections[category].length > 0) {
+                objections[category].forEach(obj => {
+                    const item = document.createElement('div');
+                    item.className = 'objection-item';
+                    item.innerHTML = `
+                        <div class="objection-question" onclick="toggleAnswer(this)">
+                            ${obj.question}
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="objection-answer">${obj.answer}</div>
+                        <div class="objection-tone">โทนเสียง: ${obj.tone}</div>
+                        ${isAdmin ? `
+                        <div class="admin-buttons" style="margin-top: 1rem;">
+                            <button class="admin-btn" onclick="editObjection(${obj.id}, '${category}')">แก้ไข</button>
+                            <button class="admin-btn delete" onclick="deleteObjection(${obj.id}, '${category}')">ลบ</button>
+                        </div>
+                        ` : ''}
+                    `;
+                    container.appendChild(item);
+                });
+            } else {
+                container.innerHTML = '<p>ยังไม่มีข้อโต้แย้งในหมวดหมู่นี้</p>';
+            }
+        }
+
+        // Toggle Answer Visibility
+        function toggleAnswer(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            
+            if (answer.style.display === 'block') {
+                answer.style.display = 'none';
+                icon.className = 'fas fa-chevron-down';
+            } else {
+                answer.style.display = 'block';
+                icon.className = 'fas fa-chevron-up';
+            }
+        }
+
         // Load Script Designer Page
         function loadScriptDesignerPage() {
+            // Load default components
             loadScriptComponents();
-            loadTemplates();
             
             // Setup script tabs
             document.querySelectorAll('.script-tab').forEach(tab => {
@@ -2357,14 +2123,73 @@ STEP2:
                     }
                 });
             });
-            
-            // Initialize drag and drop
-            initializeDragAndDrop();
         }
 
         // Load Script Components
         function loadScriptComponents() {
-            const components = getScriptComponents();
+            // Default components
+            const components = {
+                opening: [
+                    {
+                        id: 1,
+                        title: "ทักทายลูกค้า",
+                        content: "สวัสดีครับ/คะ คุณ{ชื่อลูกค้า} ผม/ดิฉัน{ชื่อพนักงาน} จาก{ชื่อบริษัท} วันนี้โทรมาเพื่อ{วัตถุประสงค์}ครับ/ค่ะ"
+                    },
+                    {
+                        id: 2,
+                        title: "เปิดบทสนทนาแบบเป็นกันเอง",
+                        content: "สวัสดีครับ/คะ คุณ{ชื่อลูกค้า} ไม่ทราบว่าตอนนี้สะดวกคุยไหมครับ/คะ?"
+                    }
+                ],
+                painPoint: [
+                    {
+                        id: 1,
+                        title: "ปัญหาเงินนิ่ง",
+                        content: "ผม/ดิฉันเห็นว่าบัญชีเงินฝากของคุณมียอดคงเหลือค่อนข้างสูง ซึ่งดอกเบี้ยเงินฝากในปัจจุบันต่ำมาก ทำให้เงินฝากเติบโตช้าและอาจไม่ชนะอัตราเงินเฟ้อ"
+                    },
+                    {
+                        id: 2,
+                        title: "ปัญหาเงินฝากประจำใกล้ครบ",
+                        content: "เห็นว่าบัญชีเงินฝากประจำของคุณกำลังจะครบกำหนดในอีก {X} วัน การต่ออายุอัตโนมัติอาจทำให้พลาดโอกาสลงทุนที่ให้ผลตอบแทนดีกว่า"
+                    }
+                ],
+                solution: [
+                    {
+                        id: 1,
+                        title: "เสนอผลิตภัณฑ์ลงทุน",
+                        content: "เรามีผลิตภัณฑ์การลงทุนที่เหมาะสมกับคุณ ซึ่งให้ผลตอบแทน{X}% ต่อปี สูงกว่าดอกเบี้ยเงินฝากทั่วไป"
+                    },
+                    {
+                        id: 2,
+                        title: "เสนอประกันชีวิต",
+                        content: "เรามีแผนประกันชีวิตที่ช่วยลดหย่อนภาษีได้สูงสุด {X} บาท และยังได้รับความคุ้มครองชีวิตอีกด้วย"
+                    }
+                ],
+                closing: [
+                    {
+                        id: 1,
+                        title: "ปิดการขายแบบนุ่มนวล",
+                        content: "ไม่ทราบว่าคุณ{ชื่อลูกค้า} สนใจทราบรายละเอียดเพิ่มเติมไหมครับ/คะ?"
+                    },
+                    {
+                        id: 2,
+                        title: "ปิดการขายแบบเร่งด่วน",
+                        content: "โปรโมชั่นนี้มีจำกัดเพียง {X} รายแรกเท่านั้น คุณ{ชื่อลูกค้า} สนใจลงทะเบียนเลยไหมครับ/คะ?"
+                    }
+                ],
+                special: [
+                    {
+                        id: 1,
+                        title: "ประโยคสร้างความมั่นใจ",
+                        content: "ลูกค้าหลายท่านที่ใช้บริการนี้มีความพึงพอใจสูงและได้รับผลตอบแทนตามที่คาดหวัง"
+                    },
+                    {
+                        id: 2,
+                        title: "ประโยคกระตุ้นการตัดสินใจ",
+                        content: "ยิ่งเริ่มต้นเร็ว ยิ่งได้รับผลตอบแทนที่มากขึ้นในระยะยาว"
+                    }
+                ]
+            };
             
             // Load opening components
             const openingContainer = document.getElementById('openingComponents');
@@ -2411,7 +2236,6 @@ STEP2:
         function createComponentItem(component, category) {
             const item = document.createElement('div');
             item.className = 'component-item';
-            item.draggable = true;
             item.setAttribute('data-id', component.id);
             item.setAttribute('data-category', category);
             
@@ -2420,101 +2244,25 @@ STEP2:
                 <div class="component-content">${component.content}</div>
             `;
             
-            // Add drag event
-            item.addEventListener('dragstart', handleDragStart);
-            
-            // Add click event to show variations if available
-            if (component.variations && component.variations.length > 0) {
-                item.addEventListener('click', function(e) {
-                    if (e.target.classList.contains('component-item')) {
-                        toggleVariations(this, component);
-                    }
+            // Add click event to add component to script
+            item.addEventListener('click', function() {
+                // Remove selected class from all components
+                document.querySelectorAll('.component-item').forEach(el => {
+                    el.classList.remove('selected');
                 });
-            }
+                
+                // Add selected class to clicked component
+                this.classList.add('selected');
+                
+                // Add component to script
+                addComponentToScript(component, category);
+            });
             
             return item;
         }
 
-        // Toggle Variations
-        function toggleVariations(element, component) {
-            const existingOptions = element.querySelector('.phrase-options');
-            
-            if (existingOptions) {
-                existingOptions.remove();
-            } else {
-                const optionsDiv = document.createElement('div');
-                optionsDiv.className = 'phrase-options';
-                
-                component.variations.forEach(variation => {
-                    const option = document.createElement('div');
-                    option.className = 'phrase-option';
-                    option.textContent = variation;
-                    option.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        addComponentToScript(component, component.category, variation);
-                    });
-                    optionsDiv.appendChild(option);
-                });
-                
-                // Add custom input
-                const customInput = document.createElement('input');
-                customInput.type = 'text';
-                customInput.placeholder = 'พิมพ์ข้อความที่ต้องการ...';
-                customInput.className = 'custom-input';
-                customInput.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
-                customInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        addComponentToScript(component, component.category, this.value);
-                        this.value = '';
-                        optionsDiv.remove();
-                    }
-                });
-                
-                optionsDiv.appendChild(customInput);
-                element.appendChild(optionsDiv);
-            }
-        }
-
-        // Drag and Drop Functions
-        function initializeDragAndDrop() {
-            const scriptStructure = document.getElementById('scriptStructure');
-            
-            scriptStructure.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                this.style.backgroundColor = 'rgba(179, 224, 255, 0.2)';
-            });
-            
-            scriptStructure.addEventListener('dragleave', function() {
-                this.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
-            });
-            
-            scriptStructure.addEventListener('drop', function(e) {
-                e.preventDefault();
-                this.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
-                
-                const componentId = e.dataTransfer.getData('text/plain');
-                const category = e.dataTransfer.getData('category');
-                
-                if (componentId && category) {
-                    const components = getScriptComponents();
-                    const component = components[category].find(c => c.id == componentId);
-                    
-                    if (component) {
-                        addComponentToScript(component, category);
-                    }
-                }
-            });
-        }
-
-        function handleDragStart(e) {
-            e.dataTransfer.setData('text/plain', this.getAttribute('data-id'));
-            e.dataTransfer.setData('category', this.getAttribute('data-category'));
-        }
-
         // Add Component to Script
-        function addComponentToScript(component, category, customText = null) {
+        function addComponentToScript(component, category) {
             const scriptStructure = document.getElementById('scriptStructure');
             
             // Remove empty message if exists
@@ -2528,15 +2276,12 @@ STEP2:
             section.setAttribute('data-id', component.id);
             section.setAttribute('data-category', category);
             
-            const content = customText || component.content;
-            
             section.innerHTML = `
                 <div class="section-header">
                     <div class="section-title">${component.title}</div>
                     <button class="admin-btn delete" onclick="removeComponent(this)">ลบ</button>
                 </div>
-                <div class="section-content">${content}</div>
-                ${customText ? `<div class="custom-text-note">(ปรับแต่งแล้ว)</div>` : ''}
+                <div class="section-content">${component.content}</div>
             `;
             
             scriptStructure.appendChild(section);
@@ -2550,7 +2295,7 @@ STEP2:
             // Show empty message if no components left
             const scriptStructure = document.getElementById('scriptStructure');
             if (scriptStructure.children.length === 0) {
-                scriptStructure.innerHTML = '<div class="empty-section">ลากส่วนประกอบมาวางที่นี่เพื่อสร้างสคริปต์</div>';
+                scriptStructure.innerHTML = '<div class="empty-section">เลือกส่วนประกอบจากด้านซ้ายเพื่อสร้างสคริปต์</div>';
             }
         }
 
@@ -2558,7 +2303,12 @@ STEP2:
         function clearScriptDesign() {
             if (confirm('คุณแน่ใจว่าต้องการล้างสคริปต์ทั้งหมด?')) {
                 const scriptStructure = document.getElementById('scriptStructure');
-                scriptStructure.innerHTML = '<div class="empty-section">ลากส่วนประกอบมาวางที่นี่เพื่อสร้างสคริปต์</div>';
+                scriptStructure.innerHTML = '<div class="empty-section">เลือกส่วนประกอบจากด้านซ้ายเพื่อสร้างสคริปต์</div>';
+                
+                // Remove selected class from all components
+                document.querySelectorAll('.component-item').forEach(el => {
+                    el.classList.remove('selected');
+                });
             }
         }
 
@@ -2649,264 +2399,45 @@ STEP2:
             alert('ส่งออกสคริปต์เรียบร้อยแล้ว!');
         }
 
-        // Load Templates
-        function loadTemplates() {
-            const container = document.getElementById('templateList');
-            container.innerHTML = '';
-            
-            const templates = getTemplates();
-            const components = getScriptComponents();
-            
-            templates.forEach(template => {
-                const item = document.createElement('div');
-                item.className = 'template-item';
-                
-                let templatePreview = '';
-                template.components.forEach(compIndex => {
-                    // Find component in each category
-                    for (const category in components) {
-                        const component = components[category].find(c => c.id === compIndex);
-                        if (component) {
-                            templatePreview += `• ${component.title}\n`;
-                            break;
-                        }
-                    }
-                });
-                
-                item.innerHTML = `
-                    <h4>${template.title}</h4>
-                    <p>${template.description}</p>
-                    <pre>${templatePreview}</pre>
-                    <button class="admin-btn" onclick="loadTemplate(${template.id})">ใช้เทมเพลตนี้</button>
-                `;
-                
-                container.appendChild(item);
-            });
-        }
-
-        // Load Template
-        function loadTemplate(templateId) {
-            const templates = getTemplates();
-            const components = getScriptComponents();
-            
-            const template = templates.find(t => t.id === templateId);
-            if (!template) return;
-            
-            // Clear current script
-            clearScriptDesign();
-            
-            // Add components from template
-            template.components.forEach(compIndex => {
-                // Find component in each category
-                for (const category in components) {
-                    const component = components[category].find(c => c.id === compIndex);
-                    if (component) {
-                        addComponentToScript(component, category);
-                        break;
-                    }
-                }
-            });
-            
-            // Switch to custom designer
-            document.querySelector('[data-template="custom"]').click();
-            
-            alert(`โหลดเทมเพลต "${template.title}" สำเร็จ!`);
-        }
-
-        // Load Objection Handling Page
-        function loadObjectionHandlingPage() {
-            loadObjections('call');
-            
-            // Setup category tabs
-            document.querySelectorAll('.category-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const category = this.getAttribute('data-category');
-                    
-                    // Update active tab
-                    document.querySelectorAll('.category-tab').forEach(t => {
-                        t.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                    
-                    // Load objections for this category
-                    loadObjections(category);
-                });
-            });
-        }
-
-        // Load Objections by Category
-        function loadObjections(category) {
-            const container = document.getElementById('objectionList');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            const objections = getObjections();
-            
-            if (objections[category] && objections[category].length > 0) {
-                objections[category].forEach(obj => {
-                    const item = document.createElement('div');
-                    item.className = 'objection-item';
-                    item.innerHTML = `
-                        <div class="objection-question" onclick="toggleAnswer(this)">
-                            ${obj.question}
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="objection-answer">${obj.answer}</div>
-                        <div class="objection-tone">โทนเสียง: ${obj.tone}</div>
-                        ${isAdmin ? `
-                        <div class="admin-buttons" style="margin-top: 1rem;">
-                            <button class="admin-btn" onclick="editObjection(${obj.id}, '${category}')">แก้ไข</button>
-                            <button class="admin-btn delete" onclick="deleteObjection(${obj.id}, '${category}')">ลบ</button>
-                        </div>
-                        ` : ''}
-                    `;
-                    container.appendChild(item);
-                });
-            } else {
-                container.innerHTML = '<p>ยังไม่มีข้อโต้แย้งในหมวดหมู่นี้</p>';
-            }
-        }
-
-        // Toggle Answer Visibility
-        function toggleAnswer(element) {
-            const answer = element.nextElementSibling;
-            const icon = element.querySelector('i');
-            
-            if (answer.style.display === 'block') {
-                answer.style.display = 'none';
-                icon.className = 'fas fa-chevron-down';
-            } else {
-                answer.style.display = 'block';
-                icon.className = 'fas fa-chevron-up';
-            }
-        }
-
-        // Load Conversation Builder Page
-        function loadConversationBuilderPage() {
-            const container = document.getElementById('conversationNodesList');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            const conversations = getConversations();
-            
-            if (conversations.length === 0) {
-                container.innerHTML = '<p>ยังไม่มีบทสนทนา</p>';
-                return;
-            }
-            
-            conversations.forEach(conversation => {
-                const nodeItem = document.createElement('div');
-                nodeItem.className = 'node-item';
-                nodeItem.innerHTML = `
-                    <h4>${conversation.title}</h4>
-                    <p>${conversation.nodes.length} โหนด</p>
-                `;
-                
-                nodeItem.addEventListener('click', function() {
-                    loadConversationFlow(conversation);
-                    
-                    // Update active node
-                    document.querySelectorAll('.node-item').forEach(item => {
-                        item.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                });
-                
-                container.appendChild(nodeItem);
-            });
-            
-            // Load first conversation by default
-            if (conversations.length > 0) {
-                document.querySelector('.node-item').click();
-            }
-        }
-
-        // Load Conversation Flow
-        function loadConversationFlow(conversation) {
-            const container = document.getElementById('conversationFlow');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            // Start with the first node
-            const startNode = conversation.nodes[0];
-            displayNode(startNode, conversation, container);
-        }
-
-        // Display Node in Conversation Flow
-        function displayNode(node, conversation, container) {
-            const stepDiv = document.createElement('div');
-            stepDiv.className = 'flow-step';
-            stepDiv.innerHTML = `
-                <p>${node.content}</p>
-            `;
-            
-            if (node.options && node.options.length > 0) {
-                const optionsDiv = document.createElement('div');
-                optionsDiv.className = 'flow-options';
-                
-                node.options.forEach(option => {
-                    const optionDiv = document.createElement('div');
-                    optionDiv.className = 'flow-option';
-                    optionDiv.textContent = option.text;
-                    optionDiv.addEventListener('click', function() {
-                        const nextNode = conversation.nodes.find(n => n.id === option.next);
-                        if (nextNode) {
-                            displayNode(nextNode, conversation, container);
-                        }
-                    });
-                    optionsDiv.appendChild(optionDiv);
-                });
-                
-                stepDiv.appendChild(optionsDiv);
-            }
-            
-            container.appendChild(stepDiv);
-        }
-
         // Load Techniques Page
         function loadTechniquesPage() {
             const container = document.getElementById('techniqueList');
             if (!container) return;
             
-            container.innerHTML = '';
-            const techniques = getTechniques();
-            
-            if (techniques.length === 0) {
-                container.innerHTML = '<p>ยังไม่มีเทคนิค</p>';
-                return;
-            }
-            
-            techniques.forEach(technique => {
-                const item = document.createElement('div');
-                item.className = 'technique-item';
-                item.innerHTML = `
+            container.innerHTML = `
+                <div class="technique-item">
                     <div class="technique-header">
-                        <div class="technique-title">${technique.title}</div>
+                        <div class="technique-title">เทคนิคการฟังอย่าง aktif</div>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="technique-details">
-                        <p>${technique.description}</p>
-                        ${technique.steps ? `
-                        <h4>ขั้นตอน:</h4>
-                        <ol>
-                            ${technique.steps.map(step => `<li>${step}</li>`).join('')}
-                        </ol>
-                        ` : ''}
-                        ${isAdmin ? `
-                        <div class="admin-buttons" style="margin-top: 1rem;">
-                            <button class="admin-btn" onclick="editTechnique(${technique.id})">แก้ไข</button>
-                            <button class="admin-btn delete" onclick="deleteTechnique(${technique.id})">ลบ</button>
-                        </div>
-                        ` : ''}
+                        การฟังอย่างตั้งใจและแสดงออกว่ากำลังฟังอยู่ เช่น การใช้คำพูดเช่น 'ครับ/ค่ะ', 'เข้าใจแล้วครับ/ค่ะ' เพื่อสร้างความมั่นใจให้ลูกค้า และการสรุปสิ่งที่ลูกค้าพูดเพื่อยืนยันความเข้าใจ
                     </div>
-                `;
-                container.appendChild(item);
-            });
+                </div>
+                <div class="technique-item">
+                    <div class="technique-header">
+                        <div class="technique-title">เทคนิคการตั้งคำถามปลายเปิด</div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="technique-details">
+                        ใช้คำถามปลายเปิดเพื่อให้ลูกค้าได้พูดมากขึ้น เช่น 'ลูกค้ามีความคิดเห็นอย่างไรบ้างครับ/คะ?' หรือ 'มีอะไรที่เราช่วยได้เพิ่มเติมไหมคะ/ครับ?' เพื่อดึงข้อมูลและความต้องการที่แท้จริง
+                    </div>
+                </div>
+                <div class="technique-item">
+                    <div class="technique-header">
+                        <div class="technique-title">เทคนิค Mirroring</div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="technique-details">
+                        สะท้อนคำพูดหรือความรู้สึกของลูกค้าเพื่อสร้างความเข้าใจ เช่น เมื่อลูกค้าบอก 'ไม่มีเวลา' เราตอบ 'เข้าใจค่ะ/ครับว่าคุณไม่มีเวลา' เพื่อสร้างความเป็นหนึ่งเดียวและความไว้วางใจ
+                    </div>
+                </div>
+            `;
             
             // Add toggle functionality
             document.querySelectorAll('.technique-item').forEach(item => {
                 item.addEventListener('click', function(e) {
+                    // Only toggle details if not clicking admin buttons
                     if (!e.target.classList.contains('admin-btn')) {
                         const details = this.querySelector('.technique-details');
                         const icon = this.querySelector('i');
@@ -2950,9 +2481,6 @@ STEP2:
                     <p>VIDEO</p>
                 </div>
             `;
-            
-            // Load uploaded files
-            loadUploadedFiles();
         }
 
         // Load Uploaded Files
@@ -3034,6 +2562,9 @@ STEP2:
             const adminControls = document.getElementById('adminControls');
             adminControls.classList.add('active');
             isAdmin = true;
+            
+            // Load uploaded files when showing admin controls
+            loadUploadedFiles();
             
             // Reload all pages to show admin controls
             const currentPage = document.querySelector('.page.active').id;
@@ -3242,161 +2773,6 @@ STEP2:
             alert('ลบข้อโต้แย้งสำเร็จ!');
         }
 
-        // Add Conversation Functions
-        function showAddConversationModal() {
-            document.getElementById('addConversationModal').style.display = 'flex';
-            currentEditingId = null;
-            document.getElementById('conversationTitle').value = '';
-            document.getElementById('conversationNodes').value = '';
-        }
-
-        function closeAddConversationModal() {
-            document.getElementById('addConversationModal').style.display = 'none';
-        }
-
-        function addNewConversation() {
-            const title = document.getElementById('conversationTitle').value;
-            const nodesText = document.getElementById('conversationNodes').value;
-            
-            if (!title || !nodesText) {
-                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-                return;
-            }
-            
-            let nodes;
-            try {
-                nodes = JSON.parse(nodesText);
-            } catch (e) {
-                alert('รูปแบบโหนดบทสนทนาไม่ถูกต้อง');
-                return;
-            }
-            
-            const conversations = getConversations();
-            const newId = conversations.length > 0 ? Math.max(...conversations.map(c => c.id)) + 1 : 1;
-            
-            const newConversation = {
-                id: newId,
-                title,
-                nodes
-            };
-            
-            conversations.push(newConversation);
-            saveConversations(conversations);
-            
-            closeAddConversationModal();
-            loadConversationBuilderPage();
-            alert('เพิ่มบทสนทนาใหม่สำเร็จ!');
-        }
-
-        // Add Technique Functions
-        function showAddTechniqueModal() {
-            document.getElementById('addTechniqueModal').style.display = 'flex';
-            currentEditingId = null;
-            document.getElementById('techniqueTitle').value = '';
-            document.getElementById('techniqueDescription').value = '';
-            document.getElementById('techniqueSteps').value = '';
-        }
-
-        function closeAddTechniqueModal() {
-            document.getElementById('addTechniqueModal').style.display = 'none';
-        }
-
-        function addNewTechnique() {
-            const title = document.getElementById('techniqueTitle').value;
-            const description = document.getElementById('techniqueDescription').value;
-            const steps = document.getElementById('techniqueSteps').value.split('\n').filter(s => s.trim() !== '');
-            
-            if (!title || !description) {
-                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-                return;
-            }
-            
-            const techniques = getTechniques();
-            const newId = techniques.length > 0 ? Math.max(...techniques.map(t => t.id)) + 1 : 1;
-            
-            const newTechnique = {
-                id: newId,
-                title,
-                description,
-                steps
-            };
-            
-            techniques.push(newTechnique);
-            saveTechniques(techniques);
-            
-            closeAddTechniqueModal();
-            loadTechniquesPage();
-            alert('เพิ่มเทคนิคใหม่สำเร็จ!');
-        }
-
-        function editTechnique(id) {
-            const techniques = getTechniques();
-            const technique = techniques.find(t => t.id === id);
-            if (!technique) return;
-            
-            document.getElementById('techniqueTitle').value = technique.title;
-            document.getElementById('techniqueDescription').value = technique.description;
-            document.getElementById('techniqueSteps').value = technique.steps ? technique.steps.join('\n') : '';
-            
-            currentEditingId = id;
-            document.getElementById('addTechniqueModal').style.display = 'flex';
-        }
-
-        function deleteTechnique(id) {
-            if (!confirm('คุณแน่ใจว่าต้องการลบเทคนิคนี้?')) return;
-            
-            const techniques = getTechniques();
-            const updatedTechniques = techniques.filter(t => t.id !== id);
-            saveTechniques(updatedTechniques);
-            
-            loadTechniquesPage();
-            alert('ลบเทคนิคสำเร็จ!');
-        }
-
-        // Add Component Functions
-        function showAddComponentModal() {
-            document.getElementById('addComponentModal').style.display = 'flex';
-            currentEditingId = null;
-            document.getElementById('componentTitle').value = '';
-            document.getElementById('componentContent').value = '';
-            document.getElementById('componentVariations').value = '';
-        }
-
-        function closeAddComponentModal() {
-            document.getElementById('addComponentModal').style.display = 'none';
-        }
-
-        function addNewComponent() {
-            const category = document.getElementById('componentCategory').value;
-            const title = document.getElementById('componentTitle').value;
-            const content = document.getElementById('componentContent').value;
-            const variationsText = document.getElementById('componentVariations').value;
-            
-            if (!title || !content) {
-                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-                return;
-            }
-            
-            const variations = variationsText.split('\n').filter(v => v.trim() !== '');
-            
-            const components = getScriptComponents();
-            const newId = components[category].length > 0 ? Math.max(...components[category].map(c => c.id)) + 1 : 1;
-            
-            const newComponent = {
-                id: newId,
-                title,
-                content,
-                variations
-            };
-            
-            components[category].push(newComponent);
-            saveScriptComponents(components);
-            
-            closeAddComponentModal();
-            loadScriptDesignerPage();
-            alert('เพิ่ม Component สำเร็จ!');
-        }
-
         // Clear All Data
         function clearAllData() {
             if (!confirm('คุณแน่ใจว่าต้องการล้างข้อมูลทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้!')) return;
@@ -3404,12 +2780,7 @@ STEP2:
             localStorage.removeItem('callScripts');
             localStorage.removeItem('counterScripts');
             localStorage.removeItem('objections');
-            localStorage.removeItem('conversations');
-            localStorage.removeItem('techniques');
-            localStorage.removeItem('scriptComponents');
-            localStorage.removeItem('templates');
             localStorage.removeItem('uploadedFiles');
-            localStorage.removeItem('designedScripts');
             
             initializeData();
             
@@ -3422,7 +2793,7 @@ STEP2:
 
         // Close modal when clicking outside
         window.addEventListener('click', function(event) {
-            const modals = ['adminModal', 'addScriptModal', 'addObjectionModal', 'addConversationModal', 'addTechniqueModal', 'addComponentModal'];
+            const modals = ['adminModal', 'addScriptModal', 'addObjectionModal'];
             modals.forEach(modalId => {
                 const modal = document.getElementById(modalId);
                 if (event.target === modal) {
