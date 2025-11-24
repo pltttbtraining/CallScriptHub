@@ -3,2146 +3,1258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RH5 Script Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>ระบบจัดการสคริปต์และข้อโต้แย้ง</title>
     <style>
         :root {
-            --primary: #B3E0FF;
-            --secondary: #99CCFF;
-            --accent: #CCE5FF;
-            --light: rgba(255, 255, 255, 0.85);
-            --dark: #2C3E50;
-            --success: #4CAF50;
-            --warning: #FFC107;
-            --danger: #F44336;
-            --gray: #7E7E9C;
-            --border-radius: 16px;
-            --box-shadow: 0 8px 32px rgba(179, 224, 255, 0.15);
-            --transition: all 0.3s ease;
+            --primary-blue: #e6f2ff;
+            --secondary-blue: #cce5ff;
+            --accent-blue: #99ccff;
+            --glass-effect: rgba(255, 255, 255, 0.25);
+            --shadow-light: 0 8px 32px rgba(0, 123, 255, 0.1);
+            --dark-blue: #0066cc;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Prompt', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            background: linear-gradient(135deg, #F5FBFF 0%, #EBF7FF 100%);
-            color: #333;
-            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e6f2ff 100%);
             min-height: 100vh;
-            overflow-x: hidden;
+            padding: 20px;
         }
-
-        /* Loading Screen */
-        #loadingScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: var(--transition);
-        }
-
-        .loading-content {
-            text-align: center;
-            color: white;
-            padding: 2rem;
-        }
-
-        .loading-logo {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
-            animation: pulse 2s infinite;
-        }
-
-        .loading-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            opacity: 0;
-            animation: fadeInUp 1s ease 0.5s forwards;
-        }
-
-        .loading-subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0;
-            animation: fadeInUp 1s ease 1s forwards;
-        }
-
-        .start-btn {
-            background: rgba(255,255,255,0.3);
-            color: white;
-            border: 2px solid white;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            opacity: 0;
-            animation: fadeInUp 1s ease 1.5s forwards;
-            backdrop-filter: blur(10px);
-        }
-
-        .start-btn:hover {
-            background: white;
-            color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        /* Main App */
-        #mainApp {
-            display: none;
-            max-width: 1200px;
+        
+        .container {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 1rem;
         }
-
-        /* Navigation Bar */
-        .nav-bar {
+        
+        header {
             display: flex;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 0.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--box-shadow);
-            overflow-x: auto;
-            scrollbar-width: none;
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: var(--glass-effect);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: var(--shadow-light);
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            position: relative;
+            overflow: hidden;
         }
-
-        .nav-bar::-webkit-scrollbar {
-            display: none;
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite linear;
         }
-
-        .nav-item {
-            padding: 0.8rem 1.2rem;
-            background: transparent;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            white-space: nowrap;
-            color: var(--dark);
-            flex-shrink: 0;
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
-
-        .nav-item.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(179, 224, 255, 0.4);
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--dark-blue);
         }
-
-        .nav-item:not(.active):hover {
-            background: rgba(179, 224, 255, 0.3);
-        }
-
-        /* Admin Controls */
+        
         .admin-controls {
-            display: none;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            box-shadow: var(--box-shadow);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-
-        .admin-controls.active {
-            display: block;
-        }
-
-        .admin-buttons {
             display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
+            gap: 15px;
         }
-
-        .admin-btn {
-            padding: 0.6rem 1rem;
-            background: var(--primary);
-            color: white;
+        
+        .btn {
+            padding: 10px 20px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: var(--transition);
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
-
-        .admin-btn:hover {
-            background: var(--secondary);
+        
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: var(--dark-blue);
+        }
+        
+        .btn-primary:hover {
+            background-color: #80bfff;
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 102, 204, 0.2);
         }
-
-        .admin-btn.delete {
-            background: var(--danger);
-        }
-
-        .admin-btn.delete:hover {
-            background: #d32f2f;
-        }
-
-        /* ปุ่มออกจากระบบแอดมิน */
+        
         .btn-logout {
             background-color: #ffcccc;
             color: #cc0000;
-            padding: 0.6rem 1rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: var(--transition);
         }
-
+        
         .btn-logout:hover {
             background-color: #ff9999;
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(204, 0, 0, 0.2);
         }
-
-        /* Content Area */
-        .content-area {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--box-shadow);
-            min-height: 500px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
+        
+        .btn-danger {
+            background-color: #ffcccc;
+            color: #cc0000;
         }
-
-        .page {
-            display: none;
-            animation: slideIn 0.3s ease forwards;
+        
+        .btn-danger:hover {
+            background-color: #ff9999;
         }
-
-        .page.active {
-            display: block;
-        }
-
-        /* Home Page */
-        .welcome-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            text-align: center;
-            box-shadow: var(--box-shadow);
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-
-        .quick-access {
+        
+        .main-content {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
-
-        .quick-item {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: var(--box-shadow);
+        
+        .panel {
+            background: var(--glass-effect);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: var(--shadow-light);
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            position: relative;
+            overflow: hidden;
         }
-
-        .quick-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(179, 224, 255, 0.2);
+        
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 4s infinite linear;
         }
-
-        .quick-item i {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
+        
+        .panel-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--dark-blue);
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
         }
-
-        /* Scripts Page */
+        
         .script-tabs {
             display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .script-tabs::-webkit-scrollbar {
-            display: none;
-        }
-
-        .script-tab {
-            padding: 0.8rem 1.5rem;
-            background: rgba(255, 255, 255, 0.5);
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            white-space: nowrap;
-            color: var(--dark);
-            flex-shrink: 0;
-        }
-
-        .script-tab.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .script-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .script-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            border-left: 4px solid var(--primary);
-            transition: var(--transition);
-            cursor: pointer;
-            box-shadow: var(--box-shadow);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            margin-bottom: 15px;
             position: relative;
+            z-index: 1;
         }
-
-        .script-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(179, 224, 255, 0.2);
+        
+        .tab {
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
-
-        .script-card h3 {
-            color: var(--dark);
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
+        
+        .tab.active {
+            background-color: var(--secondary-blue);
+            color: var(--dark-blue);
         }
-
-        .script-content {
-            color: var(--gray);
-            font-size: 0.9rem;
+        
+        .tab:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.9);
         }
-
-        .script-bullets {
-            margin-top: 1rem;
-            padding-left: 1.2rem;
+        
+        .script-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
         }
-
-        .script-bullets li {
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-        }
-
-        .full-script {
-            background: rgba(255, 255, 255, 0.5);
+        
+        .script-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
             border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
-            font-size: 0.85rem;
-            display: none;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Objection Handling */
-        .category-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .category-tabs::-webkit-scrollbar {
-            display: none;
-        }
-
-        .category-tab {
-            padding: 0.8rem 1.5rem;
-            background: rgba(255, 255, 255, 0.5);
-            border: none;
-            border-radius: var(--border-radius);
             cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition);
-            white-space: nowrap;
-            color: var(--dark);
-            flex-shrink: 0;
-        }
-
-        .category-tab.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .objection-list {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .objection-item {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--box-shadow);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            position: relative;
-        }
-
-        .objection-question {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-            cursor: pointer;
-        }
-
-        .objection-answer {
-            color: var(--gray);
-            margin-bottom: 0.5rem;
-            display: none;
-        }
-
-        .objection-tone {
-            color: var(--primary);
-            font-size: 0.85rem;
-            font-style: italic;
-        }
-
-        /* Techniques Page */
-        .technique-list {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .technique-item {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: var(--box-shadow);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            position: relative;
-        }
-
-        .technique-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(179, 224, 255, 0.2);
-        }
-
-        .technique-header {
+            transition: all 0.3s ease;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
-        .technique-title {
-            font-weight: 600;
-            color: var(--dark);
+        
+        .script-item:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            transform: translateX(5px);
         }
-
-        .technique-details {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            display: none;
+        
+        .script-item.active {
+            background-color: var(--secondary-blue);
+            border-left: 4px solid var(--dark-blue);
         }
-
-        /* Tools Page */
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
+        
+        .script-actions {
+            display: flex;
+            gap: 5px;
         }
-
-        .tool-item {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            text-align: center;
-            transition: var(--transition);
-            box-shadow: var(--box-shadow);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            position: relative;
-        }
-
-        .tool-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(179, 224, 255, 0.2);
-        }
-
-        .tool-item i {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        /* Forms */
-        .form-container {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--box-shadow);
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--dark);
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid rgba(0, 0, 0, 0.1);
+        
+        .script-content {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
             border-radius: 8px;
-            font-size: 1rem;
-            background: rgba(255, 255, 255, 0.6);
+            min-height: 200px;
+            white-space: pre-line;
+            position: relative;
+            z-index: 1;
+            line-height: 1.6;
         }
-
-        .form-group textarea {
+        
+        .script-step {
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 3px solid var(--accent-blue);
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin-bottom: 5px;
+        }
+        
+        .argument-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .argument-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .argument-item:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            transform: translateX(5px);
+        }
+        
+        .argument-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .argument-response {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            min-height: 150px;
+            white-space: pre-line;
+            position: relative;
+            z-index: 1;
+            line-height: 1.6;
+        }
+        
+        .upload-section {
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .file-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px dashed #99ccff;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #99ccff;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .form-textarea {
             min-height: 100px;
             resize: vertical;
         }
-
-        /* Admin Modal */
-        .modal {
+        
+        .hidden {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
         }
-
-        .modal-content {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            width: 90%;
-            max-width: 500px;
-            position: relative;
-            box-shadow: var(--box-shadow);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-wide {
-            max-width: 800px;
-        }
-
-        .modal input {
-            width: 100%;
-            padding: 1rem;
-            margin: 1rem 0;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: var(--border-radius);
-            text-align: center;
-            font-size: 1.2rem;
-            letter-spacing: 0.2rem;
-            background: rgba(255, 255, 255, 0.6);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gray);
-        }
-
-        /* Conversation Builder */
-        .conversation-builder {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 1.5rem;
-        }
-
-        .conversation-nodes {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--box-shadow);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .conversation-flow {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--box-shadow);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-
-        .node-item {
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            background: rgba(255, 255, 255, 0.5);
+        
+        .conversation-node {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
             border-radius: 8px;
+            border-left: 3px solid var(--accent-blue);
+        }
+        
+        .node-options {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+        
+        .node-option {
+            padding: 8px;
+            margin: 5px 0;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.2s ease;
         }
-
-        .node-item:hover {
-            background: rgba(179, 224, 255, 0.3);
+        
+        .node-option:hover {
+            background-color: rgba(255, 255, 255, 0.8);
         }
-
-        .node-item.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .flow-step {
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid var(--primary);
-        }
-
-        .flow-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .flow-option {
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 8px;
-            padding: 0.8rem;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .flow-option:hover {
-            background: rgba(179, 224, 255, 0.3);
-        }
-
-        /* Animations */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .script-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .nav-bar {
-                padding: 0.5rem;
-            }
-            
-            .nav-item {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-            }
-            
-            .loading-title {
-                font-size: 2rem;
-            }
-            
-            .loading-subtitle {
-                font-size: 1rem;
-            }
-            
-            .quick-access {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .tools-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .admin-buttons {
-                flex-direction: column;
-            }
-            
-            .conversation-builder {
-                grid-template-columns: 1fr;
-            }
+        
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loadingScreen">
-        <div class="loading-content">
-            <div class="loading-logo">
-                <i class="fas fa-headset"></i>
+    <div class="container">
+        <header>
+            <div class="logo">ระบบจัดการสคริปต์และข้อโต้แย้ง</div>
+            <div class="admin-controls">
+                <button class="btn btn-primary" onclick="showAdminPanel()">จัดการแอดมิน</button>
+                <button class="btn btn-logout" onclick="logout()">ออกจากระบบแอดมิน</button>
             </div>
-            <h1 class="loading-title">RH5 Script Hub</h1>
-            <p class="loading-subtitle">ระบบจัดการสคริปต์การโทรแบบมืออาชีพ</p>
-            <button class="start-btn" onclick="startApp()">
-                <i class="fas fa-play"></i> เริ่มใช้งาน
-            </button>
-        </div>
-    </div>
-
-    <!-- Main Application -->
-    <div id="mainApp">
-        <!-- Navigation Bar -->
-        <div class="nav-bar">
-            <button class="nav-item active" data-page="home">หน้าแรก</button>
-            <button class="nav-item" data-page="scripts">คลังสคริปต์</button>
-            <button class="nav-item" data-page="objection-handling">จัดการข้อโต้แย้ง</button>
-            <button class="nav-item" data-page="conversation-builder">Conversation Builder</button>
-            <button class="nav-item" data-page="techniques">เทคนิคพิเศษ</button>
-            <button class="nav-item" data-page="tools">Tools</button>
-            <button class="nav-item" onclick="showAdminModal()">
-                <i class="fas fa-cog"></i>
-            </button>
-        </div>
-
-        <!-- Admin Controls -->
-        <div id="adminControls" class="admin-controls">
-            <h3>การจัดการระบบ (Admin)</h3>
-            <div class="admin-buttons">
-                <button class="admin-btn" onclick="showAddScriptModal()">เพิ่มสคริปต์</button>
-                <button class="admin-btn" onclick="showAddObjectionModal()">เพิ่มข้อโต้แย้ง</button>
-                <button class="btn-logout" onclick="logoutAdmin()">ออกจากระบบแอดมิน</button>
-                <button class="admin-btn delete" onclick="clearAllData()">ล้างข้อมูลทั้งหมด</button>
-            </div>
-        </div>
-
-        <!-- Content Area -->
-        <div class="content-area">
-            <!-- Home Page -->
-            <div id="home" class="page active">
-                <div class="welcome-card">
-                    <h2>ยินดีต้อนรับสู่ RH5 Script Hub</h2>
-                    <p>ระบบจัดการสคริปต์การโทรและเทคนิคการขายแบบมืออาชีพ</p>
-                </div>
-                
-                <h3 style="margin-bottom: 1rem;">เมนูด่วน</h3>
-                <div class="quick-access">
-                    <div class="quick-item" data-page="scripts">
-                        <i class="fas fa-file-alt"></i>
-                        <h4>คลังสคริปต์</h4>
-                        <p>จัดการสคริปต์การโทรทั้งหมด</p>
-                    </div>
-                    
-                    <div class="quick-item" data-page="objection-handling">
-                        <i class="fas fa-bolt"></i>
-                        <h4>จัดการข้อโต้แย้ง</h4>
-                        <p>เทคนิคการตอบคำถามลูกค้า</p>
-                    </div>
-                    
-                    <div class="quick-item" data-page="conversation-builder">
-                        <i class="fas fa-comments"></i>
-                        <h4>Conversation Builder</h4>
-                        <p>สร้างบทสนทนาแบบไดนามิก</p>
-                    </div>
-                    
-                    <div class="quick-item" data-page="techniques">
-                        <i class="fas fa-magic"></i>
-                        <h4>เทคนิคพิเศษ</h4>
-                        <p>เทคนิคการขายขั้นสูง</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Scripts Page -->
-            <div id="scripts" class="page">
-                <h2>คลังสคริปต์</h2>
-                <p>จัดการสคริปต์การโทรทั้งหมดของคุณ</p>
-                
+        </header>
+        
+        <div class="main-content">
+            <div class="panel">
+                <h2 class="panel-title">คลังสคริปต์</h2>
                 <div class="script-tabs">
-                    <button class="script-tab active" data-type="call">Call Scripts</button>
-                    <button class="script-tab" data-type="counter">Counter Conversation</button>
+                    <button class="tab active" onclick="switchTab('call')">Call Scripts</button>
+                    <button class="tab" onclick="switchTab('counter')">Counter Conversation</button>
+                    <button class="tab" onclick="switchTab('builder')">Conversation Builder</button>
                 </div>
-                
-                <div id="callScripts" class="script-tab-content">
-                    <div class="script-grid" id="callScriptsList">
-                        <!-- Call scripts will be loaded here -->
+                <div class="script-list" id="scriptList">
+                    <!-- สคริปต์จะถูกเพิ่มโดย JavaScript -->
+                </div>
+                <div class="script-content" id="scriptContent">
+                    <!-- เนื้อหาสคริปต์จะแสดงที่นี่ -->
+                </div>
+                <div class="admin-panel hidden" id="adminPanel">
+                    <h3>จัดการสคริปต์</h3>
+                    <div class="admin-actions">
+                        <button class="btn btn-primary" onclick="showAddScriptForm()">เพิ่มสคริปต์ใหม่</button>
+                        <button class="btn btn-primary" onclick="showAddArgumentForm()">เพิ่มข้อโต้แย้งใหม่</button>
                     </div>
-                </div>
-                
-                <div id="counterScripts" class="script-tab-content" style="display: none;">
-                    <div class="script-grid" id="counterScriptsList">
-                        <!-- Counter scripts will be loaded here -->
+                    <div class="upload-section">
+                        <h4>อัพโหลดไฟล์</h4>
+                        <input type="file" class="file-input" id="fileUpload">
+                        <button class="btn btn-primary" onclick="uploadFile()">อัพโหลด</button>
                     </div>
-                </div>
-            </div>
-
-            <!-- Objection Handling Page -->
-            <div id="objection-handling" class="page">
-                <h2>จัดการข้อโต้แย้ง</h2>
-                <p>เทคนิคการตอบคำถามและข้อโต้แย้งจากลูกค้า</p>
-                
-                <div class="category-tabs">
-                    <button class="category-tab active" data-category="health">ประกันสุขภาพ</button>
-                    <button class="category-tab" data-category="savings">ประกันสะสมทรัพย์</button>
-                    <button class="category-tab" data-category="life">ประกันตลอดชีพ</button>
-                    <button class="category-tab" data-category="pension">ประกันบำนาญ</button>
-                    <button class="category-tab" data-category="tax">ธีมลดหย่อนภาษี</button>
-                </div>
-                
-                <div class="objection-list" id="objectionList">
-                    <!-- Objections will be loaded here -->
-                </div>
-            </div>
-
-            <!-- Conversation Builder Page -->
-            <div id="conversation-builder" class="page">
-                <h2>Conversation Builder</h2>
-                <p>สร้างบทสนทนาแบบไดนามิกพร้อมเส้นทางเลือกหลากหลาย</p>
-                
-                <div class="conversation-builder">
-                    <div class="conversation-nodes">
-                        <h3>โหนดบทสนทนา</h3>
-                        <div id="conversationNodesList">
-                            <!-- Conversation nodes will be loaded here -->
+                    
+                    <!-- แบบฟอร์มเพิ่มสคริปต์ใหม่ -->
+                    <div id="addScriptForm" class="hidden">
+                        <h4>เพิ่มสคริปต์ใหม่</h4>
+                        <div class="form-group">
+                            <label class="form-label">หมวดหมู่</label>
+                            <select class="form-input" id="scriptCategory">
+                                <option value="call">Call Scripts</option>
+                                <option value="counter">Counter Conversation</option>
+                                <option value="builder">Conversation Builder</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ชื่อสคริปต์</label>
+                            <input type="text" class="form-input" id="scriptTitle">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">เนื้อหาสคริปต์</label>
+                            <textarea class="form-textarea" id="scriptContentInput"></textarea>
+                        </div>
+                        <div class="admin-actions">
+                            <button class="btn btn-primary" onclick="saveNewScript()">บันทึก</button>
+                            <button class="btn btn-danger" onclick="hideAddScriptForm()">ยกเลิก</button>
                         </div>
                     </div>
-                    <div class="conversation-flow">
-                        <h3>เส้นทางบทสนทนา</h3>
-                        <div id="conversationFlow">
-                            <!-- Conversation flow will be displayed here -->
+                    
+                    <!-- แบบฟอร์มเพิ่มข้อโต้แย้งใหม่ -->
+                    <div id="addArgumentForm" class="hidden">
+                        <h4>เพิ่มข้อโต้แย้งใหม่</h4>
+                        <div class="form-group">
+                            <label class="form-label">ข้อโต้แย้ง</label>
+                            <input type="text" class="form-input" id="argumentText">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">คำตอบ</label>
+                            <textarea class="form-textarea" id="argumentResponseInput"></textarea>
+                        </div>
+                        <div class="admin-actions">
+                            <button class="btn btn-primary" onclick="saveNewArgument()">บันทึก</button>
+                            <button class="btn btn-danger" onclick="hideAddArgumentForm()">ยกเลิก</button>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Techniques Page -->
-            <div id="techniques" class="page">
-                <h2>เทคนิคพิเศษ</h2>
-                <p>เทคนิคการขายและบริการลูกค้าขั้นสูง</p>
-                
-                <div class="technique-list" id="techniqueList">
-                    <!-- Techniques will be loaded here -->
+            
+            <div class="panel">
+                <h2 class="panel-title">คลังข้อโต้แย้งและการตอบ</h2>
+                <div class="argument-list" id="argumentList">
+                    <!-- ข้อโต้แย้งจะถูกเพิ่มโดย JavaScript -->
                 </div>
-            </div>
-
-            <!-- Tools Page -->
-            <div id="tools" class="page">
-                <h2>Tools</h2>
-                <p>เครื่องมือและทรัพยากรสำหรับทีมงาน</p>
-                
-                <div class="tools-grid" id="toolsList">
-                    <!-- Tools will be loaded here -->
+                <div class="argument-response" id="argumentResponse">
+                    <!-- คำตอบจะแสดงที่นี่ -->
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Admin Login Modal -->
-    <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeAdminModal()">&times;</button>
-            <h2>Admin Access</h2>
-            <p>กรุณากรอกรหัสผ่าน</p>
-            <input type="password" id="adminPasscode" placeholder="รหัสผ่าน" maxlength="4">
-            <button class="start-btn" onclick="checkAdminPasscode()" style="margin-top: 1rem;">
-                ยืนยัน
-            </button>
-        </div>
-    </div>
-
-    <!-- Add Script Modal -->
-    <div id="addScriptModal" class="modal">
-        <div class="modal-content modal-wide">
-            <button class="close-btn" onclick="closeAddScriptModal()">&times;</button>
-            <h2>เพิ่มสคริปต์ใหม่</h2>
-            <div class="form-container">
-                <div class="form-group">
-                    <label for="scriptType">ประเภทสคริปต์</label>
-                    <select id="scriptType">
-                        <option value="call">Call Script</option>
-                        <option value="counter">Counter Script</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="scriptTitle">ชื่อสคริปต์</label>
-                    <input type="text" id="scriptTitle" placeholder="ชื่อสคริปต์">
-                </div>
-                <div class="form-group">
-                    <label for="scriptBullets">รายการ Bullet Points (แต่ละบรรทัดเป็น 1 bullet)</label>
-                    <textarea id="scriptBullets" placeholder="แต่ละบรรทัดเป็น 1 bullet point"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="scriptFull">สคริปต์เต็ม</label>
-                    <textarea id="scriptFull" placeholder="สคริปต์เต็มรูปแบบ"></textarea>
-                </div>
-                <button class="start-btn" onclick="addNewScript()">เพิ่มสคริปต์</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Objection Modal -->
-    <div id="addObjectionModal" class="modal">
-        <div class="modal-content modal-wide">
-            <button class="close-btn" onclick="closeAddObjectionModal()">&times;</button>
-            <h2>เพิ่มข้อโต้แย้งใหม่</h2>
-            <div class="form-container">
-                <div class="form-group">
-                    <label for="objectionCategory">หมวดหมู่</label>
-                    <select id="objectionCategory">
-                        <option value="health">ประกันสุขภาพ</option>
-                        <option value="savings">ประกันสะสมทรัพย์</option>
-                        <option value="life">ประกันตลอดชีพ</option>
-                        <option value="pension">ประกันบำนาญ</option>
-                        <option value="tax">ธีมลดหย่อนภาษี</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="objectionQuestion">ข้อโต้แย้งจากลูกค้า</label>
-                    <input type="text" id="objectionQuestion" placeholder="ข้อโต้แย้งจากลูกค้า">
-                </div>
-                <div class="form-group">
-                    <label for="objectionAnswer">คำตอบแนะนำ</label>
-                    <textarea id="objectionAnswer" placeholder="คำตอบแนะนำ"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="objectionTone">โทนเสียงแนะนำ</label>
-                    <input type="text" id="objectionTone" placeholder="โทนเสียงแนะนำ">
-                </div>
-                <button class="start-btn" onclick="addNewObjection()">เพิ่มข้อโต้แย้ง</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Default Data
-        const defaultCallScripts = [
-            {
-                id: 1,
-                title: "เงินนิ่งในบัญชีเงินฝากเยอะเกินไป",
-                bullets: [
-                    "OBJECTIVE: เสนอผลิตภัณฑ์การลงทุนที่ให้ผลตอบแทนสูงกว่าเงินฝาก",
-                    "OPENER: สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันเห็นว่าบัญชีเงินฝากของคุณมียอดคงเหลือค่อนข้างสูง อยากแนะนำโอกาสในการลงทุนที่ให้ผลตอบแทนดีกว่าดอกเบี้ยเงินฝากทั่วไปครับ/ค่ะ",
-                    "PAIN: ดอกเบี้ยเงินฝากในปัจจุบันต่ำมาก ทำให้เงินฝากเติบโตช้าและอาจไม่ชนะอัตราเงินเฟ้อ ซึ่งหมายความว่าคุณกำลังสูญเสียมูลค่าของเงินจริงๆ ไปเรื่อยๆ",
-                    "URGENCY: โอกาสในการลงทุนที่ดีมักมีจำกัด และยิ่งเริ่มต้นเร็ว ยิ่งได้รับผลตอบแทนที่มากขึ้นในระยะยาว"
-                ],
-                fullScript: `แนวทางที่ 1: อัปเดตข้อมูล 
-	•	หลังจาก ทำธุรกรรมเสร็จ
-	•	"... ขออัปเดตข้อมูลที่อยู่ ให้เป็นปัจจุบัน เพื่อการจัดส่งเอกสารสำคัญ เช่น หนังสือรับรองดอกเบี้ย จะได้ใช้สิทธิลดหย่อนภาษี"
-	•	"นี้ก็โค้งสุดท้ายของปีแล้ว ไม่ทราบว่าปีนี้ได้เตรียมวางแผนลดหย่อนภาษีไว้หรือยังครับ/คะ?"
-"ถ้ากำลังมองหาตัวช่วยใช้สิทธิ์ภาษีให้คุ้ม ผมมีไอเดียหนึ่งอยากแชร์ครับ"
-ต่อที่ 1 — ประหยัดภาษี
-	•	"ลดหย่อนได้สูงสุด 100,000 บาท"
-	•	"ถ้าอยู่ฐาน 20% เท่ากับประหยัดทันที 20,000 บาท"
-ต่อที่ 2 — การันตีผลตอบแทน
-	•	"คืนทุกปี 4% (ปี 1–9)"
-	•	"ครบ 10 ปีรับ 404%"
-ต่อที่ 3 — โปรโมชั่นแรงสุด
-	•	"เบี้ย 100k = Cash Back 6%"
-	•	"เบี้ย 500k+ = iPhone 17 Pro Max"
-
-ผลิตภัณฑ์นี้ พิเศษตรงที่คุณลูกค้า สามารถดูรายละเอียดทั้งหมด รวมถึงสมัครได้ด้วยตัวเองเลยผ่าน ttb touch ครับ/ค่ะ แต่หากยังมีข้อสงสัย พนักงานยินดีช่วยให้คำตอบเพิ่มให้ทันทีนะครับ/คะ
-สำหรับการเข้าใช้งาน ก็ไม่ยาก ขออนุญาตแนะนำการเข้าไปใช้งานใน ttb Touch เพิ่มเติมนะครับ/คะ `
-            },
-            {
-                id: 2,
-                title: "เงินฝากประจำกำลังจะครบ",
-                bullets: [
-                    "OBJECTIVE: เสนอทางเลือกการลงทุนที่หลากหลายแทนการต่ออายุเงินฝาก",
-                    "OPENER: สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันเห็นว่าเงินฝากประจำของคุณใกล้ครบกำหนดแล้ว อยากเสนอทางเลือกการลงทุนที่น่าสนใจให้พิจารณาครับ/ค่ะ",
-                    "PAIN: การต่ออายุเงินฝากประจำโดยอัตโนมัติอาจทำให้พลาดโอกาสการลงทุนที่ให้ผลตอบแทนสูงกว่า และดอกเบี้ยเงินฝากในปัจจุบันอยู่ในระดับต่ำมาก",
-                    "URGENCY: การตัดสินใจในช่วงเวลานี้สำคัญมาก เพราะจะกำหนดผลตอบแทนของคุณในอีก 12 เดือนข้างหน้า หากเลือกผลิตภัณฑ์ที่เหมาะสมจะได้รับผลตอบแทนที่สูงกว่า"
-                ],
-                fullScript: `แนวทางที่ 2: เงินฝากประจำกำลังจะครบ
-	•	"เห็นว่าบัญชีเงินฝากประจำของคุณกำลังจะครบกำหนดในอีก X วัน"
-	•	"การต่ออายุอัตโนมัติอาจทำให้พลาดโอกาสลงทุนที่ให้ผลตอบแทนดีกว่า"
-	•	"เรามีผลิตภัณฑ์การลงทุนหลายรูปแบบที่เหมาะสมกับระดับความเสี่ยงที่คุณรับได้"
-
-ข้อมูลผลิตภัณฑ์:
-	•	กองทุนรวมตราสารหนี้: ความเสี่ยงต่ำ ผลตอบแทน 2-3%
-	•	กองทุนรวมผสม: ความเสี่ยงปานกลาง ผลตอบแทน 4-6%
-	•	กองทุนรวมหุ้น: ความเสี่ยงสูง ผลตอบแทน 7-10%+
-
-สามารถเลือกลงทุนตามระดับความเสี่ยงที่คุณสะดวกใจ และมีผู้จัดการกองทุนคอยดูแลให้ครับ/คะ`
-            },
-            {
-                id: 3,
-                title: "กองทุนติดลบจากความผันผวนของเศรษฐกิจ",
-                bullets: [
-                    "OBJECTIVE: เสนอการปรับพอร์ตการลงทุนเพื่อลดความเสี่ยงและฟื้นตัวจากภาวะติดลบ",
-                    "OPENER: สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันเห็นว่าพอร์ตการลงทุนกองทุนของคุณได้รับผลกระทบจากความผันผวนของเศรษฐกิจ อยากเสนอแนวทางการปรับพอร์ตใหม่ให้เหมาะสมยิ่งขึ้นครับ/ค่ะ",
-                    "PAIN: การที่พอร์ตการลงทุนติดลบเป็นเวลานานอาจทำให้สูญเสียโอกาสในการลงทุนอื่นๆ และส่งผลต่อเป้าหมายทางการเงินในระยะยาว",
-                    "URGENCY: การปรับพอร์ตในช่วงนี้จะช่วยลดความเสี่ยงและเตรียมพร้อมสำหรับการฟื้นตัวของตลาด ซึ่งจะช่วยให้พอร์ตของคุณกลับมาเติบโตได้เร็วกว่า"
-                ],
-                fullScript: `แนวทางที่ 3: กองทุนติดลบจากความผันผวน
-	•	"ในช่วงเศรษฐกิจผันผวน การลงทุนหลายประเภทได้รับผลกระทบ"
-	•	"เรามีบริการปรับพอร์ตการลงทุนฟรี โดยผู้เชี่ยวชาญ"
-	•	"จะช่วยวิเคราะห์และแนะนำการปรับสัดส่วนการลงทุนที่เหมาะสม"
-
-ขั้นตอนการปรับพอร์ต:
-	1. วิเคราะห์พอร์ตปัจจุบันและระดับความเสี่ยง
-	2. ประเมินเป้าหมายการลงทุนและระยะเวลา
-	3. แนะนำการปรับสัดส่วนพอร์ตให้เหมาะสม
-	4. ติดตามผลและปรับเปลี่ยนตามสถานการณ์
-
-บริการนี้ไม่มีค่าใช้จ่ายเพิ่มเติม และช่วยลดความเสี่ยงจากการลงทุนในสินทรัพย์เดียว`
-            },
-            {
-                id: 4,
-                title: "ลูกค้าประกันจ่ายเบี้ยครบ ทบทวนผลิตภัณฑ์",
-                bullets: [
-                    "OBJECTIVE: เสนอการทบทวนแผนประกันและผลิตภัณฑ์เสริมเพื่อความคุ้มครองที่สมบูรณ์",
-                    "OPENER: สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันเห็นว่าคุณได้จ่ายเบี้ยประกันชีวิตครบตามสัญญาแล้ว อยากเชิญชวนให้ทบทวนแผนประกันเพื่อตรวจสอบความคุ้มครองที่ยังขาดและโอกาสในการใช้สิทธิลดหย่อนภาษีครับ/ค่ะ",
-                    "PAIN: ความต้องการประกันชีวิตเปลี่ยนแปลงตามช่วงวัยและสถานการณ์ การไม่ทบทวนแผนประกันอย่างสม่ำเสมออาจทำให้มีความคุ้มครองไม่เพียงพอหรือซ้ำซ้อน",
-                    "URGENCY: การทำประกันในช่วงอายุน้อยกว่าเบี้ยจะถูกกว่าและได้รับความคุ้มครองเร็วขึ้น รวมถึงสามารถใช้สิทธิลดหย่อนภาษีในปีนี้ได้ทันเวลา"
-                ],
-                fullScript: `แนวทางที่ 4: ลูกค้าประกันจ่ายเบี้ยครบ
-	•	"ขอแสดงความยินดีที่คุณได้จ่ายเบี้ยประกันครบตามสัญญา"
-	•	"นี่เป็นเวลาที่ดีในการทบทวนความคุ้มครองและแผนการเงิน"
-	•	"เรามีผลิตภัณฑ์เสริมที่ช่วยเพิ่มความคุ้มครองและสิทธิลดหย่อนภาษี"
-
-ข้อเสนอพิเศษ:
-	•	ประกันสุขภาพเพิ่มเติม: เบี้ยเริ่มต้น 5,000 บาท/ปี
-	•	ประกันโรคร้ายแรง: ความคุ้มครองสูงสุด 1,000,000 บาท
-	•	ประกันอุบัติเหตุ: ความคุ้มครอง 24 ชม. ทั่วโลก
-
-ทำตอนนี้ได้รับสิทธิ์:
-	•	เบี้ยประกันถูกกว่าอายุเพิ่มขึ้น
-	•	คุ้มครองเร็วขึ้น ไม่ต้องรอระยะเวลารอคอย
-	•	ใช้สิทธิลดหย่อนภาษีได้ในปีนี้`
-            },
-            {
-                id: 5,
-                title: "ลูกค้าทั่วไปช่วง Tax Season",
-                bullets: [
-                    "OBJECTIVE: เชิญชวนใช้บริการคำนวณภาษีและวางแผนการลงทุนเพื่อลดหย่อนภาษี",
-                    "OPENER: สวัสดีครับ/คะ คุณลูกค้า ช่วงสิ้นปีนี้เป็นเวลาที่เหมาะสำหรับการวางแผนภาษี ผม/ดิฉันอยากเชิญชวนคุณมาใช้บริการคำนวณภาษีและวางแผนการลดหย่อนภาษีโดยไม่เสียค่าใช้จ่ายครับ/ค่ะ",
-                    "PAIN: การไม่วางแผนภาษีล่วงหน้าอาจทำให้ต้องเสียภาษีในอัตราที่สูงขึ้นและพลาดโอกาสในการใช้สิทธิลดหย่อนภาษีต่างๆ ซึ่งหมายถึงการจ่ายเงินมากเกินจำเป็น",
-                    "URGENCY: ต้องรีบตัดสินใจในช่วงนี้เพราะจะสิ้นปีแล้ว และโปรโมชั่นต่างๆ สำหรับผลิตภัณฑ์ลดหย่อนภาษีมีข้อเสนอที่ดีที่สุดในช่วงนี้"
-                ],
-                fullScript: `แนวทางที่ 5: Tax Season
-	•	"ช่วงสิ้นปีนี้เป็นเวลาสำคัญสำหรับการวางแผนภาษี"
-	•	"ธนาคารมีบริการคำนวณภาษีและวางแผนลดหย่อนโดยไม่เสียค่าใช้จ่าย"
-	•	"โปรโมชั่นพิเศษมีเฉพาะช่วงสิ้นปีนี้เท่านั้น"
-
-บริการฟรีสำหรับลูกค้า:
-	•	คำนวณภาษีโดยประมาณล่วงหน้า
-	•	วิเคราะห์สิทธิลดหย่อนภาษีที่ใช้ได้
-	•	แนะนำผลิตภัณฑ์ลดหย่อนภาษีที่เหมาะสม
-
-โปรโมชั่นพิเศษ:
-	•	สมัครประกันชีวิต: ได้รับของสมนาคุณมูลค่า 1,000 บาท
-	•	ลงทุนกองทุน RMF: ได้ส่วนลดค่าธรรมเนียม 50%
-	•	ซื้อสินทรัพย์ดิจิทัล: ได้รับคู่มือการลดหย่อนภาษี
-
-ต้องรีบตัดสินใจเพราะโปรโมชั่นมีจำกัดและสิ้นปีกำลังจะถึง!`
-            }
-        ];
-
-        const defaultCounterScripts = [
-            {
-                id: 1,
-                title: "ขออัพเดทข้อมูลที่อยู่",
-                bullets: [
-                    "STEP1: ยืนยันข้อมูลลูกค้าและแจ้งวัตถุประสงค์: 'สวัสดีครับ/คะ คุณลูกค้า วันนี้โทรมาเพื่อขออัพเดทข้อมูลที่อยู่ให้เป็นปัจจุบันครับ/คะ เพื่อให้แน่ใจว่าสามารถส่งเอกสารสำคัญได้อย่างถูกต้อง'",
-                    "STEP2: สร้างโอกาสในการขาย: 'นอกจากนี้ ผม/ดิฉันอยากใช้โอกาสนี้แจ้งว่าเรามีผลิตภัณฑ์ใหม่ที่เหมาะกับคุณ ซึ่งสามารถช่วยลดหย่อนภาษีได้สูงสุด 100,000 บาท และมีโปรโมชั่นพิเศษในช่วงสิ้นปีนี้'"
-                ],
-                fullScript: `Counter Conversation 1: ขออัพเดทข้อมูลที่อยู่
-
-STEP1:
-"สวัสดีครับ/คะ คุณลูกค้า วันนี้โทรมาเพื่อขออัพเดทข้อมูลที่อยู่ให้เป็นปัจจุบันครับ/คะ เพื่อให้แน่ใจว่าสามารถส่งเอกสารสำคัญได้อย่างถูกต้อง"
-
-STEP2:
-"นอกจากนี้ ผม/ดิฉันอยากใช้โอกาสนี้แจ้งว่าเรามีผลิตภัณฑ์ใหม่ที่เหมาะกับคุณ ซึ่งสามารถช่วยลดหย่อนภาษีได้สูงสุด 100,000 บาท และมีโปรโมชั่นพิเศษในช่วงสิ้นปีนี้"
-
-เอกสารสำคัญที่ต้องส่งให้คุณ:
-• หนังสือรับรองดอกเบี้ย (สำหรับลดหย่อนภาษี)
-• ใบแจ้งยอดรายไตรมาส
-• ข้อมูลโปรโมชั่นและผลิตภัณฑ์ใหม่
-
-โปรดให้ข้อมูลที่อยู่ใหม่หรือยืนยันที่อยู่ปัจจุบันด้วยครับ/คะ`
-            },
-            {
-                id: 2,
-                title: "ชวนคุยเรื่องโครงการคนละครึ่งพลัส",
-                bullets: [
-                    "STEP1: แนะนำโปรแกรมและประโยชน์: 'สวัสดีครับ/คะ คุณลูกค้า วันนี้มีข่าวดีเกี่ยวกับโครงการคนละครึ่งพลัสที่จะช่วยให้คุณประหยัดค่าใช้จ่ายในชีวิตประจำวันและยังได้รับสิทธิพิเศษจากทางธนาคาร'",
-                    "STEP2: เชื่อมโยงกับผลิตภัณฑ์: 'เมื่อร่วมโครงการนี้ คุณยังสามารถสมัครบัตรเครดิตหรือสินเชื่อส่วนบุคคลที่มีอัตราดอกเบี้ยพิเศษ และได้รับเงินคืนเมื่อใช้จ่ายผ่านช่องทางที่กำหนด'"
-                ],
-                fullScript: `Counter Conversation 2: โครงการคนละครึ่งพลัส
-
-STEP1:
-"สวัสดีครับ/คะ คุณลูกค้า วันนี้มีข่าวดีเกี่ยวกับโครงการคนละครึ่งพลัสที่จะช่วยให้คุณประหยัดค่าใช้จ่ายในชีวิตประจำวันและยังได้รับสิทธิพิเศษจากทางธนาคาร"
-
-STEP2:
-"เมื่อร่วมโครงการนี้ คุณยังสามารถสมัครบัตรเครดิตหรือสินเชื่อส่วนบุคคลที่มีอัตราดอกเบี้ยพิเศษ และได้รับเงินคืนเมื่อใช้จ่ายผ่านช่องทางที่กำหนด"
-
-สิทธิประโยชน์ในโครงการ:
-• ส่วนสูงสุด 150 บาท/วัน (สูงสุด 1,500 บาท/เดือน)
-• ส่วนลดเพิ่มจากร้านค้าพันธมิตร
-• เงินคืน 5% เมื่อใช้บัตรเครดิตธนาคาร
-• อัตราดอกเบี้ยพิเศษสำหรับสินเชื่อส่วนบุคคล
-
-ลงทะเบียนง่ายๆ ผ่านแอปพลิเคชันธนาคาร ใช้เวลาเพียง 2 นาที`
-            },
-            {
-                id: 3,
-                title: "แนะนำเตรียมเอกสารลดหย่อนภาษีของ Easy e-Receipt",
-                bullets: [
-                    "STEP1: อธิบายความสะดวก: 'สวัสดีครับ/คะ คุณลูกค้า ด้วยนวัตกรรมใหม่ Easy e-Receipt จะช่วยให้คุณเก็บเอกสารลดหย่อนภาษีได้อย่างเป็นระบบและไม่ต้องกังวลว่าจะสูญหาย'",
-                    "STEP2: สร้างแรงจูงใจ: 'เริ่มใช้บริการตั้งแต่ต้นปี จะได้บันทึกใบเสร็จทั้งหมดโดยอัตโนมัติ และเมื่อถึงเวลายื่นภาษี ระบบจะสรุปข้อมูลให้คุณอย่างครบถ้วน พร้อมคำแนะนำการลดหย่อนภาษี'"
-                ],
-                fullScript: `Counter Conversation 3: Easy e-Receipt
-
-STEP1:
-"สวัสดีครับ/คะ คุณลูกค้า ด้วยนวัตกรรมใหม่ Easy e-Receipt จะช่วยให้คุณเก็บเอกสารลดหย่อนภาษีได้อย่างเป็นระบบและไม่ต้องกังวลว่าจะสูญหาย"
-
-STEP2:
-"เริ่มใช้บริการตั้งแต่ต้นปี จะได้บันทึกใบเสร็จทั้งหมดโดยอัตโนมัติ และเมื่อถึงเวลายื่นภาษี ระบบจะสรุปข้อมูลให้คุณอย่างครบถ้วน พร้อมคำแนะนำการลดหย่อนภาษี"
-
-คุณสมบัติเด่นของ Easy e-Receipt:
-• บันทึกใบเสร็จอัตโนมัติผ่านแอปพลิเคชัน
-• จัดหมวดหมู่ค่าใช้จ่ายสำหรับลดหย่อนภาษี
-• แจ้งเตือนเมื่อใกล้ถึงวงเงินลดหย่อน
-• สรุปรายงานภาษีอัตโนมัติ
-• ปลอดภัยด้วยระบบ Cloud Storage
-
-เริ่มใช้ฟรีตลอดปี และช่วยลดเวลายื่นภาษีได้ถึง 70%`
-            },
-            {
-                id: 4,
-                title: "ชวนคุยเรื่องภาษีดอกเบี้ยเงินฝาก",
-                bullets: [
-                    "STEP1: ระบุปัญหา: 'สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันอยากแชร์ข้อมูลสำคัญเกี่ยวกับภาษีดอกเบี้ยเงินฝากที่คุณอาจสามารถขอคืนได้หากมีเงื่อนไขที่เหมาะสม'",
-                    "STEP2: เสนอทางแก้: 'เรามีบริการตรวจสอบและยื่นขอคืนภาษีดอกเบี้ยเงินฝากให้ โดยทีมงานจะวิเคราะห์ว่าคุณมีสิทธิ์ได้รับเงินคืนหรือไม่ และดำเนินการให้โดยไม่เสียค่าใช้จ่าย'"
-                ],
-                fullScript: `Counter Conversation 4: ภาษีดอกเบี้ยเงินฝาก
-
-STEP1:
-"สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันอยากแชร์ข้อมูลสำคัญเกี่ยวกับภาษีดอกเบี้ยเงินฝากที่คุณอาจสามารถขอคืนได้หากมีเงื่อนไขที่เหมาะสม"
-
-STEP2:
-"เรามีบริการตรวจสอบและยื่นขอคืนภาษีดอกเบี้ยเงินฝากให้ โดยทีมงานจะวิเคราะห์ว่าคุณมีสิทธิ์ได้รับเงินคืนหรือไม่ และดำเนินการให้โดยไม่เสียค่าใช้จ่าย"
-
-เงื่อนไขที่อาจได้รับคืนภาษีดอกเบี้ย:
-• รายได้ต่อปีต่ำกว่า 150,000 บาท
-• มีค่าใช้จ่ายลดหย่อนอื่นๆ ที่สามารถนำมาหักได้
-• เป็นผู้สูงอายุ (60 ปีขึ้นไป)
-• มีบุคคลในครอบครัวที่อยู่ในความอุปการะ
-
-บริการนี้ฟรีสำหรับลูกค้าธนาคาร และใช้เวลาเพียง 10-15 วันทำการ`
-            },
-            {
-                id: 5,
-                title: "ชวนคุยเรื่องการวางแผนภาษีสิ้นปี",
-                bullets: [
-                    "STEP1: สร้างความตระหนัก: 'สวัสดีครับ/คะ คุณลูกค้า ช่วงสิ้นปีนี้เป็นเวลาสำหรับการวางแผนภาษี ผม/ดิฉันเห็นว่าลูกค้าหลายคนเริ่มสอบถามเกี่ยวกับเรื่องนี้แล้ว คุณมีการเตรียมตัวหรือยังครับ/คะ'",
-                    "STEP2: แสดงมูลค่าที่เสียไป: 'หากยังไม่มีการวางแผน อาจทำให้เสียโอกาสในการลดหย่อนภาษี ซึ่งภาษีปีหนึ่งมีมูลค่าประมาณเท่ากับเงินเดือน 1 เดือนเลยทีเดียว'"
-                ],
-                fullScript: `Counter Conversation 5: วางแผนภาษีสิ้นปี
-
-STEP1:
-"สวัสดีครับ/คะ คุณลูกค้า ช่วงสิ้นปีนี้เป็นเวลาสำหรับการวางแผนภาษี ผม/ดิฉันเห็นว่าลูกค้าหลายคนเริ่มสอบถามเกี่ยวกับเรื่องนี้แล้ว คุณมีการเตรียมตัวหรือยังครับ/คะ"
-
-STEP2:
-"หากยังไม่มีการวางแผน อาจทำให้เสียโอกาสในการลดหย่อนภาษี ซึ่งภาษีปีหนึ่งมีมูลค่าประมาณเท่ากับเงินเดือน 1 เดือนเลยทีเดียว"
-
-บริการวางแผนภาษีฟรีจากธนาคาร:
-• วิเคราะห์สถานการณ์ทางการเงินปัจจุบัน
-• คำนวณภาษีโดยประมาณที่ต้องจ่าย
-• แนะนำช่องทางลดหย่อนภาษีที่เหมาะสม
-• ประเมินผลิตภัณฑ์การลงทุนสำหรับลดหย่อน
-
-รีบตัดสินใจตอนนี้เพราะโปรโมชั่นสิ้นปีมีจำกัด และช่วยประหยัดเงินได้จริง!`
-            }
-        ];
-
-        const defaultObjections = {
-            health: [
+        // ข้อมูลสคริปต์ทั้งหมด
+        let scriptCategories = {
+            call: [
                 {
                     id: 1,
-                    question: "สุขภาพดีอยู่แล้ว ไม่จำเป็นต้องทำประกัน",
-                    answer: "เข้าใจค่ะ/ครับ ที่คุณสุขภาพดี แต่ประกันสุขภาพคือการเตรียมพร้อมสำหรับเหตุการณ์ไม่คาดฝัน เหมือนเรามีรถยนต์ก็ต้องมีประกันภัย เผื่อเกิดเหตุฉุกเฉิน",
-                    tone: "เข้าใจความรู้สึก + เปรียบเทียบให้เห็นภาพ"
+                    title: "เงินนิ่งในบัญชีเงินฝากเยอะเกินไป",
+                    steps: {
+                        objective: "เสนอผลิตภัณฑ์การลงทุนที่ให้ผลตอบแทนสูงกว่าเงินฝาก",
+                        opener: "สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันเห็นว่าบัญชีเงินฝากของคุณมียอดคงเหลือค่อนข้างสูง อยากแนะนำโอกาสในการลงทุนที่ให้ผลตอบแทนดีกว่าดอกเบี้ยเงินฝากทั่วไปครับ/ค่ะ",
+                        pain: "ดอกเบี้ยเงินฝากในปัจจุบันต่ำมาก ทำให้เงินฝากเติบโตช้าและอาจไม่ชนะอัตราเงินเฟ้อ ซึ่งหมายความว่าคุณกำลังสูญเสียมูลค่าของเงินจริงๆ ไปเรื่อยๆ",
+                        urgency: "โอกาสในการลงทุนที่ดีมักมีจำกัด และยิ่งเริ่มต้นเร็ว ยิ่งได้รับผลตอบแทนที่มากขึ้นในระยะยาว"
+                    },
+                    arguments: [
+                        {
+                            argument: "เงินฝากปลอดภัยกว่า",
+                            response: "เข้าใจดีครับ/คะ เรื่องความปลอดภัยเป็นสิ่งสำคัญ ผลิตภัณฑ์นี้มีการลงทุนในสินทรัพย์คุณภาพสูงและมีความเสี่ยงต่ำ ซึ่งให้ผลตอบแทนที่ดีกว่าเงินฝากโดยมีความผันผวนที่ต่ำ"
+                        },
+                        {
+                            argument: "ไม่มีความรู้ในการลงทุน",
+                            response: "ไม่ต้องกังวลครับ/คะ เรามีทีมผู้เชี่ยวชาญที่พร้อมให้คำแนะนำและดูแลพอร์ตการลงทุนให้คุณอย่างใกล้ชิด รวมถึงมีบริการติดตามผลอย่างสม่ำเสมอ"
+                        }
+                    ]
                 },
                 {
                     id: 2,
-                    question: "ประกันสุขภาพแพงไป",
-                    answer: "จริงๆ แล้วค่ารักษาพยาบาลตอนนี้สูงมาก การจ่ายเบี้ยปีละ X บาท เทียบกับค่ารักษาหากเกิดเหตุไม่คาดฝัน X บาท ถือว่าคุ้มค่ากว่าค่ะ/ครับ",
-                    tone: "แสดงตัวเลขเปรียบเทียบ + เห็นคุณค่า"
+                    title: "เงินฝากประจำกำลังจะครบ",
+                    steps: {
+                        objective: "เสนอทางเลือกการลงทุนที่หลากหลายแทนการต่ออายุเงินฝาก",
+                        opener: "สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันเห็นว่าเงินฝากประจำของคุณใกล้ครบกำหนดแล้ว อยากเสนอทางเลือกการลงทุนที่น่าสนใจให้พิจารณาครับ/ค่ะ",
+                        pain: "การต่ออายุเงินฝากประจำโดยอัตโนมัติอาจทำให้พลาดโอกาสการลงทุนที่ให้ผลตอบแทนสูงกว่า และดอกเบี้ยเงินฝากในปัจจุบันอยู่ในระดับต่ำมาก",
+                        urgency: "การตัดสินใจในช่วงเวลานี้สำคัญมาก เพราะจะกำหนดผลตอบแทนของคุณในอีก 12 เดือนข้างหน้า หากเลือกผลิตภัณฑ์ที่เหมาะสมจะได้รับผลตอบแทนที่สูงกว่า"
+                    },
+                    arguments: [
+                        {
+                            argument: "เคยชินกับเงินฝากประจำ",
+                            response: "เข้าใจดีครับ/คะ แต่อยากให้ลองพิจารณาทางเลือกอื่นที่ให้ผลตอบแทนดีกว่าโดยยังมีความเสี่ยงต่ำ เช่น กองทุนรวมตลาดเงินหรือพันธบัตรรัฐบาลระยะสั้น"
+                        },
+                        {
+                            argument: "กลัวความเสี่ยง",
+                            response: "ผลิตภัณฑ์ที่เราเสนอมีการจัดการความเสี่ยงอย่างเป็นระบบและมีระดับความเสี่ยงที่เหมาะสมกับผู้เริ่มต้นลงทุน โดยมีทีมงานคอยให้คำแนะนำตลอดเวลา"
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "กองทุนติดลบจากความผันผวน",
+                    steps: {
+                        objective: "เสนอการปรับพอร์ตการลงทุนเพื่อลดความเสี่ยงและฟื้นตัวจากภาวะติดลบ",
+                        opener: "สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันเห็นว่าพอร์ตการลงทุนกองทุนของคุณได้รับผลกระทบจากความผันผวนของเศรษฐกิจ อยากเสนอแนวทางการปรับพอร์ตใหม่ให้เหมาะสมยิ่งขึ้นครับ/ค่ะ",
+                        pain: "การที่พอร์ตการลงทุนติดลบเป็นเวลานานอาจทำให้สูญเสียโอกาสในการลงทุนอื่นๆ และส่งผลต่อเป้าหมายทางการเงินในระยะยาว",
+                        urgency: "การปรับพอร์ตในช่วงนี้จะช่วยลดความเสี่ยงและเตรียมพร้อมสำหรับการฟื้นตัวของตลาด ซึ่งจะช่วยให้พอร์ตของคุณกลับมาเติบโตได้เร็วกว่า"
+                    },
+                    arguments: [
+                        {
+                            argument: "ไม่อยากขายขาดทุน",
+                            response: "การปรับพอร์ตไม่จำเป็นต้องขายทั้งหมด อาจเป็นการปรับสัดส่วนการลงทุนเพื่อกระจายความเสี่ยงและเพิ่มสินทรัพย์ที่เหมาะสมกับสภาวะตลาดปัจจุบัน"
+                        },
+                        {
+                            argument: "รอให้ตลาดฟื้นตัวก่อน",
+                            response: "การรอให้ตลาดฟื้นตัวโดยไม่ทำอะไรอาจทำให้เสียโอกาสในการซื้อสินทรัพย์คุณภาพในราคาต่ำ ซึ่งจะช่วยเพิ่มศักยภาพในการทำกำไรเมื่อตลาดฟื้นตัว"
+                        }
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "ลูกค้าประกันจ่ายเบี้ยครบ",
+                    steps: {
+                        objective: "เสนอการทบทวนแผนประกันและผลิตภัณฑ์เสริมเพื่อความคุ้มครองที่สมบูรณ์",
+                        opener: "สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันเห็นว่าคุณได้จ่ายเบี้ยประกันชีวิตครบตามสัญญาแล้ว อยากเชิญชวนให้ทบทวนแผนประกันเพื่อตรวจสอบความคุ้มครองที่ยังขาดและโอกาสในการใช้สิทธิลดหย่อนภาษีครับ/ค่ะ",
+                        pain: "ความต้องการประกันชีวิตเปลี่ยนแปลงตามช่วงวัยและสถานการณ์ การไม่ทบทวนแผนประกันอย่างสม่ำเสมออาจทำให้มีความคุ้มครองไม่เพียงพอหรือซ้ำซ้อน",
+                        urgency: "การทำประกันในช่วงอายุน้อยกว่าเบี้ยจะถูกกว่าและได้รับความคุ้มครองเร็วขึ้น รวมถึงสามารถใช้สิทธิลดหย่อนภาษีในปีนี้ได้ทันเวลา"
+                    },
+                    arguments: [
+                        {
+                            argument: "มีประกันเพียงพอแล้ว",
+                            response: "การมีประกันชีวิตพื้นฐานเป็นสิ่งดี แต่ชีวิตมีการเปลี่ยนแปลง เช่น การมีครอบครัว การซื้อบ้าน หรือการวางแผนเกษียณ ซึ่งอาจต้องการความคุ้มครองเพิ่มเติม"
+                        },
+                        {
+                            argument: "ไม่ต้องการเพิ่มค่าใช้จ่าย",
+                            response: "เรามีแผนประกันที่ออกแบบมาเฉพาะสำหรับลูกค้าที่จ่ายเบี้ยครบแล้ว ซึ่งมีเบี้ยประกันที่เหมาะสมและให้ความคุ้มครองที่ตรงกับความต้องการมากขึ้น"
+                        }
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "ลูกค้าทั่วไปช่วง Tax Season",
+                    steps: {
+                        objective: "เชิญชวนใช้บริการคำนวณภาษีและวางแผนการลงทุนเพื่อลดหย่อนภาษี",
+                        opener: "สวัสดีครับ/คะ คุณลูกค้า ช่วงสิ้นปีนี้เป็นเวลาที่เหมาะสำหรับการวางแผนภาษี ผม/ดิฉันอยากเชิญชวนคุณมาใช้บริการคำนวณภาษีและวางแผนการลดหย่อนภาษีโดยไม่เสียค่าใช้จ่ายครับ/ค่ะ",
+                        pain: "การไม่วางแผนภาษีล่วงหน้าอาจทำให้ต้องเสียภาษีในอัตราที่สูงขึ้นและพลาดโอกาสในการใช้สิทธิลดหย่อนภาษีต่างๆ ซึ่งหมายถึงการจ่ายเงินมากเกินจำเป็น",
+                        urgency: "ต้องรีบตัดสินใจในช่วงนี้เพราะจะสิ้นปีแล้ว และโปรโมชั่นต่างๆ สำหรับผลิตภัณฑ์ลดหย่อนภาษีมีข้อเสนอที่ดีที่สุดในช่วงนี้"
+                    },
+                    arguments: [
+                        {
+                            argument: "ยังไม่พร้อมคิดเรื่องภาษี",
+                            response: "ยิ่งเริ่มต้นเร็วเท่าไหร่ ยิ่งมีเวลาวางแผนได้ดีขึ้น และสามารถเลือกผลิตภัณฑ์ลดหย่อนภาษีที่เหมาะสมที่สุดได้ โดยไม่ต้องรีบร้อนในช่วงใกล้ยื่นภาษี"
+                        },
+                        {
+                            argument: "คิดว่าภาษีไม่มาก",
+                            response: "ภาษีปีหนึ่งอาจมีมูลค่าประมาณเงินเดือน 1 เดือนเลยทีเดียว การวางแผนที่ดีสามารถช่วยประหยัดเงินก้อนนี้ได้ และยังเป็นการบังคับออมไปในตัว"
+                        }
+                    ]
                 }
             ],
-            savings: [
+            counter: [
                 {
-                    id: 1,
-                    question: "เงินไม่พอ จะเอาเงินที่ไหนมาจ่ายเบี้ย",
-                    answer: "เราเข้าใจเรื่องสภาพการเงินค่ะ/ครับ เรามีแผนประกันที่เริ่มต้นเพียง X บาท/เดือน เทียบเท่ากับค่ากาแฟวันละแก้ว แต่ได้ทั้งการออมและความคุ้มครอง",
-                    tone: "เห็นใจ + เปรียบเทียบกับรายจ่ายเล็กน้อย"
+                    id: 6,
+                    title: "ขออัพเดทข้อมูลที่อยู่",
+                    steps: {
+                        step1: "ยืนยันข้อมูลลูกค้าและแจ้งวัตถุประสงค์: 'สวัสดีครับ/คะ คุณลูกค้า วันนี้โทรมาเพื่อขออัพเดทข้อมูลที่อยู่ให้เป็นปัจจุบันครับ/คะ เพื่อให้แน่ใจว่าสามารถส่งเอกสารสำคัญได้อย่างถูกต้อง'",
+                        step2: "สร้างโอกาสในการขาย: 'นอกจากนี้ ผม/ดิฉันอยากใช้โอกาสนี้แจ้งว่าเรามีผลิตภัณฑ์ใหม่ที่เหมาะกับคุณ ซึ่งสามารถช่วยลดหย่อนภาษีได้สูงสุด 100,000 บาท และมีโปรโมชั่นพิเศษในช่วงสิ้นปีนี้'"
+                    },
+                    arguments: [
+                        {
+                            argument: "ไม่สะดวกให้ข้อมูลตอนนี้",
+                            response: "เข้าใจครับ/คะ สามารถอัพเดทข้อมูลผ่านช่องทางอื่นได้ เช่น แอปพลิเคชันธนาคาร หรือสาขาใกล้บ้าน เมื่อสะดวกครับ/คะ"
+                        },
+                        {
+                            argument: "ข้อมูลเดิมยังใช้ได้อยู่",
+                            response: "การอัพเดทข้อมูลให้เป็นปัจจุบันจะช่วยให้เราส่งเอกสารสำคัญ เช่น หนังสือรับรองดอกเบี้ย สำหรับใช้สิทธิลดหย่อนภาษีได้อย่างถูกต้องและทันเวลา"
+                        }
+                    ]
                 },
                 {
-                    id: 2,
-                    question: "ลงทุนเองน่าจะได้ผลตอบแทนดีกว่า",
-                    answer: "การลงทุนเองอาจได้ผลตอบแทนดี แต่ก็มีความเสี่ยง ในขณะที่ประกันสะสมทรัพย์ให้ทั้งผลตอบแทนที่แน่นอนและความคุ้มครองชีวิตด้วยค่ะ/ครับ",
-                    tone: "ยอมรับจุดดี + ชี้ให้เห็นความแตกต่าง"
+                    id: 7,
+                    title: "ชวนคุยเรื่องโครงการคนละครึ่งพลัส",
+                    steps: {
+                        step1: "แนะนำโปรแกรมและประโยชน์: 'สวัสดีครับ/คะ คุณลูกค้า วันนี้มีข่าวดีเกี่ยวกับโครงการคนละครึ่งพลัสที่จะช่วยให้คุณประหยัดค่าใช้จ่ายในชีวิตประจำวันและยังได้รับสิทธิพิเศษจากทางธนาคาร'",
+                        step2: "เชื่อมโยงกับผลิตภัณฑ์: 'เมื่อร่วมโครงการนี้ คุณยังสามารถสมัครบัตรเครดิตหรือสินเชื่อส่วนบุคคลที่มีอัตราดอกเบี้ยพิเศษ และได้รับเงินคืนเมื่อใช้จ่ายผ่านช่องทางที่กำหนด'"
+                    },
+                    arguments: [
+                        {
+                            argument: "ไม่ค่อยใช้จ่ายมาก",
+                            response: "โครงการนี้เหมาะกับทุกคน ไม่ว่าจะใช้จ่ายมากหรือน้อย เพราะมีเงื่อนไขที่ยืดหยุ่น และยังมีส่วนลดจากร้านค้าพันธมิตรที่คุณใช้บริการเป็นประจำ"
+                        },
+                        {
+                            argument: "มีโปรแกรมคล้ายๆ กันแล้ว",
+                            response: "โครงการคนละครึ่งพลัสนี้พิเศษกว่าตรงที่รัฐบาลและธนาคารร่วมสนับสนุน ทำให้ได้ส่วนลดสูงกว่าและมีร้านค้าร่วมโครงการมากกว่า"
+                        }
+                    ]
+                },
+                {
+                    id: 8,
+                    title: "แนะนำ Easy e-Receipt",
+                    steps: {
+                        step1: "อธิบายความสะดวก: 'สวัสดีครับ/คะ คุณลูกค้า ด้วยนวัตกรรมใหม่ Easy e-Receipt จะช่วยให้คุณเก็บเอกสารลดหย่อนภาษีได้อย่างเป็นระบบและไม่ต้องกังวลว่าจะสูญหาย'",
+                        step2: "สร้างแรงจูงใจ: 'เริ่มใช้บริการตั้งแต่ต้นปี จะได้บันทึกใบเสร็จทั้งหมดโดยอัตโนมัติ และเมื่อถึงเวลายื่นภาษี ระบบจะสรุปข้อมูลให้คุณอย่างครบถ้วน พร้อมคำแนะนำการลดหย่อนภาษี'"
+                    },
+                    arguments: [
+                        {
+                            argument: "เก็บใบเสร็จเองได้อยู่แล้ว",
+                            response: "Easy e-Receipt ช่วยประหยัดเวลาและลดความเสี่ยงจากการสูญหาย โดยเฉพาะใบเสร็จที่ต้องเก็บนานหลายเดือน และยังช่วยวิเคราะห์โอกาสลดหย่อนภาษีเพิ่มเติมที่คุณอาจไม่ทราบ"
+                        },
+                        {
+                            argument: "ไม่มั่นใจในความปลอดภัย",
+                            response: "ระบบมีการรักษาความปลอดภัยระดับสูงด้วยเทคโนโลยี encryption เช่นเดียวกับระบบการเงินอื่นๆ ของธนาคาร และข้อมูลจะไม่ถูกเปิดเผยแก่บุคคลที่สาม"
+                        }
+                    ]
+                },
+                {
+                    id: 9,
+                    title: "ภาษีดอกเบี้ยเงินฝาก",
+                    steps: {
+                        step1: "ระบุปัญหา: 'สวัสดีครับ/คะ คุณลูกค้า ผม/ดิฉันอยากแชร์ข้อมูลสำคัญเกี่ยวกับภาษีดอกเบี้ยเงินฝากที่คุณอาจสามารถขอคืนได้หากมีเงื่อนไขที่เหมาะสม'",
+                        step2: "เสนอทางแก้: 'เรามีบริการตรวจสอบและยื่นขอคืนภาษีดอกเบี้ยเงินฝากให้ โดยทีมงานจะวิเคราะห์ว่าคุณมีสิทธิ์ได้รับเงินคืนหรือไม่ และดำเนินการให้โดยไม่เสียค่าใช้จ่าย'"
+                    },
+                    arguments: [
+                        {
+                            argument: "คิดว่าไม่มีสิทธิ์ได้รับคืน",
+                            response: "หลายคนไม่ทราบว่าตนเองมีสิทธิ์ได้รับคืนภาษีดอกเบี้ยเงินฝาก โดยเฉพาะผู้ที่มีรายได้ไม่ถึงเกณฑ์หรือมีค่าใช้จ่ายลดหย่อนอื่นๆ ที่สามารถนำมาหักลดหย่อนได้"
+                        },
+                        {
+                            argument: "ขั้นตอนยุ่งยาก",
+                            response: "เราดำเนินการให้คุณเกือบทั้งหมด คุณเพียงแค่ให้ข้อมูลพื้นฐานและเราจะจัดการกระบวนการทั้งหมดจนเสร็จสิ้น"
+                        }
+                    ]
+                },
+                {
+                    id: 10,
+                    title: "วางแผนภาษีสิ้นปี",
+                    steps: {
+                        step1: "สร้างความตระหนัก: 'สวัสดีครับ/คะ คุณลูกค้า ช่วงสิ้นปีนี้เป็นเวลาสำหรับการวางแผนภาษี ผม/ดิฉันเห็นว่าลูกค้าหลายคนเริ่มสอบถามเกี่ยวกับเรื่องนี้แล้ว คุณมีการเตรียมตัวหรือยังครับ/คะ'",
+                        step2: "แสดงมูลค่าที่เสียไป: 'หากยังไม่มีการวางแผน อาจทำให้เสียโอกาสในการลดหย่อนภาษี ซึ่งภาษีปีหนึ่งมีมูลค่าประมาณเท่ากับเงินเดือน 1 เดือนเลยทีเดียว'"
+                    },
+                    arguments: [
+                        {
+                            argument: "รอใกล้ยื่นภาษีค่อยคิด",
+                            response: "การวางแผนล่วงหน้าช่วยให้คุณมีเวลาพิจารณาตัวเลือกลดหย่อนภาษีได้มากขึ้น และสามารถเลือกผลิตภัณฑ์ที่เหมาะสมกับความต้องการจริงๆ ไม่ใช่แค่เพื่อลดหย่อนภาษี"
+                        },
+                        {
+                            argument: "ไม่รู้จะเริ่มยังไง",
+                            response: "เรามีบริการให้คำปรึกษาการวางแผนภาษีฟรี โดยผู้เชี่ยวชาญจะวิเคราะห์สถานการณ์ทางการเงินของคุณและแนะนำวิธีลดหย่อนภาษีที่เหมาะสมที่สุด"
+                        }
+                    ]
                 }
             ],
-            life: [
+            builder: [
                 {
-                    id: 1,
-                    question: "อายุยังน้อย ไม่คิดถึงเรื่องเหล่านั้น",
-                    answer: "การทำประกันตอนอายุน้อยนี่แหละค่ะ/ครับที่ดีที่สุด เพราะเบี้ยประกันจะถูกกว่า และสุขภาพดีก็ผ่านการพิจารณาง่าย ไม่ต้องกังวลเรื่องการรับประกัน",
-                    tone: "ให้ข้อมูลที่เป็นประโยชน์ + มองการณ์ไกล"
-                },
-                {
-                    id: 2,
-                    question: "บริษัทมีประกันกลุ่มให้แล้ว",
-                    answer: "ดีมากค่ะ/ครับที่บริษัทมีประกันกลุ่มให้ แต่ประกันกลุ่มมักจะคุ้มครองเฉพาะช่วงที่ทำงานอยู่ และวงเงินไม่สูงนัก การมีประกันส่วนตัวเป็นการสร้างหลักประกันเพิ่มเติมให้กับตัวเองและครอบครัวค่ะ/ครับ",
-                    tone: "ชื่นชม + เสนอมูลค่าเพิ่ม"
+                    id: 11,
+                    title: "Conversation Builder - อัปเดตข้อมูลที่อยู่",
+                    nodes: [
+                        {
+                            id: "node1",
+                            content: "สวัสดีครับ/คะ คุณลูกค้า วันนี้โทรมาเพื่อขออัพเดทข้อมูลที่อยู่ให้เป็นปัจจุบันครับ/คะ",
+                            options: [
+                                {
+                                    text: "ลูกค้ายินดีให้ข้อมูล",
+                                    next: "node2"
+                                },
+                                {
+                                    text: "ลูกค้าสงสัยว่าทำไมต้องอัพเดท",
+                                    next: "node3"
+                                },
+                                {
+                                    text: "ลูกค้าไม่สะดวกตอนนี้",
+                                    next: "node4"
+                                }
+                            ]
+                        },
+                        {
+                            id: "node2",
+                            content: "ขอบคุณมากครับ/คะ สำหรับความร่วมมือ การอัพเดทข้อมูลจะช่วยให้เราส่งเอกสารสำคัญได้อย่างถูกต้อง",
+                            options: [
+                                {
+                                    text: "แนะนำผลิตภัณฑ์ลดหย่อนภาษี",
+                                    next: "node5"
+                                },
+                                {
+                                    text: "สอบถามความสนใจอื่นๆ",
+                                    next: "node6"
+                                }
+                            ]
+                        },
+                        {
+                            id: "node3",
+                            content: "การอัพเดทข้อมูลที่อยู่เป็นประจำช่วยให้แน่ใจว่าเราสามารถส่งเอกสารสำคัญ เช่น หนังสือรับรองดอกเบี้ยสำหรับใช้สิทธิลดหย่อนภาษี ได้อย่างถูกต้องและทันเวลา",
+                            options: [
+                                {
+                                    text: "ลูกค้าเข้าใจและให้ข้อมูล",
+                                    next: "node2"
+                                },
+                                {
+                                    text: "ลูกค้ายังสงสัยเกี่ยวกับประโยชน์",
+                                    next: "node7"
+                                }
+                            ]
+                        },
+                        {
+                            id: "node4",
+                            content: "เข้าใจครับ/คะ สามารถอัพเดทข้อมูลผ่านช่องทางอื่นได้ เช่น แอปพลิเคชันธนาคาร หรือสาขาใกล้บ้าน เมื่อสะดวกครับ/คะ",
+                            options: [
+                                {
+                                    text: "นัดหมายเวลาที่สะดวก",
+                                    next: "node8"
+                                },
+                                {
+                                    text: "ส่งลิงก์อัพเดทผ่าน SMS",
+                                    next: "node9"
+                                }
+                            ]
+                        },
+                        {
+                            id: "node5",
+                            content: "นอกจากนี้ ผม/ดิฉันอยากแชร์ว่าตอนนี้เรามีผลิตภัณฑ์ลดหย่อนภาษีที่น่าสนใจ สามารถลดหย่อนได้สูงสุด 100,000 บาท และมีโปรโมชั่นพิเศษในช่วงสิ้นปีนี้",
+                            options: [
+                                {
+                                    text: "ลูกค้าสนใจทราบรายละเอียด",
+                                    next: "node10"
+                                },
+                                {
+                                    text: "ลูกค้าไม่สนใจตอนนี้",
+                                    next: "node11"
+                                }
+                            ]
+                        }
+                        // สามารถเพิ่ม nodes อื่นๆ ตามต้องการ
+                    ]
                 }
-            ],
-            pension: [
-                {
-                    id: 1,
-                    question: "ยังไม่คิดถึงเรื่องวัยเกษียณ",
-                    answer: "เข้าใจค่ะ/ครับ แต่การวางแผนการเงินเพื่อวัยเกษียณควรเริ่มตั้งแต่ตอนนี้ ยิ่งเริ่มเร็ว ยิ่งสะสมเงินได้มาก และเบี้ยก็จ่ายน้อยกว่าค่ะ/ครับ",
-                    tone: "เข้าใจ + ให้เหตุผลเชิงบวก"
-                },
-                {
-                    id: 2,
-                    question: "มีกองทุนสำรองเลี้ยงชีพแล้ว",
-                    answer: "ดีมากค่ะ/ครับที่มีกองทุนสำรองเลี้ยงชีพ แต่ประกันบำนาญจะช่วยเสริมสร้างความมั่นใจได้มากขึ้น เพราะให้เงินบำนาญตลอดชีวิต ไม่เหมือนกองทุนที่อาจจะหมดได้",
-                    tone: "เสริมแรง + ชี้จุดแตกต่าง"
-                }
-            ],
-            tax: [
-                {
-                    id: 1,
-                    question: "เรื่องภาษียุ่งยาก ไม่เข้าใจ",
-                    answer: "ไม่ต้องกังวลค่ะ/ครับ เราจะช่วยคำนวณและอธิบายให้เข้าใจง่ายๆ แค่ทำประกัน/ลงทุนในผลิตภัณฑ์ที่เกี่ยวข้อง ก็สามารถลดหย่อนภาษีได้แล้วค่ะ/ครับ",
-                    tone: "ปลอบใจ + เสนอความช่วยเหลือ"
-                },
-                {
-                    id: 2,
-                    question: "ลดหย่อนภาษีเต็มแล้ว",
-                    answer: "ดีมากค่ะ/ครับที่จัดการภาษีได้ดี แต่บางสิทธิ์ลดหย่อนอาจจะยังใช้ไม่ครบ หรืออาจมีทางเลือกใหม่ๆ ที่ให้ทั้งประโยชน์ด้านภาษีและผลตอบแทนการลงทุนค่ะ/ครับ",
-                    tone: "ชื่นชม + เสนอทางเลือกเพิ่ม"
-                }
+                // สามารถเพิ่ม Conversation Builder อื่นๆ ตามต้องการ
             ]
         };
 
-        // Conversation Builder Data
-        const defaultConversations = [
+        // ข้อมูลข้อโต้แย้งและการตอบ
+        let argumentsData = [
             {
                 id: 1,
-                title: "อัปเดตข้อมูลที่อยู่",
-                nodes: [
-                    {
-                        id: "node1",
-                        content: "สวัสดีครับ/คะ คุณลูกค้า วันนี้โทรมาเพื่อขออัพเดทข้อมูลที่อยู่ให้เป็นปัจจุบันครับ/คะ",
-                        options: [
-                            {
-                                text: "ลูกค้ายินดีให้ข้อมูล",
-                                next: "node2"
-                            },
-                            {
-                                text: "ลูกค้าสงสัยว่าทำไมต้องอัพเดท",
-                                next: "node3"
-                            },
-                            {
-                                text: "ลูกค้าไม่สะดวกตอนนี้",
-                                next: "node4"
-                            }
-                        ]
-                    },
-                    {
-                        id: "node2",
-                        content: "ขอบคุณมากครับ/คะ สำหรับความร่วมมือ การอัพเดทข้อมูลจะช่วยให้เราส่งเอกสารสำคัญได้อย่างถูกต้อง",
-                        options: [
-                            {
-                                text: "แนะนำผลิตภัณฑ์ลดหย่อนภาษี",
-                                next: "node5"
-                            },
-                            {
-                                text: "สอบถามความสนใจอื่นๆ",
-                                next: "node6"
-                            }
-                        ]
-                    },
-                    {
-                        id: "node3",
-                        content: "การอัพเดทข้อมูลที่อยู่เป็นประจำช่วยให้แน่ใจว่าเราสามารถส่งเอกสารสำคัญ เช่น หนังสือรับรองดอกเบี้ยสำหรับใช้สิทธิลดหย่อนภาษี ได้อย่างถูกต้องและทันเวลา",
-                        options: [
-                            {
-                                text: "ลูกค้าเข้าใจและให้ข้อมูล",
-                                next: "node2"
-                            },
-                            {
-                                text: "ลูกค้ายังสงสัยเกี่ยวกับประโยชน์",
-                                next: "node7"
-                            }
-                        ]
-                    },
-                    {
-                        id: "node4",
-                        content: "เข้าใจครับ/คะ สามารถอัพเดทข้อมูลผ่านช่องทางอื่นได้ เช่น แอปพลิเคชันธนาคาร หรือสาขาใกล้บ้าน เมื่อสะดวกครับ/คะ",
-                        options: [
-                            {
-                                text: "นัดหมายเวลาที่สะดวก",
-                                next: "node8"
-                            },
-                            {
-                                text: "ส่งลิงก์อัพเดทผ่าน SMS",
-                                next: "node9"
-                            }
-                        ]
-                    },
-                    {
-                        id: "node5",
-                        content: "นอกจากนี้ ผม/ดิฉันอยากแชร์ว่าตอนนี้เรามีผลิตภัณฑ์ลดหย่อนภาษีที่น่าสนใจ สามารถลดหย่อนได้สูงสุด 100,000 บาท และมีโปรโมชั่นพิเศษในช่วงสิ้นปีนี้",
-                        options: [
-                            {
-                                text: "ลูกค้าสนใจทราบรายละเอียด",
-                                next: "node10"
-                            },
-                            {
-                                text: "ลูกค้าไม่สนใจตอนนี้",
-                                next: "node11"
-                            }
-                        ]
-                    }
-                ]
+                argument: "ไม่มีเงินพอจะซื้อประกัน",
+                response: "เข้าใจดีครับ/คะ เรื่องเงินเป็นเรื่องสำคัญ เรามีแผนประกันที่เริ่มต้นเพียงวันละ 20 บาทเท่านั้น ซึ่งถือว่าคุ้มค่ามากเมื่อเทียบกับความคุ้มครองที่ได้รับ"
             },
             {
                 id: 2,
-                title: "แนะนำโครงการคนละครึ่งพลัส",
-                nodes: [
-                    {
-                        id: "node1",
-                        content: "สวัสดีครับ/คะ คุณลูกค้า วันนี้มีข่าวดีเกี่ยวกับโครงการคนละครึ่งพลัสที่จะช่วยให้คุณประหยัดค่าใช้จ่ายในชีวิตประจำวัน",
-                        options: [
-                            {
-                                text: "ลูกค้าสนใจฟังต่อ",
-                                next: "node2"
-                            },
-                            {
-                                text: "ลูกค้าสอบถามรายละเอียด",
-                                next: "node3"
-                            },
-                            {
-                                text: "ลูกค้าไม่สนใจ",
-                                next: "node4"
-                            }
-                        ]
-                    },
-                    {
-                        id: "node2",
-                        content: "โครงการนี้ช่วยให้คุณประหยัดค่าซื้อของในชีวิตประจำวันได้สูงสุด 150 บาทต่อวัน โดยรัฐบาลและธนาคารร่วมสนับสนุน",
-                        options: [
-                            {
-                                text: "ลูกค้าสอบถามวิธีการเข้าร่วม",
-                                next: "node5"
-                            },
-                            {
-                                text: "ลูกค้าสอบถามเงื่อนไข",
-                                next: "node6"
-                            }
-                        ]
-                    }
-                ]
+                argument: "ยังไม่แน่ใจเกี่ยวกับผลตอบแทน",
+                response: "ผลตอบแทนของผลิตภัณฑ์นี้มีการการันตีอย่างชัดเจน โดยจะได้รับคืนปีละ 4% ในปีที่ 1-9 และเมื่อครบ 10 ปีจะได้รับ 404% ของเงินเบี้ยประกัน ซึ่งเป็นอัตราที่สูงกว่าการฝากเงินทั่วไป"
+            },
+            {
+                id: 3,
+                argument: "ต้องการปรึกษาครอบครัวก่อน",
+                response: "เป็นการตัดสินใจที่ดีครับ/คะ ที่จะปรึกษาครอบครัว ขออนุญาตส่งข้อมูลรายละเอียดผลิตภัณฑ์ให้พิจารณาร่วมกัน และถ้ามีข้อสงสัยเพิ่มเติม ติดต่อกลับมาได้ตลอดเวลานะครับ/คะ"
+            },
+            {
+                id: 4,
+                argument: "เคยมีประสบการณ์ไม่ดีกับประกันมาก่อน",
+                response: "ขอโทษแทนในประสบการณ์ที่ไม่ดีนั้นครับ/คะ ผลิตภัณฑ์นี้มีความโปร่งใสและเข้าใจง่าย คุณลูกค้าสามารถศึกษารายละเอียดทั้งหมดได้ด้วยตัวเองผ่าน ttb touch และมีทีมงานคอยให้คำแนะนำตลอดกระบวนการ"
+            },
+            {
+                id: 5,
+                argument: "เงินฝากปลอดภัยกว่า",
+                response: "เข้าใจดีครับ/คะ เรื่องความปลอดภัยเป็นสิ่งสำคัญ ผลิตภัณฑ์นี้มีการลงทุนในสินทรัพย์คุณภาพสูงและมีความเสี่ยงต่ำ ซึ่งให้ผลตอบแทนที่ดีกว่าเงินฝากโดยมีความผันผวนที่ต่ำ"
+            },
+            {
+                id: 6,
+                argument: "ไม่มีความรู้ในการลงทุน",
+                response: "ไม่ต้องกังวลครับ/คะ เรามีทีมผู้เชี่ยวชาญที่พร้อมให้คำแนะนำและดูแลพอร์ตการลงทุนให้คุณอย่างใกล้ชิด รวมถึงมีบริการติดตามผลอย่างสม่ำเสมอ"
             }
         ];
 
-        // Data Management
-        let isAdmin = false;
-        let currentEditingId = null;
+        let currentTab = 'call';
+        let currentBuilderNode = null;
 
-        // Initialize Data
-        function initializeData() {
-            if (!localStorage.getItem('callScripts')) {
-                localStorage.setItem('callScripts', JSON.stringify(defaultCallScripts));
+        // โหลดข้อมูลจาก localStorage ถ้ามี
+        function loadFromLocalStorage() {
+            const savedScripts = localStorage.getItem('scriptCategories');
+            const savedArguments = localStorage.getItem('argumentsData');
+            
+            if (savedScripts) {
+                scriptCategories = JSON.parse(savedScripts);
             }
-            if (!localStorage.getItem('counterScripts')) {
-                localStorage.setItem('counterScripts', JSON.stringify(defaultCounterScripts));
-            }
-            if (!localStorage.getItem('objections')) {
-                localStorage.setItem('objections', JSON.stringify(defaultObjections));
-            }
-            if (!localStorage.getItem('conversations')) {
-                localStorage.setItem('conversations', JSON.stringify(defaultConversations));
+            
+            if (savedArguments) {
+                argumentsData = JSON.parse(savedArguments);
             }
         }
 
-        // Get Data
-        function getCallScripts() {
-            return JSON.parse(localStorage.getItem('callScripts')) || [];
+        // บันทึกข้อมูลไปยัง localStorage
+        function saveToLocalStorage() {
+            localStorage.setItem('scriptCategories', JSON.stringify(scriptCategories));
+            localStorage.setItem('argumentsData', JSON.stringify(argumentsData));
         }
 
-        function getCounterScripts() {
-            return JSON.parse(localStorage.getItem('counterScripts')) || [];
-        }
+        // โหลดสคริปต์เมื่อหน้าเว็บโหลดเสร็จ
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFromLocalStorage();
+            loadScripts();
+            loadArguments();
+        });
 
-        function getObjections() {
-            return JSON.parse(localStorage.getItem('objections')) || {};
-        }
-
-        function getConversations() {
-            return JSON.parse(localStorage.getItem('conversations')) || [];
-        }
-
-        // Save Data
-        function saveCallScripts(scripts) {
-            localStorage.setItem('callScripts', JSON.stringify(scripts));
-        }
-
-        function saveCounterScripts(scripts) {
-            localStorage.setItem('counterScripts', JSON.stringify(scripts));
-        }
-
-        function saveObjections(objections) {
-            localStorage.setItem('objections', JSON.stringify(objections));
-        }
-
-        function saveConversations(conversations) {
-            localStorage.setItem('conversations', JSON.stringify(conversations));
-        }
-
-        // Start Application
-        function startApp() {
-            const loadingScreen = document.getElementById('loadingScreen');
-            const mainApp = document.getElementById('mainApp');
+        // สลับแท็บสคริปต์
+        function switchTab(tabName) {
+            currentTab = tabName;
             
-            loadingScreen.style.opacity = '0';
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                mainApp.style.display = 'block';
-                initializeData();
-                loadHomePage();
-            }, 500);
-        }
-
-        // Navigation
-        function setupNavigation() {
-            // Nav bar items
-            document.querySelectorAll('.nav-item').forEach(item => {
-                if (item.onclick) return; // Skip items with existing click handlers
-                
-                item.addEventListener('click', function() {
-                    const pageId = this.getAttribute('data-page');
-                    if (pageId) {
-                        showPage(pageId);
-                    }
-                });
+            // อัพเดทแท็บที่ active
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
             });
+            event.target.classList.add('active');
             
-            // Quick access items
-            document.querySelectorAll('.quick-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const pageId = this.getAttribute('data-page');
-                    showPage(pageId);
-                });
-            });
+            // โหลดสคริปต์ใหม่ตามแท็บ
+            loadScripts();
         }
 
-        // Show Page
-        function showPage(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
+        // โหลดและแสดงสคริปต์
+        function loadScripts() {
+            const scriptList = document.getElementById('scriptList');
+            const scriptContent = document.getElementById('scriptContent');
             
-            // Remove active class from all nav items
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
+            scriptList.innerHTML = '';
+            scriptContent.innerHTML = '';
             
-            // Show selected page and add active class to nav item
-            document.getElementById(pageId).classList.add('active');
-            document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
-            
-            // Load page content
-            switch(pageId) {
-                case 'home':
-                    loadHomePage();
-                    break;
-                case 'scripts':
-                    loadScriptsPage();
-                    break;
-                case 'objection-handling':
-                    loadObjectionHandlingPage();
-                    break;
-                case 'conversation-builder':
-                    loadConversationBuilderPage();
-                    break;
-                case 'techniques':
-                    loadTechniquesPage();
-                    break;
-                case 'tools':
-                    loadToolsPage();
-                    break;
-            }
-        }
-
-        // Load Home Page
-        function loadHomePage() {
-            // Home page is already loaded by default
-        }
-
-        // Load Scripts Page
-        function loadScriptsPage() {
-            loadCallScripts();
-            
-            // Setup script tabs
-            document.querySelectorAll('.script-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const type = this.getAttribute('data-type');
-                    
-                    // Update active tab
-                    document.querySelectorAll('.script-tab').forEach(t => {
-                        t.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                    
-                    // Show corresponding content
-                    document.querySelectorAll('.script-tab-content').forEach(content => {
-                        content.style.display = 'none';
-                    });
-                    
-                    if (type === 'call') {
-                        document.getElementById('callScripts').style.display = 'block';
-                        loadCallScripts();
-                    } else {
-                        document.getElementById('counterScripts').style.display = 'block';
-                        loadCounterScripts();
-                    }
-                });
-            });
-        }
-
-        // Load Call Scripts
-        function loadCallScripts() {
-            const container = document.getElementById('callScriptsList');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            const scripts = getCallScripts();
+            const scripts = scriptCategories[currentTab];
             
             scripts.forEach(script => {
-                const card = document.createElement('div');
-                card.className = 'script-card';
-                card.innerHTML = `
-                    <h3>${script.title}</h3>
-                    <div class="script-content">
-                        <ul class="script-bullets">
-                            ${script.bullets.map(bullet => `<li>${bullet}</li>`).join('')}
-                        </ul>
-                        <div class="full-script" id="fullScript-${script.id}">
-                            <strong>สคริปต์เต็ม:</strong>
-                            <pre>${script.fullScript}</pre>
-                        </div>
-                        <button class="nav-item" onclick="toggleFullScript(${script.id})" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.8rem;">
-                            แสดงสคริปต์เต็ม
-                        </button>
-                        ${isAdmin ? `
-                        <div class="admin-buttons" style="margin-top: 1rem;">
-                            <button class="admin-btn" onclick="editScript(${script.id}, 'call')">แก้ไข</button>
-                            <button class="admin-btn delete" onclick="deleteScript(${script.id}, 'call')">ลบ</button>
-                        </div>
-                        ` : ''}
+                const scriptItem = document.createElement('div');
+                scriptItem.className = 'script-item';
+                scriptItem.innerHTML = `
+                    <span>${script.title}</span>
+                    <div class="script-actions">
+                        <button class="btn btn-primary" onclick="editScript(${script.id})">แก้ไข</button>
+                        <button class="btn btn-danger" onclick="deleteScript(${script.id})">ลบ</button>
                     </div>
                 `;
-                container.appendChild(card);
-            });
-        }
-
-        // Load Counter Scripts
-        function loadCounterScripts() {
-            const container = document.getElementById('counterScriptsList');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            const scripts = getCounterScripts();
-            
-            scripts.forEach(script => {
-                const card = document.createElement('div');
-                card.className = 'script-card';
-                card.innerHTML = `
-                    <h3>${script.title}</h3>
-                    <div class="script-content">
-                        <ul class="script-bullets">
-                            ${script.bullets.map(bullet => `<li>${bullet}</li>`).join('')}
-                        </ul>
-                        <div class="full-script" id="fullScript-counter-${script.id}">
-                            <strong>สคริปต์เต็ม:</strong>
-                            <pre>${script.fullScript}</pre>
-                        </div>
-                        <button class="nav-item" onclick="toggleFullScript('counter-${script.id}')" style="margin-top: 0.5rem; padding: 0.5rem 1rem; font-size: 0.8rem;">
-                            แสดงสคริปต์เต็ม
-                        </button>
-                        ${isAdmin ? `
-                        <div class="admin-buttons" style="margin-top: 1rem;">
-                            <button class="admin-btn" onclick="editScript(${script.id}, 'counter')">แก้ไข</button>
-                            <button class="admin-btn delete" onclick="deleteScript(${script.id}, 'counter')">ลบ</button>
-                        </div>
-                        ` : ''}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // Toggle Full Script
-        function toggleFullScript(scriptId) {
-            const fullScript = document.getElementById(`fullScript-${scriptId}`);
-            const button = event.target;
-            
-            if (fullScript.style.display === 'block') {
-                fullScript.style.display = 'none';
-                button.textContent = 'แสดงสคริปต์เต็ม';
-            } else {
-                fullScript.style.display = 'block';
-                button.textContent = 'ซ่อนสคริปต์เต็ม';
-            }
-        }
-
-        // Load Objection Handling Page
-        function loadObjectionHandlingPage() {
-            loadObjections('health');
-            
-            // Setup category tabs
-            document.querySelectorAll('.category-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const category = this.getAttribute('data-category');
+                scriptItem.onclick = function(e) {
+                    // หลีกเลี่ยงการคลิกเมื่อกดปุ่มแก้ไขหรือลบ
+                    if (e.target.tagName === 'BUTTON') return;
                     
-                    // Update active tab
-                    document.querySelectorAll('.category-tab').forEach(t => {
-                        t.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                    
-                    // Load objections for this category
-                    loadObjections(category);
-                });
-            });
-        }
-
-        // Load Objections by Category
-        function loadObjections(category) {
-            const container = document.getElementById('objectionList');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            const objections = getObjections();
-            
-            if (objections[category]) {
-                objections[category].forEach(obj => {
-                    const item = document.createElement('div');
-                    item.className = 'objection-item';
-                    item.innerHTML = `
-                        <div class="objection-question" onclick="toggleAnswer(this)">${obj.question}</div>
-                        <div class="objection-answer">${obj.answer}</div>
-                        <div class="objection-tone">โทนเสียง: ${obj.tone}</div>
-                        ${isAdmin ? `
-                        <div class="admin-buttons" style="margin-top: 1rem;">
-                            <button class="admin-btn" onclick="editObjection(${obj.id}, '${category}')">แก้ไข</button>
-                            <button class="admin-btn delete" onclick="deleteObjection(${obj.id}, '${category}')">ลบ</button>
-                        </div>
-                        ` : ''}
-                    `;
-                    container.appendChild(item);
-                });
-            } else {
-                container.innerHTML = '<p>ยังไม่มีข้อโต้แย้งในหมวดหมู่นี้</p>';
-            }
-        }
-
-        // Toggle Answer Visibility
-        function toggleAnswer(element) {
-            const answer = element.nextElementSibling;
-            if (answer.style.display === 'block') {
-                answer.style.display = 'none';
-            } else {
-                answer.style.display = 'block';
-            }
-        }
-
-        // Load Conversation Builder Page
-        function loadConversationBuilderPage() {
-            const container = document.getElementById('conversationNodesList');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            const conversations = getConversations();
-            
-            if (conversations.length === 0) {
-                container.innerHTML = '<p>ยังไม่มีบทสนทนา</p>';
-                return;
-            }
-            
-            conversations.forEach(conversation => {
-                const nodeItem = document.createElement('div');
-                nodeItem.className = 'node-item';
-                nodeItem.innerHTML = `
-                    <h4>${conversation.title}</h4>
-                    <p>${conversation.nodes.length} โหนด</p>
-                `;
-                
-                nodeItem.addEventListener('click', function() {
-                    loadConversationFlow(conversation);
-                    
-                    // Update active node
-                    document.querySelectorAll('.node-item').forEach(item => {
+                    // ลบคลาส active จากทุกสคริปต์
+                    document.querySelectorAll('.script-item').forEach(item => {
                         item.classList.remove('active');
                     });
-                    this.classList.add('active');
-                });
-                
-                container.appendChild(nodeItem);
+                    
+                    // เพิ่มคลาส active ให้สคริปต์ที่เลือก
+                    scriptItem.classList.add('active');
+                    
+                    // แสดงเนื้อหาสคริปต์
+                    displayScriptContent(script);
+                };
+                scriptList.appendChild(scriptItem);
             });
             
-            // Load first conversation by default
-            if (conversations.length > 0) {
-                document.querySelector('.node-item').click();
+            // เลือกสคริปต์แรกโดยอัตโนมัติ
+            if (scripts.length > 0) {
+                scriptList.firstChild.click();
             }
         }
 
-        // Load Conversation Flow
-        function loadConversationFlow(conversation) {
-            const container = document.getElementById('conversationFlow');
-            if (!container) return;
+        // แสดงเนื้อหาสคริปต์
+        function displayScriptContent(script) {
+            const scriptContent = document.getElementById('scriptContent');
+            scriptContent.innerHTML = '';
             
-            container.innerHTML = '';
-            
-            // Start with the first node
-            const startNode = conversation.nodes[0];
-            displayNode(startNode, conversation, container);
+            if (currentTab === 'call') {
+                // แสดง Call Scripts ในรูปแบบ Step
+                for (const [step, content] of Object.entries(script.steps)) {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = 'script-step';
+                    
+                    const stepTitle = document.createElement('div');
+                    stepTitle.className = 'step-title';
+                    stepTitle.textContent = step.toUpperCase();
+                    
+                    const stepContent = document.createElement('div');
+                    stepContent.textContent = content;
+                    
+                    stepDiv.appendChild(stepTitle);
+                    stepDiv.appendChild(stepContent);
+                    scriptContent.appendChild(stepDiv);
+                }
+                
+                // แสดงข้อโต้แย้งที่เกี่ยวข้อง
+                if (script.arguments && script.arguments.length > 0) {
+                    const argumentsTitle = document.createElement('div');
+                    argumentsTitle.className = 'step-title';
+                    argumentsTitle.textContent = 'ข้อโต้แย้งที่เกี่ยวข้อง';
+                    argumentsTitle.style.marginTop = '20px';
+                    scriptContent.appendChild(argumentsTitle);
+                    
+                    script.arguments.forEach(arg => {
+                        const argDiv = document.createElement('div');
+                        argDiv.style.margin = '10px 0';
+                        argDiv.style.padding = '10px';
+                        argDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+                        argDiv.style.borderRadius = '5px';
+                        
+                        const argTitle = document.createElement('div');
+                        argTitle.style.fontWeight = '600';
+                        argTitle.textContent = `ข้อโต้แย้ง: ${arg.argument}`;
+                        
+                        const argResponse = document.createElement('div');
+                        argResponse.textContent = `คำตอบ: ${arg.response}`;
+                        
+                        argDiv.appendChild(argTitle);
+                        argDiv.appendChild(argResponse);
+                        scriptContent.appendChild(argDiv);
+                    });
+                }
+            } else if (currentTab === 'counter') {
+                // แสดง Counter Conversation Scripts
+                for (const [step, content] of Object.entries(script.steps)) {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = 'script-step';
+                    
+                    const stepTitle = document.createElement('div');
+                    stepTitle.className = 'step-title';
+                    stepTitle.textContent = step.toUpperCase();
+                    
+                    const stepContent = document.createElement('div');
+                    stepContent.textContent = content;
+                    
+                    stepDiv.appendChild(stepTitle);
+                    stepDiv.appendChild(stepContent);
+                    scriptContent.appendChild(stepDiv);
+                }
+                
+                // แสดงข้อโต้แย้งที่เกี่ยวข้อง
+                if (script.arguments && script.arguments.length > 0) {
+                    const argumentsTitle = document.createElement('div');
+                    argumentsTitle.className = 'step-title';
+                    argumentsTitle.textContent = 'ข้อโต้แย้งที่เกี่ยวข้อง';
+                    argumentsTitle.style.marginTop = '20px';
+                    scriptContent.appendChild(argumentsTitle);
+                    
+                    script.arguments.forEach(arg => {
+                        const argDiv = document.createElement('div');
+                        argDiv.style.margin = '10px 0';
+                        argDiv.style.padding = '10px';
+                        argDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+                        argDiv.style.borderRadius = '5px';
+                        
+                        const argTitle = document.createElement('div');
+                        argTitle.style.fontWeight = '600';
+                        argTitle.textContent = `ข้อโต้แย้ง: ${arg.argument}`;
+                        
+                        const argResponse = document.createElement('div');
+                        argResponse.textContent = `คำตอบ: ${arg.response}`;
+                        
+                        argDiv.appendChild(argTitle);
+                        argDiv.appendChild(argResponse);
+                        scriptContent.appendChild(argDiv);
+                    });
+                }
+            } else if (currentTab === 'builder') {
+                // แสดง Conversation Builder
+                currentBuilderNode = script.nodes[0];
+                displayBuilderNode(currentBuilderNode, scriptContent);
+            }
         }
 
-        // Display Node in Conversation Flow
-        function displayNode(node, conversation, container) {
-            const stepDiv = document.createElement('div');
-            stepDiv.className = 'flow-step';
-            stepDiv.innerHTML = `
-                <p>${node.content}</p>
-            `;
+        // แสดงโหนดของ Conversation Builder
+        function displayBuilderNode(node, container) {
+            container.innerHTML = '';
+            
+            const nodeDiv = document.createElement('div');
+            nodeDiv.className = 'conversation-node';
+            nodeDiv.textContent = node.content;
+            container.appendChild(nodeDiv);
             
             if (node.options && node.options.length > 0) {
                 const optionsDiv = document.createElement('div');
-                optionsDiv.className = 'flow-options';
+                optionsDiv.className = 'node-options';
                 
                 node.options.forEach(option => {
                     const optionDiv = document.createElement('div');
-                    optionDiv.className = 'flow-option';
+                    optionDiv.className = 'node-option';
                     optionDiv.textContent = option.text;
-                    optionDiv.addEventListener('click', function() {
-                        const nextNode = conversation.nodes.find(n => n.id === option.next);
+                    optionDiv.onclick = function() {
+                        const nextNode = scriptCategories.builder[0].nodes.find(n => n.id === option.next);
                         if (nextNode) {
-                            displayNode(nextNode, conversation, container);
+                            displayBuilderNode(nextNode, container);
                         }
-                    });
+                    };
                     optionsDiv.appendChild(optionDiv);
                 });
                 
-                stepDiv.appendChild(optionsDiv);
+                container.appendChild(optionsDiv);
+            }
+        }
+
+        // โหลดและแสดงข้อโต้แย้ง
+        function loadArguments() {
+            const argumentList = document.getElementById('argumentList');
+            const argumentResponse = document.getElementById('argumentResponse');
+            
+            argumentList.innerHTML = '';
+            argumentResponse.innerHTML = '';
+            
+            argumentsData.forEach(arg => {
+                const argumentItem = document.createElement('div');
+                argumentItem.className = 'argument-item';
+                argumentItem.innerHTML = `
+                    <span>${arg.argument}</span>
+                    <div class="argument-actions">
+                        <button class="btn btn-primary" onclick="editArgument(${arg.id})">แก้ไข</button>
+                        <button class="btn btn-danger" onclick="deleteArgument(${arg.id})">ลบ</button>
+                    </div>
+                `;
+                argumentItem.onclick = function(e) {
+                    // หลีกเลี่ยงการคลิกเมื่อกดปุ่มแก้ไขหรือลบ
+                    if (e.target.tagName === 'BUTTON') return;
+                    
+                    // ลบคลาส active จากทุกข้อโต้แย้ง
+                    document.querySelectorAll('.argument-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // เพิ่มคลาส active ให้ข้อโต้แย้งที่เลือก
+                    argumentItem.classList.add('active');
+                    
+                    // แสดงคำตอบ
+                    argumentResponse.textContent = arg.response;
+                };
+                argumentList.appendChild(argumentItem);
+            });
+            
+            // เลือกข้อโต้แย้งแรกโดยอัตโนมัติ
+            if (argumentsData.length > 0) {
+                argumentList.firstChild.click();
+            }
+        }
+
+        // แสดงแผงแอดมิน
+        function showAdminPanel() {
+            const adminPanel = document.getElementById('adminPanel');
+            adminPanel.classList.toggle('hidden');
+        }
+
+        // แสดงฟอร์มเพิ่มสคริปต์
+        function showAddScriptForm() {
+            document.getElementById('addScriptForm').classList.remove('hidden');
+            document.getElementById('addArgumentForm').classList.add('hidden');
+        }
+
+        // ซ่อนฟอร์มเพิ่มสคริปต์
+        function hideAddScriptForm() {
+            document.getElementById('addScriptForm').classList.add('hidden');
+        }
+
+        // แสดงฟอร์มเพิ่มข้อโต้แย้ง
+        function showAddArgumentForm() {
+            document.getElementById('addArgumentForm').classList.remove('hidden');
+            document.getElementById('addScriptForm').classList.add('hidden');
+        }
+
+        // ซ่อนฟอร์มเพิ่มข้อโต้แย้ง
+        function hideAddArgumentForm() {
+            document.getElementById('addArgumentForm').classList.add('hidden');
+        }
+
+        // บันทึกสคริปต์ใหม่
+        function saveNewScript() {
+            const category = document.getElementById('scriptCategory').value;
+            const title = document.getElementById('scriptTitle').value;
+            const content = document.getElementById('scriptContentInput').value;
+            
+            if (!title || !content) {
+                alert('กรุณากรอกชื่อและเนื้อหาสคริปต์');
+                return;
             }
             
-            container.appendChild(stepDiv);
+            // สร้างสคริปต์ใหม่
+            const newScript = {
+                id: Date.now(), // ใช้ timestamp เป็น ID
+                title: title,
+                steps: {
+                    objective: content,
+                    opener: '',
+                    pain: '',
+                    urgency: ''
+                },
+                arguments: []
+            };
+            
+            // เพิ่มสคริปต์ใหม่ลงในหมวดหมู่
+            scriptCategories[category].push(newScript);
+            
+            // บันทึกข้อมูล
+            saveToLocalStorage();
+            
+            // โหลดสคริปต์ใหม่
+            loadScripts();
+            
+            // ซ่อนฟอร์ม
+            hideAddScriptForm();
+            
+            // รีเซ็ตฟอร์ม
+            document.getElementById('scriptTitle').value = '';
+            document.getElementById('scriptContentInput').value = '';
+            
+            alert('เพิ่มสคริปต์ใหม่เรียบร้อยแล้ว!');
         }
 
-        // Load Techniques Page
-        function loadTechniquesPage() {
-            const container = document.getElementById('techniqueList');
-            if (!container) return;
+        // บันทึกข้อโต้แย้งใหม่
+        function saveNewArgument() {
+            const argument = document.getElementById('argumentText').value;
+            const response = document.getElementById('argumentResponseInput').value;
             
-            container.innerHTML = `
-                <div class="technique-item">
-                    <div class="technique-header">
-                        <div class="technique-title">เทคนิคการฟังอย่าง aktif</div>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="technique-details">
-                        การฟังอย่างตั้งใจและแสดงออกว่ากำลังฟังอยู่ เช่น การใช้คำพูดเช่น 'ครับ/ค่ะ', 'เข้าใจแล้วครับ/ค่ะ' เพื่อสร้างความมั่นใจให้ลูกค้า และการสรุปสิ่งที่ลูกค้าพูดเพื่อยืนยันความเข้าใจ
-                    </div>
-                </div>
-                <div class="technique-item">
-                    <div class="technique-header">
-                        <div class="technique-title">เทคนิคการตั้งคำถามปลายเปิด</div>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="technique-details">
-                        ใช้คำถามปลายเปิดเพื่อให้ลูกค้าได้พูดมากขึ้น เช่น 'ลูกค้ามีความคิดเห็นอย่างไรบ้างครับ/คะ?' หรือ 'มีอะไรที่เราช่วยได้เพิ่มเติมไหมคะ/ครับ?' เพื่อดึงข้อมูลและความต้องการที่แท้จริง
-                    </div>
-                </div>
-                <div class="technique-item">
-                    <div class="technique-header">
-                        <div class="technique-title">เทคนิค Mirroring</div>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="technique-details">
-                        สะท้อนคำพูดหรือความรู้สึกของลูกค้าเพื่อสร้างความเข้าใจ เช่น เมื่อลูกค้าบอก 'ไม่มีเวลา' เราตอบ 'เข้าใจค่ะ/ครับว่าคุณไม่มีเวลา' เพื่อสร้างความเป็นหนึ่งเดียวและความไว้วางใจ
-                    </div>
-                </div>
-            `;
+            if (!argument || !response) {
+                alert('กรุณากรอกข้อโต้แย้งและคำตอบ');
+                return;
+            }
             
-            // Add toggle functionality
-            document.querySelectorAll('.technique-item').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    // Only toggle details if not clicking admin buttons
-                    if (!e.target.classList.contains('admin-btn')) {
-                        const details = this.querySelector('.technique-details');
-                        const icon = this.querySelector('i');
-                        
-                        if (details.style.display === 'block') {
-                            details.style.display = 'none';
-                            icon.className = 'fas fa-chevron-down';
-                        } else {
-                            details.style.display = 'block';
-                            icon.className = 'fas fa-chevron-up';
-                        }
-                    }
-                });
-            });
+            // สร้างข้อโต้แย้งใหม่
+            const newArgument = {
+                id: Date.now(), // ใช้ timestamp เป็น ID
+                argument: argument,
+                response: response
+            };
+            
+            // เพิ่มข้อโต้แย้งใหม่
+            argumentsData.push(newArgument);
+            
+            // บันทึกข้อมูล
+            saveToLocalStorage();
+            
+            // โหลดข้อโต้แย้งใหม่
+            loadArguments();
+            
+            // ซ่อนฟอร์ม
+            hideAddArgumentForm();
+            
+            // รีเซ็ตฟอร์ม
+            document.getElementById('argumentText').value = '';
+            document.getElementById('argumentResponseInput').value = '';
+            
+            alert('เพิ่มข้อโต้แย้งใหม่เรียบร้อยแล้ว!');
         }
 
-        // Load Tools Page
-        function loadToolsPage() {
-            const container = document.getElementById('toolsList');
-            if (!container) return;
+        // แก้ไขสคริปต์
+        function editScript(id) {
+            // หาสคริปต์ที่ต้องการแก้ไข
+            let scriptToEdit = null;
+            let categoryToEdit = null;
             
-            container.innerHTML = `
-                <div class="tool-item">
-                    <i class="fas fa-file-pdf"></i>
-                    <h4>คู่มือการขาย</h4>
-                    <p>PDF</p>
-                </div>
-                <div class="tool-item">
-                    <i class="fas fa-image"></i>
-                    <h4>ภาพโปรโมชั่น</h4>
-                    <p>IMAGE</p>
-                </div>
-                <div class="tool-item">
-                    <i class="fas fa-file-excel"></i>
-                    <h4>ตารางงาน</h4>
-                    <p>EXCEL</p>
-                </div>
-                <div class="tool-item">
-                    <i class="fas fa-video"></i>
-                    <h4>วิดีโอเทรนนิ่ง</h4>
-                    <p>VIDEO</p>
-                </div>
-            `;
+            for (const category in scriptCategories) {
+                const script = scriptCategories[category].find(s => s.id === id);
+                if (script) {
+                    scriptToEdit = script;
+                    categoryToEdit = category;
+                    break;
+                }
+            }
+            
+            if (!scriptToEdit) return;
+            
+            // แสดงฟอร์มแก้ไข
+            const newTitle = prompt('แก้ไขชื่อสคริปต์:', scriptToEdit.title);
+            if (newTitle) {
+                scriptToEdit.title = newTitle;
+                
+                // บันทึกข้อมูล
+                saveToLocalStorage();
+                
+                // โหลดสคริปต์ใหม่
+                loadScripts();
+                
+                alert('แก้ไขสคริปต์เรียบร้อยแล้ว!');
+            }
         }
 
-        // Admin Functions
-        function showAdminControls() {
-            const adminControls = document.getElementById('adminControls');
-            adminControls.classList.add('active');
-            isAdmin = true;
+        // ลบสคริปต์
+        function deleteScript(id) {
+            if (!confirm('คุณแน่ใจว่าต้องการลบสคริปต์นี้?')) return;
             
-            // Reload all pages to show admin controls
-            const currentPage = document.querySelector('.page.active').id;
-            showPage(currentPage);
+            // ลบสคริปต์
+            for (const category in scriptCategories) {
+                const index = scriptCategories[category].findIndex(s => s.id === id);
+                if (index !== -1) {
+                    scriptCategories[category].splice(index, 1);
+                    break;
+                }
+            }
+            
+            // บันทึกข้อมูล
+            saveToLocalStorage();
+            
+            // โหลดสคริปต์ใหม่
+            loadScripts();
+            
+            alert('ลบสคริปต์เรียบร้อยแล้ว!');
         }
 
-        function hideAdminControls() {
-            const adminControls = document.getElementById('adminControls');
-            adminControls.classList.remove('active');
-            isAdmin = false;
+        // แก้ไขข้อโต้แย้ง
+        function editArgument(id) {
+            // หาข้อโต้แย้งที่ต้องการแก้ไข
+            const argumentToEdit = argumentsData.find(a => a.id === id);
+            if (!argumentToEdit) return;
             
-            // Reload all pages to hide admin controls
-            const currentPage = document.querySelector('.page.active').id;
-            showPage(currentPage);
+            // แสดงฟอร์มแก้ไข
+            const newArgument = prompt('แก้ไขข้อโต้แย้ง:', argumentToEdit.argument);
+            if (newArgument) {
+                argumentToEdit.argument = newArgument;
+                
+                const newResponse = prompt('แก้ไขคำตอบ:', argumentToEdit.response);
+                if (newResponse) {
+                    argumentToEdit.response = newResponse;
+                    
+                    // บันทึกข้อมูล
+                    saveToLocalStorage();
+                    
+                    // โหลดข้อโต้แย้งใหม่
+                    loadArguments();
+                    
+                    alert('แก้ไขข้อโต้แย้งเรียบร้อยแล้ว!');
+                }
+            }
+        }
+
+        // ลบข้อโต้แย้ง
+        function deleteArgument(id) {
+            if (!confirm('คุณแน่ใจว่าต้องการลบข้อโต้แย้งนี้?')) return;
+            
+            // ลบข้อโต้แย้ง
+            const index = argumentsData.findIndex(a => a.id === id);
+            if (index !== -1) {
+                argumentsData.splice(index, 1);
+            }
+            
+            // บันทึกข้อมูล
+            saveToLocalStorage();
+            
+            // โหลดข้อโต้แย้งใหม่
+            loadArguments();
+            
+            alert('ลบข้อโต้แย้งเรียบร้อยแล้ว!');
+        }
+
+        // อัพโหลดไฟล์
+        function uploadFile() {
+            const fileInput = document.getElementById('fileUpload');
+            if (fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                alert(`อัพโหลดไฟล์ "${fileName}" เรียบร้อยแล้ว!`);
+                // ในระบบจริงควรมีโค้ดสำหรับอัพโหลดไฟล์ไปยังเซิร์ฟเวอร์
+                
+                // รีเซ็ต input file
+                fileInput.value = '';
+            } else {
+                alert("กรุณาเลือกไฟล์ก่อนอัพโหลด");
+            }
         }
 
         // ออกจากระบบแอดมิน
-        function logoutAdmin() {
+        function logout() {
             if (confirm("คุณแน่ใจว่าต้องการออกจากระบบแอดมิน?")) {
-                hideAdminControls();
+                const adminPanel = document.getElementById('adminPanel');
+                adminPanel.classList.add('hidden');
                 alert("ออกจากระบบแอดมินเรียบร้อยแล้ว");
             }
         }
-
-        // Admin Modal Functions
-        function showAdminModal() {
-            document.getElementById('adminModal').style.display = 'flex';
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminModal').style.display = 'none';
-            document.getElementById('adminPasscode').value = '';
-        }
-
-        function checkAdminPasscode() {
-            const passcode = document.getElementById('adminPasscode').value;
-            if (passcode === '2025') {
-                showAdminControls();
-                closeAdminModal();
-                alert('เข้าสู่ระบบแอดมินสำเร็จ!');
-            } else {
-                alert('รหัสผ่านไม่ถูกต้อง');
-                document.getElementById('adminPasscode').value = '';
-            }
-        }
-
-        // Add Script Functions
-        function showAddScriptModal() {
-            document.getElementById('addScriptModal').style.display = 'flex';
-            currentEditingId = null;
-            document.getElementById('scriptTitle').value = '';
-            document.getElementById('scriptBullets').value = '';
-            document.getElementById('scriptFull').value = '';
-        }
-
-        function closeAddScriptModal() {
-            document.getElementById('addScriptModal').style.display = 'none';
-        }
-
-        function addNewScript() {
-            const type = document.getElementById('scriptType').value;
-            const title = document.getElementById('scriptTitle').value;
-            const bullets = document.getElementById('scriptBullets').value.split('\n').filter(b => b.trim() !== '');
-            const fullScript = document.getElementById('scriptFull').value;
-            
-            if (!title || bullets.length === 0 || !fullScript) {
-                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-                return;
-            }
-            
-            let scripts;
-            if (type === 'call') {
-                scripts = getCallScripts();
-            } else {
-                scripts = getCounterScripts();
-            }
-            
-            const newId = scripts.length > 0 ? Math.max(...scripts.map(s => s.id)) + 1 : 1;
-            
-            const newScript = {
-                id: newId,
-                title,
-                bullets,
-                fullScript
-            };
-            
-            scripts.push(newScript);
-            
-            if (type === 'call') {
-                saveCallScripts(scripts);
-            } else {
-                saveCounterScripts(scripts);
-            }
-            
-            closeAddScriptModal();
-            loadScriptsPage();
-            alert('เพิ่มสคริปต์สำเร็จ!');
-        }
-
-        function editScript(id, type) {
-            let scripts;
-            if (type === 'call') {
-                scripts = getCallScripts();
-            } else {
-                scripts = getCounterScripts();
-            }
-            
-            const script = scripts.find(s => s.id === id);
-            if (!script) return;
-            
-            document.getElementById('scriptType').value = type;
-            document.getElementById('scriptTitle').value = script.title;
-            document.getElementById('scriptBullets').value = script.bullets.join('\n');
-            document.getElementById('scriptFull').value = script.fullScript;
-            
-            currentEditingId = id;
-            document.getElementById('addScriptModal').style.display = 'flex';
-        }
-
-        function deleteScript(id, type) {
-            if (!confirm('คุณแน่ใจว่าต้องการลบสคริปต์นี้?')) return;
-            
-            let scripts;
-            if (type === 'call') {
-                scripts = getCallScripts();
-                scripts = scripts.filter(s => s.id !== id);
-                saveCallScripts(scripts);
-            } else {
-                scripts = getCounterScripts();
-                scripts = scripts.filter(s => s.id !== id);
-                saveCounterScripts(scripts);
-            }
-            
-            loadScriptsPage();
-            alert('ลบสคริปต์สำเร็จ!');
-        }
-
-        // Add Objection Functions
-        function showAddObjectionModal() {
-            document.getElementById('addObjectionModal').style.display = 'flex';
-            currentEditingId = null;
-            document.getElementById('objectionQuestion').value = '';
-            document.getElementById('objectionAnswer').value = '';
-            document.getElementById('objectionTone').value = '';
-        }
-
-        function closeAddObjectionModal() {
-            document.getElementById('addObjectionModal').style.display = 'none';
-        }
-
-        function addNewObjection() {
-            const category = document.getElementById('objectionCategory').value;
-            const question = document.getElementById('objectionQuestion').value;
-            const answer = document.getElementById('objectionAnswer').value;
-            const tone = document.getElementById('objectionTone').value;
-            
-            if (!question || !answer || !tone) {
-                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
-                return;
-            }
-            
-            const objections = getObjections();
-            if (!objections[category]) {
-                objections[category] = [];
-            }
-            
-            const newId = objections[category].length > 0 ? Math.max(...objections[category].map(o => o.id)) + 1 : 1;
-            
-            const newObjection = {
-                id: newId,
-                question,
-                answer,
-                tone
-            };
-            
-            objections[category].push(newObjection);
-            saveObjections(objections);
-            
-            closeAddObjectionModal();
-            loadObjectionHandlingPage();
-            alert('เพิ่มข้อโต้แย้งสำเร็จ!');
-        }
-
-        function editObjection(id, category) {
-            const objections = getObjections();
-            const objection = objections[category].find(o => o.id === id);
-            if (!objection) return;
-            
-            document.getElementById('objectionCategory').value = category;
-            document.getElementById('objectionQuestion').value = objection.question;
-            document.getElementById('objectionAnswer').value = objection.answer;
-            document.getElementById('objectionTone').value = objection.tone;
-            
-            currentEditingId = id;
-            document.getElementById('addObjectionModal').style.display = 'flex';
-        }
-
-        function deleteObjection(id, category) {
-            if (!confirm('คุณแน่ใจว่าต้องการลบข้อโต้แย้งนี้?')) return;
-            
-            const objections = getObjections();
-            objections[category] = objections[category].filter(o => o.id !== id);
-            saveObjections(objections);
-            
-            loadObjectionHandlingPage();
-            alert('ลบข้อโต้แย้งสำเร็จ!');
-        }
-
-        // Clear All Data
-        function clearAllData() {
-            if (!confirm('คุณแน่ใจว่าต้องการล้างข้อมูลทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้!')) return;
-            
-            localStorage.removeItem('callScripts');
-            localStorage.removeItem('counterScripts');
-            localStorage.removeItem('objections');
-            localStorage.removeItem('conversations');
-            
-            initializeData();
-            
-            // Reload current page
-            const currentPage = document.querySelector('.page.active').id;
-            showPage(currentPage);
-            
-            alert('ล้างข้อมูลทั้งหมดสำเร็จ! ระบบได้โหลดข้อมูลเริ่มต้นใหม่');
-        }
-
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            const modals = ['adminModal', 'addScriptModal', 'addObjectionModal'];
-            modals.forEach(modalId => {
-                const modal = document.getElementById(modalId);
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
-        });
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            setupNavigation();
-            
-            // Auto start after 5 seconds if user doesn't click
-            setTimeout(() => {
-                if (document.getElementById('loadingScreen').style.display !== 'none') {
-                    startApp();
-                }
-            }, 5000);
-        });
     </script>
 </body>
 </html>
