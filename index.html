@@ -6,6 +6,8 @@
     <title>RH5 Script Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #B3E0FF;
@@ -149,6 +151,41 @@
 
         .nav-item:not(.active):hover {
             background: rgba(179, 224, 255, 0.3);
+        }
+
+        /* Sync Status */
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            margin-left: auto;
+            margin-right: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .sync-status i {
+            font-size: 0.9rem;
+        }
+
+        .sync-status.online {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .sync-status.offline {
+            background: rgba(244, 67, 54, 0.1);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .sync-status.syncing {
+            background: rgba(255, 193, 7, 0.1);
+            color: #FFC107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
         }
 
         /* Admin Controls */
@@ -966,6 +1003,10 @@
                 grid-template-columns: 1fr;
                 height: auto;
             }
+            
+            .sync-status {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -995,12 +1036,19 @@
             <button class="nav-item" data-page="conversation-builder">Conversation Builder</button>
             <button class="nav-item" data-page="techniques">เทคนิคพิเศษ</button>
             <button class="nav-item" data-page="tools">Tools</button>
+            
+            <!-- Sync Status -->
+            <div class="sync-status" id="syncStatus">
+                <i class="fas fa-cloud" id="syncIcon"></i>
+                <span id="syncText">Connecting...</span>
+            </div>
+            
             <button class="nav-item" onclick="showAdminModal()">
                 <i class="fas fa-cog"></i>
             </button>
         </div>
 
-        <!-- Admin Controls - เพิ่มส่วนอัพโหลดไฟล์ -->
+        <!-- Admin Controls -->
         <div id="adminControls" class="admin-controls">
             <h3>การจัดการระบบ (Admin)</h3>
             <div class="admin-buttons">
@@ -1013,7 +1061,20 @@
                 <button class="admin-btn delete" onclick="clearAllData()">ล้างข้อมูลทั้งหมด</button>
             </div>
             
-            <!-- ย้ายส่วนอัพโหลดไฟล์มาที่นี่ -->
+            <!-- Cloud Sync Section -->
+            <div class="upload-section">
+                <h3>Cloud Sync</h3>
+                <div class="admin-buttons">
+                    <button class="admin-btn" onclick="supabaseManager.pullAllData(); alert('กำลังดึงข้อมูลจาก Cloud...');">
+                        <i class="fas fa-download"></i> ดึงข้อมูลจาก Cloud
+                    </button>
+                    <button class="admin-btn" onclick="supabaseManager.syncAllData(); alert('กำลังอัพโหลดข้อมูลไป Cloud...');">
+                        <i class="fas fa-upload"></i> อัพโหลดไป Cloud
+                    </button>
+                </div>
+            </div>
+            
+            <!-- File Upload Section -->
             <div class="upload-section">
                 <h3>อัพโหลดไฟล์</h3>
                 <input type="file" class="file-input" id="fileUpload" multiple>
@@ -1210,7 +1271,7 @@
                 </div>
             </div>
 
-            <!-- Tools Page - เอาการอัพโหลดไฟล์ออก -->
+            <!-- Tools Page -->
             <div id="tools" class="page">
                 <h2>Tools</h2>
                 <p>เครื่องมือและทรัพยากรสำหรับทีมงาน</p>
@@ -1372,6 +1433,11 @@
     </div>
 
     <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://ceiyjqcpxaqleowaluyx.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlaXlqcWNweGFxbGVvd2FsdXl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5ODE0NDQsImV4cCI6MjA3OTU1NzQ0NH0.ywotEWrRbRF0eTjRcwSBLp-mFyxBcmMgeahN4uZ-Ztg';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
         // Default Data
         const defaultCallScripts = [
             {
@@ -1717,54 +1783,574 @@ STEP2:
         let isAdmin = false;
         let currentEditingId = null;
 
+        // Supabase Data Management
+        class SupabaseManager {
+            constructor() {
+                this.isOnline = false;
+                this.init();
+            }
+
+            async init() {
+                try {
+                    // Test connection
+                    const { data, error } = await supabase.from('components').select('count');
+                    this.isOnline = !error;
+                    console.log('Supabase connection:', this.isOnline ? 'Online' : 'Offline');
+                    
+                    if (this.isOnline) {
+                        this.updateSyncStatus('online');
+                    } else {
+                        this.updateSyncStatus('offline');
+                    }
+                } catch (error) {
+                    console.warn('Supabase offline, using local storage');
+                    this.isOnline = false;
+                    this.updateSyncStatus('offline');
+                }
+            }
+
+            updateSyncStatus(status) {
+                const syncStatus = document.getElementById('syncStatus');
+                const syncIcon = document.getElementById('syncIcon');
+                const syncText = document.getElementById('syncText');
+                
+                if (syncStatus && syncIcon && syncText) {
+                    syncStatus.className = 'sync-status ' + status;
+                    if (status === 'online') {
+                        syncIcon.className = 'fas fa-cloud';
+                        syncText.textContent = 'Online';
+                    } else if (status === 'offline') {
+                        syncIcon.className = 'fas fa-cloud-slash';
+                        syncText.textContent = 'Offline';
+                    } else {
+                        syncIcon.className = 'fas fa-sync-alt fa-spin';
+                        syncText.textContent = 'Syncing...';
+                    }
+                }
+            }
+
+            // Scripts Management
+            async getCallScripts() {
+                if (!this.isOnline) {
+                    return getCallScripts();
+                }
+
+                try {
+                    const { data, error } = await supabase
+                        .from('scripts')
+                        .select('*')
+                        .eq('type', 'call')
+                        .order('created_at', { ascending: true });
+
+                    if (error) throw error;
+                    
+                    if (data.length === 0) {
+                        const defaultScripts = getCallScripts();
+                        await this.saveCallScripts(defaultScripts);
+                        return defaultScripts;
+                    }
+                    
+                    return data.map(item => ({
+                        id: item.id,
+                        title: item.title,
+                        bullets: item.bullets || [],
+                        fullScript: item.full_text || ''
+                    }));
+                } catch (error) {
+                    console.error('Error fetching call scripts:', error);
+                    return getCallScripts();
+                }
+            }
+
+            async saveCallScripts(scripts) {
+                saveCallScripts(scripts);
+
+                if (!this.isOnline) return;
+
+                try {
+                    this.updateSyncStatus('syncing');
+
+                    const { error: deleteError } = await supabase
+                        .from('scripts')
+                        .delete()
+                        .eq('type', 'call');
+
+                    if (deleteError) throw deleteError;
+
+                    const scriptsToInsert = scripts.map(script => ({
+                        type: 'call',
+                        title: script.title,
+                        bullets: script.bullets,
+                        full_text: script.fullScript
+                    }));
+
+                    const { error: insertError } = await supabase
+                        .from('scripts')
+                        .insert(scriptsToInsert);
+
+                    if (insertError) throw insertError;
+                    
+                    console.log('Call scripts synced to Supabase');
+                    this.updateSyncStatus('online');
+                } catch (error) {
+                    console.error('Error syncing call scripts:', error);
+                    this.updateSyncStatus('offline');
+                }
+            }
+
+            async getCounterScripts() {
+                if (!this.isOnline) {
+                    return getCounterScripts();
+                }
+
+                try {
+                    const { data, error } = await supabase
+                        .from('scripts')
+                        .select('*')
+                        .eq('type', 'counter')
+                        .order('created_at', { ascending: true });
+
+                    if (error) throw error;
+                    
+                    if (data.length === 0) {
+                        const defaultScripts = getCounterScripts();
+                        await this.saveCounterScripts(defaultScripts);
+                        return defaultScripts;
+                    }
+                    
+                    return data.map(item => ({
+                        id: item.id,
+                        title: item.title,
+                        bullets: item.bullets || [],
+                        fullScript: item.full_text || ''
+                    }));
+                } catch (error) {
+                    console.error('Error fetching counter scripts:', error);
+                    return getCounterScripts();
+                }
+            }
+
+            async saveCounterScripts(scripts) {
+                saveCounterScripts(scripts);
+
+                if (!this.isOnline) return;
+
+                try {
+                    this.updateSyncStatus('syncing');
+
+                    const { error: deleteError } = await supabase
+                        .from('scripts')
+                        .delete()
+                        .eq('type', 'counter');
+
+                    if (deleteError) throw deleteError;
+
+                    const scriptsToInsert = scripts.map(script => ({
+                        type: 'counter',
+                        title: script.title,
+                        bullets: script.bullets,
+                        full_text: script.fullScript
+                    }));
+
+                    const { error: insertError } = await supabase
+                        .from('scripts')
+                        .insert(scriptsToInsert);
+
+                    if (insertError) throw insertError;
+                    
+                    console.log('Counter scripts synced to Supabase');
+                    this.updateSyncStatus('online');
+                } catch (error) {
+                    console.error('Error syncing counter scripts:', error);
+                    this.updateSyncStatus('offline');
+                }
+            }
+
+            // Objections Management
+            async getObjections() {
+                if (!this.isOnline) {
+                    return getObjections();
+                }
+
+                try {
+                    const { data, error } = await supabase
+                        .from('objections')
+                        .select('*')
+                        .order('created_at', { ascending: true });
+
+                    if (error) throw error;
+
+                    const objections = {
+                        call: [],
+                        counter: [],
+                        general: []
+                    };
+
+                    if (data.length === 0) {
+                        const defaultObjections = getObjections();
+                        await this.saveObjections(defaultObjections);
+                        return defaultObjections;
+                    }
+
+                    data.forEach(item => {
+                        if (objections[item.category]) {
+                            objections[item.category].push({
+                                id: item.id,
+                                question: item.question,
+                                answer: item.answer,
+                                tone: item.tone
+                            });
+                        }
+                    });
+
+                    return objections;
+                } catch (error) {
+                    console.error('Error fetching objections:', error);
+                    return getObjections();
+                }
+            }
+
+            async saveObjections(objections) {
+                saveObjections(objections);
+
+                if (!this.isOnline) return;
+
+                try {
+                    this.updateSyncStatus('syncing');
+
+                    const { error: deleteError } = await supabase
+                        .from('objections')
+                        .delete();
+
+                    if (deleteError) throw deleteError;
+
+                    const objectionsToInsert = [];
+                    Object.keys(objections).forEach(category => {
+                        objections[category].forEach(obj => {
+                            objectionsToInsert.push({
+                                category: category,
+                                question: obj.question,
+                                answer: obj.answer,
+                                tone: obj.tone
+                            });
+                        });
+                    });
+
+                    const { error: insertError } = await supabase
+                        .from('objections')
+                        .insert(objectionsToInsert);
+
+                    if (insertError) throw insertError;
+                    
+                    console.log('Objections synced to Supabase');
+                    this.updateSyncStatus('online');
+                } catch (error) {
+                    console.error('Error syncing objections:', error);
+                    this.updateSyncStatus('offline');
+                }
+            }
+
+            // Components Management
+            async getComponents() {
+                if (!this.isOnline) {
+                    return this.getDefaultComponents();
+                }
+
+                try {
+                    const { data, error } = await supabase
+                        .from('components')
+                        .select('*')
+                        .order('created_at', { ascending: true });
+
+                    if (error) throw error;
+                    
+                    if (data.length === 0) {
+                        return this.getDefaultComponents();
+                    }
+
+                    const components = {
+                        opening: [],
+                        painPoint: [],
+                        solution: [],
+                        closing: [],
+                        special: []
+                    };
+
+                    data.forEach(item => {
+                        if (components[item.category]) {
+                            components[item.category].push({
+                                id: item.id,
+                                title: item.title,
+                                content: item.content
+                            });
+                        }
+                    });
+
+                    return components;
+                } catch (error) {
+                    console.error('Error fetching components:', error);
+                    return this.getDefaultComponents();
+                }
+            }
+
+            getDefaultComponents() {
+                return {
+                    opening: [
+                        { id: 1, title: "ทักทายลูกค้า", content: "สวัสดีครับ/คะ คุณ{ชื่อลูกค้า} ผม/ดิฉัน{ชื่อพนักงาน} จาก{ชื่อบริษัท} วันนี้โทรมาเพื่อ{วัตถุประสงค์}ครับ/ค่ะ" },
+                        { id: 2, title: "เปิดบทสนทนาแบบเป็นกันเอง", content: "สวัสดีครับ/คะ คุณ{ชื่อลูกค้า} ไม่ทราบว่าตอนนี้สะดวกคุยไหมครับ/คะ?" }
+                    ],
+                    painPoint: [
+                        { id: 1, title: "ปัญหาเงินนิ่ง", content: "ผม/ดิฉันเห็นว่าบัญชีเงินฝากของคุณมียอดคงเหลือค่อนข้างสูง ซึ่งดอกเบี้ยเงินฝากในปัจจุบันต่ำมาก ทำให้เงินฝากเติบโตช้าและอาจไม่ชนะอัตราเงินเฟ้อ" },
+                        { id: 2, title: "ปัญหาเงินฝากประจำใกล้ครบ", content: "เห็นว่าบัญชีเงินฝากประจำของคุณกำลังจะครบกำหนดในอีก {X} วัน การต่ออายุอัตโนมัติอาจทำให้พลาดโอกาสลงทุนที่ให้ผลตอบแทนดีกว่า" }
+                    ],
+                    solution: [
+                        { id: 1, title: "เสนอผลิตภัณฑ์ลงทุน", content: "เรามีผลิตภัณฑ์การลงทุนที่เหมาะสมกับคุณ ซึ่งให้ผลตอบแทน{X}% ต่อปี สูงกว่าดอกเบี้ยเงินฝากทั่วไป" },
+                        { id: 2, title: "เสนอประกันชีวิต", content: "เรามีแผนประกันชีวิตที่ช่วยลดหย่อนภาษีได้สูงสุด {X} บาท และยังได้รับความคุ้มครองชีวิตอีกด้วย" }
+                    ],
+                    closing: [
+                        { id: 1, title: "ปิดการขายแบบนุ่มนวล", content: "ไม่ทราบว่าคุณ{ชื่อลูกค้า} สนใจทราบรายละเอียดเพิ่มเติมไหมครับ/คะ?" },
+                        { id: 2, title: "ปิดการขายแบบเร่งด่วน", content: "โปรโมชั่นนี้มีจำกัดเพียง {X} รายแรกเท่านั้น คุณ{ชื่อลูกค้า} สนใจลงทะเบียนเลยไหมครับ/คะ?" }
+                    ],
+                    special: [
+                        { id: 1, title: "ประโยคสร้างความมั่นใจ", content: "ลูกค้าหลายท่านที่ใช้บริการนี้มีความพึงพอใจสูงและได้รับผลตอบแทนตามที่คาดหวัง" },
+                        { id: 2, title: "ประโยคกระตุ้นการตัดสินใจ", content: "ยิ่งเริ่มต้นเร็ว ยิ่งได้รับผลตอบแทนที่มากขึ้นในระยะยาว" }
+                    ]
+                };
+            }
+
+            // File Management
+            async getUploadedFiles() {
+                if (!this.isOnline) {
+                    return getUploadedFiles();
+                }
+
+                try {
+                    const { data, error } = await supabase
+                        .from('uploaded_files')
+                        .select('*')
+                        .order('created_at', { ascending: true });
+
+                    if (error) throw error;
+                    return data.map(item => ({
+                        name: item.file_name,
+                        size: item.file_size,
+                        type: item.file_type
+                    }));
+                } catch (error) {
+                    console.error('Error fetching files:', error);
+                    return getUploadedFiles();
+                }
+            }
+
+            async saveUploadedFiles(files) {
+                saveUploadedFiles(files);
+
+                if (!this.isOnline) return;
+
+                try {
+                    this.updateSyncStatus('syncing');
+
+                    const { error: deleteError } = await supabase
+                        .from('uploaded_files')
+                        .delete();
+
+                    if (deleteError) throw deleteError;
+
+                    const filesToInsert = files.map(file => ({
+                        file_name: file.name,
+                        file_size: file.size,
+                        file_type: file.type
+                    }));
+
+                    const { error: insertError } = await supabase
+                        .from('uploaded_files')
+                        .insert(filesToInsert);
+
+                    if (insertError) throw insertError;
+                    
+                    console.log('Files synced to Supabase');
+                    this.updateSyncStatus('online');
+                } catch (error) {
+                    console.error('Error syncing files:', error);
+                    this.updateSyncStatus('offline');
+                }
+            }
+
+            // Sync all data to Supabase
+            async syncAllData() {
+                if (!this.isOnline) return;
+
+                try {
+                    this.updateSyncStatus('syncing');
+                    
+                    const callScripts = getCallScripts();
+                    const counterScripts = getCounterScripts();
+                    const objections = getObjections();
+                    const uploadedFiles = getUploadedFiles();
+
+                    await this.saveCallScripts(callScripts);
+                    await this.saveCounterScripts(counterScripts);
+                    await this.saveObjections(objections);
+                    await this.saveUploadedFiles(uploadedFiles);
+
+                    console.log('All data synced to Supabase');
+                    this.updateSyncStatus('online');
+                } catch (error) {
+                    console.error('Error syncing all data:', error);
+                    this.updateSyncStatus('offline');
+                }
+            }
+
+            // Pull data from Supabase
+            async pullAllData() {
+                if (!this.isOnline) return;
+
+                try {
+                    this.updateSyncStatus('syncing');
+                    
+                    const callScripts = await this.getCallScripts();
+                    const counterScripts = await this.getCounterScripts();
+                    const objections = await this.getObjections();
+                    const uploadedFiles = await this.getUploadedFiles();
+
+                    saveCallScripts(callScripts);
+                    saveCounterScripts(counterScripts);
+                    saveObjections(objections);
+                    saveUploadedFiles(uploadedFiles);
+
+                    console.log('All data pulled from Supabase');
+                    this.updateSyncStatus('online');
+                } catch (error) {
+                    console.error('Error pulling data:', error);
+                    this.updateSyncStatus('offline');
+                }
+            }
+        }
+
+        // Initialize Supabase Manager
+        const supabaseManager = new SupabaseManager();
+
         // Initialize Data
         function initializeData() {
-            if (!localStorage.getItem('callScripts')) {
-                localStorage.setItem('callScripts', JSON.stringify(defaultCallScripts));
-            }
-            if (!localStorage.getItem('counterScripts')) {
-                localStorage.setItem('counterScripts', JSON.stringify(defaultCounterScripts));
-            }
-            if (!localStorage.getItem('objections')) {
-                localStorage.setItem('objections', JSON.stringify(defaultObjections));
-            }
-            if (!localStorage.getItem('uploadedFiles')) {
-                localStorage.setItem('uploadedFiles', JSON.stringify([]));
+            try {
+                console.log('Initializing data...');
+                
+                // พยายามดึงข้อมูลจาก Supabase ก่อน
+                supabaseManager.pullAllData();
+                
+                // Fallback ไปที่ local storage ถ้าไม่มีข้อมูล
+                let callScripts = getCallScripts();
+                if (!Array.isArray(callScripts) || callScripts.length === 0) {
+                    console.log('Loading default call scripts...');
+                    localStorage.setItem('callScripts', JSON.stringify(defaultCallScripts));
+                }
+                
+                let counterScripts = getCounterScripts();
+                if (!Array.isArray(counterScripts) || counterScripts.length === 0) {
+                    console.log('Loading default counter scripts...');
+                    localStorage.setItem('counterScripts', JSON.stringify(defaultCounterScripts));
+                }
+                
+                let objections = getObjections();
+                if (!objections || Object.keys(objections).length === 0) {
+                    console.log('Loading default objections...');
+                    localStorage.setItem('objections', JSON.stringify(defaultObjections));
+                }
+                
+                if (!localStorage.getItem('uploadedFiles')) {
+                    localStorage.setItem('uploadedFiles', JSON.stringify([]));
+                }
+
+                console.log('Data initialization completed');
+                
+            } catch (error) {
+                console.error('Error initializing data:', error);
+                resetToDefaultData();
             }
         }
 
         // Get Data
         function getCallScripts() {
-            return JSON.parse(localStorage.getItem('callScripts')) || [];
+            try {
+                const data = localStorage.getItem('callScripts');
+                if (!data) return defaultCallScripts;
+                
+                const parsed = JSON.parse(data);
+                return Array.isArray(parsed) ? parsed : defaultCallScripts;
+            } catch (error) {
+                console.error('Error parsing call scripts:', error);
+                return defaultCallScripts;
+            }
         }
 
         function getCounterScripts() {
-            return JSON.parse(localStorage.getItem('counterScripts')) || [];
+            try {
+                const data = localStorage.getItem('counterScripts');
+                if (!data) return defaultCounterScripts;
+                
+                const parsed = JSON.parse(data);
+                return Array.isArray(parsed) ? parsed : defaultCounterScripts;
+            } catch (error) {
+                console.error('Error parsing counter scripts:', error);
+                return defaultCounterScripts;
+            }
         }
 
         function getObjections() {
-            return JSON.parse(localStorage.getItem('objections')) || {};
+            try {
+                const data = localStorage.getItem('objections');
+                if (!data) return defaultObjections;
+                
+                const parsed = JSON.parse(data);
+                return parsed && typeof parsed === 'object' ? parsed : defaultObjections;
+            } catch (error) {
+                console.error('Error parsing objections:', error);
+                return defaultObjections;
+            }
         }
 
         function getUploadedFiles() {
-            return JSON.parse(localStorage.getItem('uploadedFiles')) || [];
+            try {
+                const data = localStorage.getItem('uploadedFiles');
+                return data ? JSON.parse(data) : [];
+            } catch (error) {
+                console.error('Error parsing uploaded files:', error);
+                return [];
+            }
         }
 
         // Save Data
         function saveCallScripts(scripts) {
             localStorage.setItem('callScripts', JSON.stringify(scripts));
+            supabaseManager.saveCallScripts(scripts);
         }
 
         function saveCounterScripts(scripts) {
             localStorage.setItem('counterScripts', JSON.stringify(scripts));
+            supabaseManager.saveCounterScripts(scripts);
         }
 
         function saveObjections(objections) {
             localStorage.setItem('objections', JSON.stringify(objections));
+            supabaseManager.saveObjections(objections);
         }
 
         function saveUploadedFiles(files) {
             localStorage.setItem('uploadedFiles', JSON.stringify(files));
+            supabaseManager.saveUploadedFiles(files);
+        }
+
+        // Reset to Default Data
+        function resetToDefaultData() {
+            localStorage.setItem('callScripts', JSON.stringify(defaultCallScripts));
+            localStorage.setItem('counterScripts', JSON.stringify(defaultCounterScripts));
+            localStorage.setItem('objections', JSON.stringify(defaultObjections));
+            localStorage.setItem('uploadedFiles', JSON.stringify([]));
+            console.log('Reset to default data completed');
+            
+            // Reload current page
+            const currentPage = document.querySelector('.page.active').id;
+            showPage(currentPage);
         }
 
         // Check Admin Status
@@ -1772,7 +2358,6 @@ STEP2:
             const adminStatus = localStorage.getItem('isAdmin');
             isAdmin = adminStatus === 'true';
             
-            // แสดงหรือซ่อน Admin Controls ตามสถานะ
             const adminControls = document.getElementById('adminControls');
             if (isAdmin && adminControls) {
                 adminControls.classList.add('active');
@@ -1791,7 +2376,7 @@ STEP2:
                 loadingScreen.style.display = 'none';
                 mainApp.style.display = 'block';
                 initializeData();
-                checkAdminStatus(); // ตรวจสอบสถานะแอดมิน
+                checkAdminStatus();
                 setupNavigation();
                 loadHomePage();
             }, 500);
@@ -1801,7 +2386,7 @@ STEP2:
         function setupNavigation() {
             // Nav bar items
             document.querySelectorAll('.nav-item').forEach(item => {
-                if (item.onclick) return; // Skip items with existing click handlers
+                if (item.onclick) return;
                 
                 item.addEventListener('click', function() {
                     const pageId = this.getAttribute('data-page');
@@ -1953,7 +2538,6 @@ STEP2:
                 const card = document.createElement('div');
                 card.className = 'script-card';
                 
-                // ใช้ checkAdminStatus() เพื่อตรวจสอบสถานะปัจจุบัน
                 const adminButtons = isAdmin ? `
                 <div class="admin-buttons" style="margin-top: 1rem;">
                     <button class="admin-btn" onclick="editScript(${script.id}, 'call')">แก้ไข</button>
@@ -1998,7 +2582,6 @@ STEP2:
                 const card = document.createElement('div');
                 card.className = 'script-card';
                 
-                // ใช้ checkAdminStatus() เพื่อตรวจสอบสถานะปัจจุบัน
                 const adminButtons = isAdmin ? `
                 <div class="admin-buttons" style="margin-top: 1rem;">
                     <button class="admin-btn" onclick="editScript(${script.id}, 'counter')">แก้ไข</button>
@@ -2086,7 +2669,6 @@ STEP2:
                     const item = document.createElement('div');
                     item.className = 'objection-item';
                     
-                    // ใช้ checkAdminStatus() เพื่อตรวจสอบสถานะปัจจุบัน
                     const adminButtons = isAdmin ? `
                     <div class="admin-buttons" style="margin-top: 1rem;">
                         <button class="admin-btn" onclick="editObjection(${obj.id}, '${category}')">แก้ไข</button>
@@ -2126,7 +2708,7 @@ STEP2:
 
         // Load Script Designer Page
         function loadScriptDesignerPage() {
-            // Load default components
+            // Load components
             loadScriptComponents();
             
             // Setup script tabs
@@ -2153,70 +2735,8 @@ STEP2:
         }
 
         // Load Script Components
-        function loadScriptComponents() {
-            // Default components
-            const components = {
-                opening: [
-                    {
-                        id: 1,
-                        title: "ทักทายลูกค้า",
-                        content: "สวัสดีครับ/คะ คุณ{ชื่อลูกค้า} ผม/ดิฉัน{ชื่อพนักงาน} จาก{ชื่อบริษัท} วันนี้โทรมาเพื่อ{วัตถุประสงค์}ครับ/ค่ะ"
-                    },
-                    {
-                        id: 2,
-                        title: "เปิดบทสนทนาแบบเป็นกันเอง",
-                        content: "สวัสดีครับ/คะ คุณ{ชื่อลูกค้า} ไม่ทราบว่าตอนนี้สะดวกคุยไหมครับ/คะ?"
-                    }
-                ],
-                painPoint: [
-                    {
-                        id: 1,
-                        title: "ปัญหาเงินนิ่ง",
-                        content: "ผม/ดิฉันเห็นว่าบัญชีเงินฝากของคุณมียอดคงเหลือค่อนข้างสูง ซึ่งดอกเบี้ยเงินฝากในปัจจุบันต่ำมาก ทำให้เงินฝากเติบโตช้าและอาจไม่ชนะอัตราเงินเฟ้อ"
-                    },
-                    {
-                        id: 2,
-                        title: "ปัญหาเงินฝากประจำใกล้ครบ",
-                        content: "เห็นว่าบัญชีเงินฝากประจำของคุณกำลังจะครบกำหนดในอีก {X} วัน การต่ออายุอัตโนมัติอาจทำให้พลาดโอกาสลงทุนที่ให้ผลตอบแทนดีกว่า"
-                    }
-                ],
-                solution: [
-                    {
-                        id: 1,
-                        title: "เสนอผลิตภัณฑ์ลงทุน",
-                        content: "เรามีผลิตภัณฑ์การลงทุนที่เหมาะสมกับคุณ ซึ่งให้ผลตอบแทน{X}% ต่อปี สูงกว่าดอกเบี้ยเงินฝากทั่วไป"
-                    },
-                    {
-                        id: 2,
-                        title: "เสนอประกันชีวิต",
-                        content: "เรามีแผนประกันชีวิตที่ช่วยลดหย่อนภาษีได้สูงสุด {X} บาท และยังได้รับความคุ้มครองชีวิตอีกด้วย"
-                    }
-                ],
-                closing: [
-                    {
-                        id: 1,
-                        title: "ปิดการขายแบบนุ่มนวล",
-                        content: "ไม่ทราบว่าคุณ{ชื่อลูกค้า} สนใจทราบรายละเอียดเพิ่มเติมไหมครับ/คะ?"
-                    },
-                    {
-                        id: 2,
-                        title: "ปิดการขายแบบเร่งด่วน",
-                        content: "โปรโมชั่นนี้มีจำกัดเพียง {X} รายแรกเท่านั้น คุณ{ชื่อลูกค้า} สนใจลงทะเบียนเลยไหมครับ/คะ?"
-                    }
-                ],
-                special: [
-                    {
-                        id: 1,
-                        title: "ประโยคสร้างความมั่นใจ",
-                        content: "ลูกค้าหลายท่านที่ใช้บริการนี้มีความพึงพอใจสูงและได้รับผลตอบแทนตามที่คาดหวัง"
-                    },
-                    {
-                        id: 2,
-                        title: "ประโยคกระตุ้นการตัดสินใจ",
-                        content: "ยิ่งเริ่มต้นเร็ว ยิ่งได้รับผลตอบแทนที่มากขึ้นในระยะยาว"
-                    }
-                ]
-            };
+        async function loadScriptComponents() {
+            const components = await supabaseManager.getComponents();
             
             // Load opening components
             const openingContainer = document.getElementById('openingComponents');
@@ -2842,6 +3362,48 @@ STEP2:
                 }
             }, 5000);
         });
+
+        // Placeholder functions for missing modal functions
+        function showAddConversationModal() {
+            alert('ฟังก์ชันนี้กำลังอยู่ในระหว่างการพัฒนา');
+        }
+
+        function closeAddConversationModal() {
+            document.getElementById('addConversationModal').style.display = 'none';
+        }
+
+        function addNewConversation() {
+            alert('ฟังก์ชันนี้กำลังอยู่ในระหว่างการพัฒนา');
+        }
+
+        function showAddTechniqueModal() {
+            alert('ฟังก์ชันนี้กำลังอยู่ในระหว่างการพัฒนา');
+        }
+
+        function closeAddTechniqueModal() {
+            document.getElementById('addTechniqueModal').style.display = 'none';
+        }
+
+        function addNewTechnique() {
+            alert('ฟังก์ชันนี้กำลังอยู่ในระหว่างการพัฒนา');
+        }
+
+        function showAddComponentModal() {
+            alert('ฟังก์ชันนี้กำลังอยู่ในระหว่างการพัฒนา');
+        }
+
+        function closeAddComponentModal() {
+            document.getElementById('addComponentModal').style.display = 'none';
+        }
+
+        function addNewComponent() {
+            alert('ฟังก์ชันนี้กำลังอยู่ในระหว่างการพัฒนา');
+        }
+
+        function loadConversationBuilderPage() {
+            // Placeholder for conversation builder
+            document.getElementById('conversationFlow').innerHTML = '<p>ระบบ Conversation Builder กำลังอยู่ในระหว่างการพัฒนา</p>';
+        }
     </script>
 </body>
 </html>
